@@ -9,10 +9,10 @@ import (
 
 type Plotvals struct {
     Titletext string
-    XAxistext string
-    Y0Axistext string
-    Y1Axistext string
-    Y2Axistext string
+    XName string
+    Y0Name string
+    Y1Name string
+    Y2Name string
     Y0coordinates [][]float64
     Y1coordinates [][]float64
     Y2coordinates [][]float64
@@ -70,10 +70,10 @@ func foo(w http.ResponseWriter, r *http.Request) {
 
 	//Create an object to contain various plot values
 	p := Plotvals {Titletext: "Distance Graph", 
-		XAxistext: "Distance (m)", 
-		Y0Axistext: "Speed (m/s)", 
-		Y1Axistext: "Altitude (m)", 
-		Y2Axistext: "Cadence (bpm)", 
+		XName: "Distance (m)", 
+		Y0Name: "Speed (m/s)", 
+		Y1Name: "Altitude (m)", 
+		Y2Name: "Cadence (bpm)", 
 		Y0coordinates: nil,
 		Y1coordinates: nil,
 		Y2coordinates: nil,

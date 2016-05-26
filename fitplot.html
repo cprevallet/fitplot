@@ -30,13 +30,13 @@
                 chart.series[1].setData(eval(p.Y1coordinates));
                 chart.series[2].setData(eval(p.Y2coordinates));
 		chart.setTitle({ text: p.Titletext });
-		chart.xAxis[0].setTitle({text: p.XAxistext});
-		chart.yAxis[0].setTitle({text: p.Y0Axistext});
-		chart.yAxis[1].setTitle({text: p.Y1Axistext});
-		chart.yAxis[2].setTitle({text: p.Y2Axistext});
-                chart.series[0].name = p.Y0Axistext
-                chart.series[1].name = p.Y1Axistext
-                chart.series[2].name = p.Y2Axistext
+		chart.xAxis[0].setTitle({text: p.XName});
+		chart.yAxis[0].setTitle({text: p.Y0Name});
+		chart.yAxis[1].setTitle({text: p.Y1Name});
+		chart.yAxis[2].setTitle({text: p.Y2Name});
+                chart.series[0].name = p.Y0Name
+                chart.series[1].name = p.Y1Name
+                chart.series[2].name = p.Y2Name
 
             },
             cache: false
