@@ -148,37 +148,10 @@
             },
             tooltip: {
                 shared: true,
-                headerFormat: '<span style="font-size: 10px">Distance: {point.key}</span><br/>',
+                headerFormat: '<span style="font-size: 10px">Distance: {point.x:.2f}</span><br/>',
                 valueDecimals: 2
             },
-/*
-            tooltip: {
-	        crosshairs: [true],
-                        positioner: function () {
-                            return {
-                                x: this.chart.chartWidth - this.label.width, // right aligned
-                                y: -1 // align to title
-                            };
-                        },
-                borderWidth: 0,
-                backgroundColor: 'none',
-                pointFormat: '{point.y} at {point.x}',
-                headerFormat: '',
-                shadow: false,
-                style: {
-                    fontSize: '10px'
-		},
-                valueDecimals: 2
-            },
-*/
-/*            series: [{
-                name: 'Speed', yAxis: 0},
-                {
-                name: 'Altitude',yAxis: 1},
-                {
-                name: 'Cadence', yAxis: 2
-            }],
-*/
+
             series: [{
                 yAxis: 0},
                 {
@@ -188,6 +161,7 @@
             }],
 
 		yAxis: [{ // Primary yAxis
+                    reversed: true,
 		    title: {
 			text: 'First axis',
                         style: {
