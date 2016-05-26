@@ -1,0 +1,135 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+
+
+    <!-- 2. Add the JavaScript to initialize the chart on document ready -->
+    <script>
+    var chart; // global
+
+    /**
+     * Request data from the server, add it to the graph and set a timeout to request again
+     */
+    function requestData() {
+        $.ajax({
+            url: 'http://localhost:3000/',
+
+            success : function(p) {
+/*
+                alert(p.Titletext);
+                alert(p.Y0coordinates);
+                alert(data[0]);    // ["foo","bar"]
+                alert(data[1]);    // ["baz","qux"]
+                alert(data.length) // 2
+
+		alert(p.Y0coordinates);
+		alert(p.Y1coordinates);
+		alert(p.Y2coordinates);
+*/
+                // add the points
+                chart.series[0].setData(eval(p.Y0coordinates));
+                chart.series[1].setData(eval(p.Y1coordinates));
+                chart.series[2].setData(eval(p.Y2coordinates));
+		chart.setTitle({ text: p.Titletext });
+		chart.xAxis[0].setTitle({text: p.XAxistext});
+		chart.yAxis[0].setTitle({text: p.Y0Axistext});
+		chart.yAxis[1].setTitle({text: p.Y1Axistext});
+		chart.yAxis[2].setTitle({text: p.Y2Axistext});
+
+            },
+            cache: false
+        });
+    }
+
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+		zoomType: 'x',
+                renderTo: 'container',
+                defaultSeriesType: 'spline',
+                events: {
+                    load: requestData
+                }
+            },
+	    credits: {
+                    enabled: false
+                },
+            legend: {
+                    enabled: true
+                },
+            title: {
+                text: 'Point plot'
+            },
+            tooltip: {
+	        crosshairs: [true],
+                        positioner: function () {
+                            return {
+                                x: this.chart.chartWidth - this.label.width, // right aligned
+                                y: -1 // align to title
+                            };
+                        },
+                borderWidth: 0,
+                backgroundColor: 'none',
+                pointFormat: '{point.y} at {point.x}',
+                headerFormat: '',
+                shadow: false,
+                style: {
+                    fontSize: '10px'
+		},
+                valueDecimals: 2
+            },
+/*            series: [{
+                name: 'Speed', yAxis: 0},
+                {
+                name: 'Altitude',yAxis: 1},
+                {
+                name: 'Cadence', yAxis: 2
+            }],
+*/
+            series: [{
+                yAxis: 0},
+                {
+                yAxis: 1},
+                {
+                yAxis: 2
+            }],
+
+        yAxis: [{ // Primary yAxis
+            title: {
+                text: 'First axis'
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: 'Second axis'
+            },
+            opposite: true
+        }, { // Tertiary yAxis
+            title: {
+                text: 'Third axis'
+            },
+            opposite: true
+        }]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+
+    });
+    </script>
+
+</head>
+<body>
+
+    <!-- 3. Add the container -->
+    <div id="container" style="width: 1200px; height: 600px; margin: 0 auto"></div>
