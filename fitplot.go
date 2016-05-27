@@ -1,117 +1,99 @@
 package main
 
 import (
-  "fmt"
-  "github.com/jezard/fit"
-  "encoding/json"
-  "net/http"
+	"encoding/json"
+	"fmt"
+        "github.com/jezard/fit"
+	"html/template"
+	"io"
+	"io/ioutil"
+	"net/http"
 )
 
-type Plotvals struct {
-    Titletext string
-    XName string
-    Y0Name string
-    Y1Name string
-    Y2Name string
-    Y0coordinates [][]float64
-    Y1coordinates [][]float64
-    Y2coordinates [][]float64
+var fitFname string = ""
+
+
+//Compile templates on start
+var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
+
+//Display the named template
+func display(w http.ResponseWriter, tmpl string, data interface{}) {
+	templates.ExecuteTemplate(w, tmpl+".html", data)
 }
 
-var metersToMiles float64 = 0.00062137119 //meter -> mile
-var metersToKm float64 = 0.001  //meter -> km
-var metersToFt float64 = 3.2808399 //meter ->ft
-var paceToEnglish float64 = 26.8224  // sec/meter -> min/mile
-var paceToMetric float64 = 16.666667 // sec/meter -> min/km
+//Display the unitialized graph.  After the user hits the load button,
+//copy the fit file to a temporary local directory.
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	//GET displays the unitialized graph.
+	case "GET":
+		display(w, "fitplot", nil)
 
-var toEnglish bool = true
+	//POST takes the uploaded file(s) and saves it to disk.
+	case "POST":
+		//parse the multipart form in the request
+		err := r.ParseMultipartForm(100000)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-//
-//  Main
-//
-func main() {
-	http.HandleFunc("/",foo)
-	http.ListenAndServe(":3000", nil)
+		//get a ref to the parsed multipart form
+		m := r.MultipartForm
+
+		//get the *fileheaders
+		files := m.File["myfiles"]
+		for i, _ := range files {
+			//for each fileheader, get a handle to the actual file
+			file, err := files[i].Open()
+			defer file.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		        dst, err := ioutil.TempFile("", "example")
+			fitFname = "" 
+			fitFname = dst.Name()
+			defer dst.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			//copy the uploaded file to the destination file
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+		//display success message.
+		display(w, "fitplot", "Upload successful.")
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func plotHandler(w http.ResponseWriter, r *http.Request) {
+	type Plotvals struct {
+	    Titletext string
+	    XName string
+	    Y0Name string
+	    Y1Name string
+	    Y2Name string 
+	    Y0coordinates [][]float64
+	    Y1coordinates [][]float64
+	    Y2coordinates [][]float64
 	}
 
-func getDvsA(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
-	var x float64
-	var y float64
-        for _, record := range fitStruct.Records {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                y = record.Altitude * metersToFt
-	    } else {
-		x = record.Distance * metersToKm
-                y = record.Altitude
-	   }
-	    coordpair := []float64{x,y}
-            data = append(data, coordpair)
-        }
-        return
-}
-
-func getDvsC(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
-	var x float64
-	var y float64
-        for _, record := range fitStruct.Records {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                y = float64(record.Cadence)
-	    } else {
-		x = record.Distance * metersToKm
-                y = float64(record.Cadence)
-	   }
-	    coordpair := []float64{x,y}
-            data = append(data, coordpair)
-        }
-        return
-}
-
-func getDvsP(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
-	var x float64
-	var y float64
-        for _, record := range fitStruct.Records {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                if record.Speed > 0.0 {
-                    y = 1.0/record.Speed * paceToEnglish
-                } else {
-                    y = 20.0  //min/mile...walking pace if standing still...gotta choose something
-                }
-	    } else {
-		x = record.Distance * metersToKm
-                if record.Speed > 0.0 {
-                    y = 1.0/record.Speed * paceToMetric
-                } else {
-                    y = 12.0  //min/km...walking pace if standing still...gotta choose something
-                }
-	   }
-	    coordpair := []float64{x,y}
-            data = append(data, coordpair)
-        }
-        return
-}
-
-
-
-func foo(w http.ResponseWriter, r *http.Request) {
-        
-	//Read .fit file.
-	//var fitFname = "/home/penguin/work/src/github.com/csp/fitplot/65L84100.FIT"
-        var fitFname = "/home/penguin/work/src/github.com/csp/fitplot/64IA2815.FIT"
+        //Read .fit file.
         var fitStruct fit.FitFile
         fitStruct = fit.Parse(fitFname, false)
 
-	//Build the variable strings based on unit system.
-	var xStr string = "Distance "
-	var y0Str string = "Pace "
-	var y1Str string = "Altitude "
-	var y2Str string = "Cadence "
-	if toEnglish {
+        //Build the variable strings based on unit system.
+        var xStr string = "Distance "
+        var y0Str string = "Pace "
+        var y1Str string = "Altitude "
+        var y2Str string = "Cadence "
+        if toEnglish {
             xStr = xStr + "(mi)"
             y0Str = y0Str + "(min/mi)"
             y1Str = y1Str + "(ft)"
@@ -122,34 +104,41 @@ func foo(w http.ResponseWriter, r *http.Request) {
             y1Str = y1Str + "(m)"
             y2Str = y2Str + "(bpm)"
         }
-        
 
-	//Create an object to contain various plot values.
-	p := Plotvals {Titletext: "Distance Graph", 
-		XName: xStr, 
-		Y0Name: y0Str,
-		Y1Name: y1Str,
-		Y2Name: y2Str,
-		Y0coordinates: nil,
-		Y1coordinates: nil,
-		Y2coordinates: nil,
-	}
+        //Create an object to contain various plot values.
+        p := Plotvals {Titletext: "Distance Graph", 
+                XName: xStr, 
+                Y0Name: y0Str,
+                Y1Name: y1Str,
+                Y2Name: y2Str,
+                Y0coordinates: nil,
+                Y1coordinates: nil,
+                Y2coordinates: nil,
+        }
 
         //Convert to a form (x-y pairs) for graph.
-	p.Y0coordinates = getDvsP(fitStruct, toEnglish)
-	p.Y1coordinates = getDvsA(fitStruct, toEnglish)
-	p.Y2coordinates = getDvsC(fitStruct, toEnglish)
+        p.Y0coordinates = getDvsP(fitStruct, toEnglish)
+        p.Y1coordinates = getDvsA(fitStruct, toEnglish)
+        p.Y2coordinates = getDvsC(fitStruct, toEnglish)
 
-	//Convert to json.
-	js, err := json.Marshal(p)
+        //Convert to json.
+        js, err := json.Marshal(p)
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	fmt.Println("Received Request")
-	w.Header().Set("Content-Type", "text/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	//Send
-	w.Write(js)
-	}
+        if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+                return
+        }
+        fmt.Println("Received Request")
+        w.Header().Set("Content-Type", "text/json")
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        //Send
+        w.Write(js)
+        }
+
+
+func main() {
+	http.HandleFunc("/upload", uploadHandler) //url associated with UI
+	http.HandleFunc("/getplot", plotHandler) //url for server to supply the plot data
+	//Listen on port 8080
+	http.ListenAndServe(":8080", nil)
+}
