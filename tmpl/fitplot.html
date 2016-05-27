@@ -11,7 +11,7 @@
      */
     function requestData() {
         $.ajax({
-            url: 'http://localhost:8080/getplot',
+            url: '/getplot',
 
             success: function(p) {
                 /*
@@ -231,8 +231,8 @@
 <body>
 
     <!-- 3. Add the container -->
-    <div id="container" style="width: 1200px; height: 600px; margin: 0 auto"></div>
-    <div id="container2" style="width: 1200px; height: 600px; margin: 0 auto">
+    <div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+    <div id="container2" style="width: 800px; height: 200px; margin: 0 auto">
     <form class="form-signin" method="post" action="/upload" enctype="multipart/form-data">
           <input type="file" name="myfiles" id="myfiles" multiple="multiple">
           <input type="submit" name="submit" value="Load">
