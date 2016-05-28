@@ -135,10 +135,35 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         w.Write(js)
         }
 
+func mapHandler(w http.ResponseWriter, r *http.Request) {
+
+        //Read .fit file.
+        var fitStruct fit.FitFile
+        fitStruct = fit.Parse(fitFname, false)
+
+        //Convert to a latitude longitude for graph.
+        var coords[] map[string]float64 
+	coords = getlatlong(fitStruct)
+
+        //Convert to json.
+        js, err := json.Marshal(coords)
+
+        if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println("What the hell?")
+                return
+        }
+        fmt.Println("Received Request")
+        w.Header().Set("Content-Type", "text/json")
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        //Send
+        w.Write(js)
+        }
 
 func main() {
 	http.HandleFunc("/upload", uploadHandler) //url associated with UI
 	http.HandleFunc("/getplot", plotHandler) //url for server to supply the plot data
+	http.HandleFunc("/getmap", mapHandler) //url for server to supply the map data
 	//Listen on port 8080
 	http.ListenAndServe(":8080", nil)
 }

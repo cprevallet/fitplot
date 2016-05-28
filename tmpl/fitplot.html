@@ -51,6 +51,29 @@
             },
             cache: false
         });
+
+
+
+        $.ajax({
+            url: '/getmap',
+
+            success: function(p) {
+//                              alert(p[0].lat);
+//                              alert(p[0].lng);
+//                              alert(JSON.stringify(p));
+
+                                alert(JSON.stringify(p))
+
+            },
+            cache: false
+        });
+
+
+
+
+
+
+
     }
 
     $(document).ready(function() {

@@ -79,5 +79,13 @@ func getDvsP(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
         return
 }
 
+func getlatlong(fitStruct fit.FitFile) (data []map[string]float64) {
 
+
+        for _, record := range fitStruct.Records {
+	    mapPos := map[string]float64{"lat": record.Position_lat, "lng": record.Position_long}
+            data = append(data, mapPos)
+        }
+        return
+}
 
