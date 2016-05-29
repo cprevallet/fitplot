@@ -2,7 +2,7 @@
 <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
 
 
-<!-- 2. Add the JavaScript to initialize the chart on document ready -->
+<!--  Add the JavaScript to initialize the chart on document ready -->
 <script>
     var chart; // global
 
@@ -61,8 +61,22 @@
 //                              alert(p[0].lat);
 //                              alert(p[0].lng);
 //                              alert(JSON.stringify(p));
+                               var map = new google.maps.Map(document.getElementById('map'), {
+                                  zoom: 15,
+                                  center: p[0],
+                                  mapTypeId: google.maps.MapTypeId.TERRAIN
+                                });
 
-                                alert(JSON.stringify(p))
+                                var runPath = new google.maps.Polyline({
+                                  path: p,
+                                  geodesic: true,
+                                  strokeColor: '#FF0000',
+                                  strokeOpacity: 1.0,
+                                  strokeWeight: 2
+                                });
+
+                                runPath.setMap(map);
+
 
             },
             cache: false
@@ -250,11 +264,16 @@
 
 </script>
 
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y">
+</script>
+
 </head>
 <body>
 
     <!-- 3. Add the container -->
     <div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+    <div id="map" style="width: 800px; height: 400px; margin: 0 auto"></div>
     <div id="container2" style="width: 800px; height: 200px; margin: 0 auto">
     <form class="form-signin" method="post" action="/upload" enctype="multipart/form-data">
           <input type="file" name="myfiles" id="myfiles" multiple="multiple">
@@ -263,4 +282,6 @@
     <button onclick="requestData()" id="my-button">Plot</button>
     </div>
 
+  </body>
+</html>
 

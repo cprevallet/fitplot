@@ -21,13 +21,20 @@ func display(w http.ResponseWriter, tmpl string, data interface{}) {
 	templates.ExecuteTemplate(w, tmpl+".html", data)
 }
 
-//Display the unitialized graph.  After the user hits the load button,
+//Display the unitialized graph. 
+func pageloadHandler(w http.ResponseWriter, r *http.Request) {
+        fmt.Println("pageloadHandler Received Request")
+	display(w, "fitplot", nil)
+}
+
+//After the user hits the load button,
 //copy the fit file to a temporary local directory.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.Method)
 	switch r.Method {
 	//GET displays the unitialized graph.
 	case "GET":
-		display(w, "fitplot", nil)
+		//display(w, "fitplot", nil)
 
 	//POST takes the uploaded file(s) and saves it to disk.
 	case "POST":
@@ -66,7 +73,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		//display success message.
-		display(w, "fitplot", "Upload successful.")
+		display(w, "fitplot", nil)
+        	fmt.Println("uploadHandler Received Request")
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -128,7 +136,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
         }
-        fmt.Println("Received Request")
+        fmt.Println("plotHandler Received Request")
         w.Header().Set("Content-Type", "text/json")
         w.Header().Set("Access-Control-Allow-Origin", "*")
         //Send
@@ -153,7 +161,7 @@ func mapHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("What the hell?")
                 return
         }
-        fmt.Println("Received Request")
+        fmt.Println("mapHandler Received Request")
         w.Header().Set("Content-Type", "text/json")
         w.Header().Set("Access-Control-Allow-Origin", "*")
         //Send
@@ -161,6 +169,7 @@ func mapHandler(w http.ResponseWriter, r *http.Request) {
         }
 
 func main() {
+	http.HandleFunc("/pageload", pageloadHandler) //url associateed with initial page load
 	http.HandleFunc("/upload", uploadHandler) //url associated with UI
 	http.HandleFunc("/getplot", plotHandler) //url for server to supply the plot data
 	http.HandleFunc("/getmap", mapHandler) //url for server to supply the map data
