@@ -77,6 +77,15 @@
 
                                 runPath.setMap(map);
 
+				// Center map based on path
+				var bound = new google.maps.LatLngBounds();
+				for (i = 0; i < p.length; i++) {
+				  bound.extend( new google.maps.LatLng(p[i].lat, p[i].lng) );
+				}
+				map.setCenter(bound.getCenter());
+				map.fitBounds(bound);
+				
+
 
             },
             cache: false
