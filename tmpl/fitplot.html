@@ -6,14 +6,15 @@
 <script>
     var chart; // global
     var map; // global
+    var p; //global
+    var marker; //global
 
-    function doStuff(){
+    function moveMarker(){
 	e = chart.pointer.normalize(); //undocumented api function, may change?
 	point = chart.series[0].searchPoint(e, true);
 	if (point) {
-//		alert(point.x);
-//		alert(point.y);
-//		map.setZoom(6);
+		var moveLatlong = p.Latlongs[point.index];
+		marker.setPosition(moveLatlong);
 		}
         }
 
@@ -24,18 +25,10 @@
         $.ajax({
             url: '/getplot',
 
-            success: function(p) {
-                /*
-                                alert(p.Titletext);
-                                alert(p.Y0coordinates);
-                                alert(data[0]);    // ["foo","bar"]
-                                alert(data[1]);    // ["baz","qux"]
-                                alert(data.length) // 2
+            success: function(data) {
 
-                		alert(p.Y0coordinates);
-                		alert(p.Y1coordinates);
-                		alert(p.Y2coordinates);
-                */
+		// save a global copy
+                p = data
                 // add the points
                 chart.series[0].setData(eval(p.Y0coordinates));
                 chart.series[1].setData(eval(p.Y1coordinates));
@@ -82,16 +75,22 @@
 		}
 		map.setCenter(bound.getCenter());
 		map.fitBounds(bound);
+
+		marker = new google.maps.Marker({
+		    position: p.Latlongs[0],
+		    title:"Here we are!"
+		});
+		marker.setMap(map);
+
+		// Listen to mouse moves over the chart.
 		chartDiv = document.getElementById('container');
-		google.maps.event.addDomListener(chartDiv, 'mouseover', doStuff);	
-
-
+		google.maps.event.addDomListener(chartDiv, 'mouseover', moveMarker);	
 
             },
             cache: false
-        });  //ajax
+        }); 
 
-    } //Request data
+    } 
 
     $(document).ready(function() {
 
