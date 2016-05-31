@@ -10,7 +10,9 @@
     var marker; //global
 
     function moveMarker(){
-	e = chart.pointer.normalize(); //undocumented api function, may change?
+	// undocumented api function, may change?
+	// http://jsfiddle.net/highcharts/K7pN9/
+	e = chart.pointer.normalize(); 	
 	point = chart.series[0].searchPoint(e, true);
 	if (point) {
 		var moveLatlong = p.Latlongs[point.index];
@@ -84,7 +86,7 @@
 
 		// Listen to mouse moves over the chart.
 		chartDiv = document.getElementById('container');
-		google.maps.event.addDomListener(chartDiv, 'mouseover', moveMarker);	
+		google.maps.event.addDomListener(chartDiv, 'mousemove', moveMarker);	
 
             },
             cache: false
@@ -209,11 +211,16 @@
             },
 
             series: [{
-                yAxis: 0
+                yAxis: 0,
+		color: Highcharts.getOptions().colors[2]
             }, {
-                yAxis: 1
+                yAxis: 1,
+		type: "area",
+		fillOpacity: 0.1,
+		color: Highcharts.getOptions().colors[3]
             }, {
-                yAxis: 2
+                yAxis: 2,
+		color: Highcharts.getOptions().colors[1]
             }],
 
             yAxis: [{ // Primary yAxis
@@ -221,24 +228,24 @@
                 title: {
                     text: 'First axis',
                     style: {
-                        color: Highcharts.getOptions().colors[0]
+                        color: Highcharts.getOptions().colors[2]
                     }
                 },
                 labels: {
                     style: {
-                        color: Highcharts.getOptions().colors[0]
+                        color: Highcharts.getOptions().colors[2]
                     }
                 }
             }, { // Secondary yAxis
                 title: {
                     text: 'Second axis',
                     style: {
-                        color: Highcharts.getOptions().colors[1]
+                        color: Highcharts.getOptions().colors[3]
                     }
                 },
                 labels: {
                     style: {
-                        color: Highcharts.getOptions().colors[1]
+                        color: Highcharts.getOptions().colors[3]
                     }
                 },
                 opposite: true
@@ -246,12 +253,12 @@
                 title: {
                     text: 'Third axis',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 labels: {
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 opposite: true
