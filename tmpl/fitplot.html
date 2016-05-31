@@ -191,9 +191,6 @@
                 defaultSeriesType: 'spline',
 		panning: true,
 		panKey: 'shift'
-//                events: {
-//                    load: requestData
-//                }
             },
             credits: {
                 enabled: false
@@ -206,13 +203,28 @@
             },
             tooltip: {
                 shared: true,
-                headerFormat: '<span style="font-size: 10px">Distance: {point.x:.2f}</span><br/>',
-                valueDecimals: 2
+		formatter: function () {
+		    var s = '<b>' + 'Distance : ' + this.x.toFixed(2) + '</b>';
+		    var primaryY = this.points[0];
+		    var secondaryY = this.points[1];
+		    var tertiaryY = this.points[2];
+		    var minutes = primaryY.y;
+		    var sign = minutes < 0 ? "-" : "";
+		    var min = Math.floor(Math.abs(minutes));
+		    var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+		    var returnval = sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+		    s += '<br/>' + primaryY.series.name + ' : ' + returnval
+		    s += '<br/>' + secondaryY.series.name + ' : ' + secondaryY.y.toFixed(2);
+		    s += '<br/>' + tertiaryY.series.name + ' : ' + tertiaryY.y.toFixed(2);
+		    return s;
+		}
+
+
             },
 
             series: [{
                 yAxis: 0,
-		color: Highcharts.getOptions().colors[2]
+		color: Highcharts.getOptions().colors[1]
             }, {
                 yAxis: 1,
 		type: "area",
@@ -220,7 +232,7 @@
 		color: Highcharts.getOptions().colors[3]
             }, {
                 yAxis: 2,
-		color: Highcharts.getOptions().colors[1]
+		color: Highcharts.getOptions().colors[2]
             }],
 
             yAxis: [{ // Primary yAxis
@@ -228,14 +240,21 @@
                 title: {
                     text: 'First axis',
                     style: {
-                        color: Highcharts.getOptions().colors[2]
+                        color: Highcharts.getOptions().colors[1]
                     }
                 },
                 labels: {
                     style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                }
+                        color: Highcharts.getOptions().colors[1]
+                    },
+		    formatter: function (){
+				 var minutes = this.value
+				 var sign = minutes < 0 ? "-" : "";
+				 var min = Math.floor(Math.abs(minutes));
+				 var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+				 return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+				}
+		}
             }, { // Secondary yAxis
                 title: {
                     text: 'Second axis',
@@ -253,12 +272,12 @@
                 title: {
                     text: 'Third axis',
                     style: {
-                        color: Highcharts.getOptions().colors[1]
+                        color: Highcharts.getOptions().colors[2]
                     }
                 },
                 labels: {
                     style: {
-                        color: Highcharts.getOptions().colors[1]
+                        color: Highcharts.getOptions().colors[2]
                     }
                 },
                 opposite: true
