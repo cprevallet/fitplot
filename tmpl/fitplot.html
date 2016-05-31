@@ -5,6 +5,17 @@
 <!--  Add the JavaScript to initialize the chart on document ready -->
 <script>
     var chart; // global
+    var map; // global
+
+    function doStuff(){
+	e = chart.pointer.normalize(); //undocumented api function, may change?
+	point = chart.series[0].searchPoint(e, true);
+	if (point) {
+//		alert(point.x);
+//		alert(point.y);
+//		map.setZoom(6);
+		}
+        }
 
     /**
      * Request data from the server, add it to the graph and set a timeout to request again
@@ -48,56 +59,39 @@
                 chart.series[1].name = p.Y1Name
                 chart.series[2].name = p.Y2Name
 
-            },
-            cache: false
-        });
+		map = new google.maps.Map(document.getElementById('map'), {
+		  zoom: 15,
+		  center: p.Latlongs[0],
+		  mapTypeId: google.maps.MapTypeId.TERRAIN
+		});
 
+		var runPath = new google.maps.Polyline({
+		  path: p.Latlongs,
+		  geodesic: true,
+		  strokeColor: '#FF0000',
+		  strokeOpacity: 1.0,
+		  strokeWeight: 2
+		});
 
+		runPath.setMap(map);
 
-        $.ajax({
-            url: '/getmap',
+		// Center map based on path
+		var bound = new google.maps.LatLngBounds();
+		for (i = 0; i < p.Latlongs.length; i++) {
+		  bound.extend( new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng) );
+		}
+		map.setCenter(bound.getCenter());
+		map.fitBounds(bound);
+		chartDiv = document.getElementById('container');
+		google.maps.event.addDomListener(chartDiv, 'mouseover', doStuff);	
 
-            success: function(p) {
-//                              alert(p[0].lat);
-//                              alert(p[0].lng);
-//                              alert(JSON.stringify(p));
-                               var map = new google.maps.Map(document.getElementById('map'), {
-                                  zoom: 15,
-                                  center: p[0],
-                                  mapTypeId: google.maps.MapTypeId.TERRAIN
-                                });
-
-                                var runPath = new google.maps.Polyline({
-                                  path: p,
-                                  geodesic: true,
-                                  strokeColor: '#FF0000',
-                                  strokeOpacity: 1.0,
-                                  strokeWeight: 2
-                                });
-
-                                runPath.setMap(map);
-
-				// Center map based on path
-				var bound = new google.maps.LatLngBounds();
-				for (i = 0; i < p.length; i++) {
-				  bound.extend( new google.maps.LatLng(p[i].lat, p[i].lng) );
-				}
-				map.setCenter(bound.getCenter());
-				map.fitBounds(bound);
-				
 
 
             },
             cache: false
-        });
+        });  //ajax
 
-
-
-
-
-
-
-    }
+    } //Request data
 
     $(document).ready(function() {
 

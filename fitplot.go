@@ -30,54 +30,43 @@ func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 //After the user hits the load button,
 //copy the fit file to a temporary local directory.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Method)
-	switch r.Method {
-	//GET displays the unitialized graph.
-	case "GET":
-		//display(w, "fitplot", nil)
+	//parse the multipart form in the request
+	err := r.ParseMultipartForm(100000)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	//POST takes the uploaded file(s) and saves it to disk.
-	case "POST":
-		//parse the multipart form in the request
-		err := r.ParseMultipartForm(100000)
+	//get a ref to the parsed multipart form
+	m := r.MultipartForm
+
+	//get the *fileheaders
+	files := m.File["myfiles"]
+	for i, _ := range files {
+		//for each fileheader, get a handle to the actual file
+		file, err := files[i].Open()
+		defer file.Close()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		//get a ref to the parsed multipart form
-		m := r.MultipartForm
-
-		//get the *fileheaders
-		files := m.File["myfiles"]
-		for i, _ := range files {
-			//for each fileheader, get a handle to the actual file
-			file, err := files[i].Open()
-			defer file.Close()
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		        dst, err := ioutil.TempFile("", "example")
-			fitFname = "" 
-			fitFname = dst.Name()
-			defer dst.Close()
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			//copy the uploaded file to the destination file
-			if _, err := io.Copy(dst, file); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
+		dst, err := ioutil.TempFile("", "example")
+		fitFname = "" 
+		fitFname = dst.Name()
+		defer dst.Close()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-		//display success message.
-		display(w, "fitplot", nil)
-        	fmt.Println("uploadHandler Received Request")
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		//copy the uploaded file to the destination file
+		if _, err := io.Copy(dst, file); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
+	//display success message.
+	display(w, "fitplot", nil)
+	fmt.Println("uploadHandler Received Request")
 }
 
 func plotHandler(w http.ResponseWriter, r *http.Request) {
@@ -90,6 +79,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    Y0coordinates [][]float64
 	    Y1coordinates [][]float64
 	    Y2coordinates [][]float64
+            Latlongs[] map[string]float64 
 	}
 
         //Read .fit file.
@@ -122,12 +112,15 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 Y0coordinates: nil,
                 Y1coordinates: nil,
                 Y2coordinates: nil,
+                Latlongs: nil,
         }
 
         //Convert to a form (x-y pairs) for graph.
         p.Y0coordinates = getDvsP(fitStruct, toEnglish)
         p.Y1coordinates = getDvsA(fitStruct, toEnglish)
         p.Y2coordinates = getDvsC(fitStruct, toEnglish)
+        //Convert to a latitude longitude for graph.
+	p.Latlongs = getlatlong(fitStruct)
 
         //Convert to json.
         js, err := json.Marshal(p)
@@ -136,6 +129,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
         }
+
+
         fmt.Println("plotHandler Received Request")
         w.Header().Set("Content-Type", "text/json")
         w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -143,36 +138,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         w.Write(js)
         }
 
-func mapHandler(w http.ResponseWriter, r *http.Request) {
-
-        //Read .fit file.
-        var fitStruct fit.FitFile
-        fitStruct = fit.Parse(fitFname, false)
-
-        //Convert to a latitude longitude for graph.
-        var coords[] map[string]float64 
-	coords = getlatlong(fitStruct)
-
-        //Convert to json.
-        js, err := json.Marshal(coords)
-
-        if err != nil {
-                http.Error(w, err.Error(), http.StatusInternalServerError)
-		fmt.Println("What the hell?")
-                return
-        }
-        fmt.Println("mapHandler Received Request")
-        w.Header().Set("Content-Type", "text/json")
-        w.Header().Set("Access-Control-Allow-Origin", "*")
-        //Send
-        w.Write(js)
-        }
 
 func main() {
-	http.HandleFunc("/pageload", pageloadHandler) //url associateed with initial page load
+	http.HandleFunc("/", pageloadHandler) //url associateed with initial page load
 	http.HandleFunc("/upload", uploadHandler) //url associated with UI
 	http.HandleFunc("/getplot", plotHandler) //url for server to supply the plot data
-	http.HandleFunc("/getmap", mapHandler) //url for server to supply the map data
 	//Listen on port 8080
 	http.ListenAndServe(":8080", nil)
 }
