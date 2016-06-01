@@ -9,16 +9,18 @@
     var p; //global
     var marker; //global
 
-    function moveMarker(){
+
+    function moveMarker(evnt){
 	// undocumented api function, may change?
 	// http://jsfiddle.net/highcharts/K7pN9/
-	e = chart.pointer.normalize(); 	
-	point = chart.series[0].searchPoint(e, true);
+	evt = chart.pointer.normalize(evnt); 	
+	point = chart.series[0].searchPoint(evt, true);
 	if (point) {
 		var moveLatlong = p.Latlongs[point.index];
 		marker.setPosition(moveLatlong);
 		}
         }
+
 
     /**
      * Request data from the server, add it to the graph and set a timeout to request again
@@ -86,8 +88,9 @@
 
 		// Listen to mouse moves over the chart.
 		chartDiv = document.getElementById('container');
-		google.maps.event.addDomListener(chartDiv, 'mousemove', moveMarker);	
-
+		google.maps.event.addDomListener(chartDiv, 'mousemove', function(e){
+			 moveMarker(e);
+			});
             },
             cache: false
         }); 
@@ -95,6 +98,7 @@
     } 
 
     $(document).ready(function() {
+
 
 	//
         //Here's the global options object...
