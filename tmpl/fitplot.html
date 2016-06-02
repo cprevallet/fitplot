@@ -34,6 +34,112 @@
 		}
         }
 
+    function createEmptyChart() {
+
+	//
+        //Here's a chart object with good defaults for a distance chart.
+	//
+
+        newChart = new Highcharts.Chart({
+            chart: {
+                zoomType: 'xy',
+                renderTo: 'container',
+                defaultSeriesType: 'spline',
+		panning: true,
+		panKey: 'shift'
+            },
+            credits: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'Point plot'
+            },
+            tooltip: {
+                shared: true,
+		formatter: function () {
+		    var s = '<b>' + 'Distance : ' + this.x.toFixed(2) + '</b>';
+		    var primaryY = this.points[0];
+		    var secondaryY = this.points[1];
+		    var tertiaryY = this.points[2];
+		    var minutes = primaryY.y;
+		    var sign = minutes < 0 ? "-" : "";
+		    var min = Math.floor(Math.abs(minutes));
+		    var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+		    var returnval = sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+		    s += '<br/>' + primaryY.series.name + ' : ' + returnval
+		    if (secondaryY) {
+			    s += '<br/>' + secondaryY.series.name + ' : ' + secondaryY.y.toFixed(2);
+			}
+		    if (tertiaryY) {
+			    s += '<br/>' + tertiaryY.series.name + ' : ' + tertiaryY.y.toFixed(2);
+			}
+		    return s;
+		}
+            },
+            series: [{
+			yAxis: 0,
+			color: Highcharts.getOptions().colors[1]
+		    }, {
+			yAxis: 1,
+			color: Highcharts.getOptions().colors[3]
+		    }, {
+			yAxis: 2,
+			color: Highcharts.getOptions().colors[2]
+            }],
+
+            yAxis: [{ // Primary yAxis
+			reversed: true,
+			title: {
+			    text: 'First axis',
+			    style: {
+				color: Highcharts.getOptions().colors[1]
+			    }
+			},
+			labels: {
+			    style: {
+				color: Highcharts.getOptions().colors[1]
+			    },
+			    formatter: function (){
+					 var minutes = this.value
+					 var sign = minutes < 0 ? "-" : "";
+					 var min = Math.floor(Math.abs(minutes));
+					 var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+					 return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+					}
+			}
+		    }, { // Secondary yAxis
+			title: {
+			    text: 'Second axis',
+			    style: {
+				color: Highcharts.getOptions().colors[3]
+			    }
+			},
+			labels: {
+			    style: {
+				color: Highcharts.getOptions().colors[3]
+			    }
+			},
+			opposite: true
+		    }, { // Tertiary yAxis
+			title: {
+			    text: 'Third axis',
+			    style: {
+				color: Highcharts.getOptions().colors[2]
+			    }
+			},
+			labels: {
+			    style: {
+				color: Highcharts.getOptions().colors[2]
+			    }
+			},
+			opposite: true
+            }]
+        });
+	return newChart;
+	} //createEmptyChart
 
     /**
      * Request data from the server, and populate the graph and chart.
@@ -46,6 +152,10 @@
 
 		// save a global copy
                 p = data
+
+		// create a new chart
+		chart = createEmptyChart();
+
                 // add the points
                 chart.series[0].setData(eval(p.Y0coordinates));
                 chart.series[1].setData(eval(p.Y1coordinates));
@@ -199,118 +309,6 @@
 
         // Apply the theme
         Highcharts.setOptions(Highcharts.theme);
-
-
-	//
-        //Here's the chart options object...
-	//
-
-        chart = new Highcharts.Chart({
-            chart: {
-                zoomType: 'xy',
-                renderTo: 'container',
-                defaultSeriesType: 'spline',
-		panning: true,
-		panKey: 'shift'
-            },
-            credits: {
-                enabled: false
-            },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: 'Point plot'
-            },
-            tooltip: {
-                shared: true,
-		formatter: function () {
-		    var s = '<b>' + 'Distance : ' + this.x.toFixed(2) + '</b>';
-		    var primaryY = this.points[0];
-		    var secondaryY = this.points[1];
-		    var tertiaryY = this.points[2];
-		    var minutes = primaryY.y;
-		    var sign = minutes < 0 ? "-" : "";
-		    var min = Math.floor(Math.abs(minutes));
-		    var sec = Math.floor((Math.abs(minutes) * 60) % 60);
-		    var returnval = sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
-		    s += '<br/>' + primaryY.series.name + ' : ' + returnval
-		    if (secondaryY) {
-			    s += '<br/>' + secondaryY.series.name + ' : ' + secondaryY.y.toFixed(2);
-			}
-		    if (tertiaryY) {
-			    s += '<br/>' + tertiaryY.series.name + ' : ' + tertiaryY.y.toFixed(2);
-			}
-		    return s;
-		}
-
-
-            },
-
-            series: [{
-                yAxis: 0,
-		color: Highcharts.getOptions().colors[1]
-            }, {
-                yAxis: 1,
-//		type: "area",
-//		fillOpacity: 0.1,
-		color: Highcharts.getOptions().colors[3]
-            }, {
-                yAxis: 2,
-		color: Highcharts.getOptions().colors[2]
-            }],
-
-            yAxis: [{ // Primary yAxis
-                reversed: true,
-                title: {
-                    text: 'First axis',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                labels: {
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    },
-		    formatter: function (){
-				 var minutes = this.value
-				 var sign = minutes < 0 ? "-" : "";
-				 var min = Math.floor(Math.abs(minutes));
-				 var sec = Math.floor((Math.abs(minutes) * 60) % 60);
-				 return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
-				}
-		}
-            }, { // Secondary yAxis
-                title: {
-                    text: 'Second axis',
-                    style: {
-                        color: Highcharts.getOptions().colors[3]
-                    }
-                },
-                labels: {
-                    style: {
-                        color: Highcharts.getOptions().colors[3]
-                    }
-                },
-                opposite: true
-            }, { // Tertiary yAxis
-                title: {
-                    text: 'Third axis',
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                labels: {
-                    style: {
-                        color: Highcharts.getOptions().colors[2]
-                    }
-                },
-                opposite: true
-            }]
-
-
-        });
-
 
     });
 
