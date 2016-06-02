@@ -148,7 +148,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", pageloadHandler) //url associateed with initial page load
-	http.HandleFunc("/upload", uploadHandler) //url associated with UI
 	http.HandleFunc("/getplot", plotHandler) //url for server to supply the plot data
 	//Listen on port 8080
 	http.ListenAndServe(":8080", nil)
