@@ -23,8 +23,17 @@ func display(w http.ResponseWriter, tmpl string, data interface{}) {
 
 //Display the unitialized graph. 
 func pageloadHandler(w http.ResponseWriter, r *http.Request) {
-        fmt.Println("pageloadHandler Received Request")
-	display(w, "fitplot", nil)
+
+	if r.Method == "GET" {
+        	fmt.Println("pageloadHandler Received Request")
+		display(w, "fitplot", nil)
+	} else {
+        	fmt.Println("pageloadHandler POST Received Request")
+		uploadHandler(w, r)
+		//display success message.
+		display(w, "fitplot", nil)
+	}
+
 }
 
 //After the user hits the load button,
@@ -64,8 +73,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	//display success message.
-	display(w, "fitplot", nil)
 	fmt.Println("uploadHandler Received Request")
 }
 

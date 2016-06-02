@@ -112,6 +112,10 @@
 
     $(document).ready(function() {
 
+	// Submit the file upload form.
+	document.getElementById("myfiles").onchange = function() {
+	    document.getElementById("myform").submit();
+	}
 
 	//
         //Here's the global options object...
@@ -324,11 +328,12 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 
 </head>
 <body>
+
+
     <div id="container2" style="width: 800px; margin: 0 auto;">
-    <form class="mytext" method="post" action="/upload" enctype="multipart/form-data">
+    <form id="myform" class="mytext" method="post" enctype="multipart/form-data">
 	    </br>Step 1: Load a FIT file from your computer.
-	    <input type="file" name="myfiles" class="mytext" id="myfiles" multiple="multiple">
-	    <input type="submit" name="submit" class="mytext" value="Load">
+    	    <input type="file" name="myfiles" id="myfiles" class="mytext" multiple="multiple">
 	     </br>Step 2: Plot it.
 	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
 	   </br>Step 3: Select which trends to display. Button toggles.
