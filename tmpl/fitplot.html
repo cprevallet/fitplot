@@ -9,6 +9,19 @@
     var p; //global
     var marker; //global
 
+    function showHide(idx) {
+	if (chart.series[idx].visible) {
+	    chart.series[idx].hide();
+	    chart.yAxis[idx].visible = false;
+	    chart.yAxis[idx].setTitle({text: ''});
+	} else {
+	    chart.series[idx].show();
+	    chart.yAxis[idx].visible = true;
+	    if (idx == 0) {chart.yAxis[0].setTitle({text: p.Y0Name})};
+	    if (idx == 1) {chart.yAxis[1].setTitle({text: p.Y1Name})};
+	    if (idx == 2) {chart.yAxis[2].setTitle({text: p.Y2Name})};
+	}
+	}
 
     function moveMarker(evnt){
 	// undocumented api function, may change?
@@ -190,7 +203,7 @@
 
         chart = new Highcharts.Chart({
             chart: {
-                zoomType: 'x',
+                zoomType: 'xy',
                 renderTo: 'container',
                 defaultSeriesType: 'spline',
 		panning: true,
@@ -218,8 +231,12 @@
 		    var sec = Math.floor((Math.abs(minutes) * 60) % 60);
 		    var returnval = sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
 		    s += '<br/>' + primaryY.series.name + ' : ' + returnval
-		    s += '<br/>' + secondaryY.series.name + ' : ' + secondaryY.y.toFixed(2);
-		    s += '<br/>' + tertiaryY.series.name + ' : ' + tertiaryY.y.toFixed(2);
+		    if (secondaryY) {
+			    s += '<br/>' + secondaryY.series.name + ' : ' + secondaryY.y.toFixed(2);
+			}
+		    if (tertiaryY) {
+			    s += '<br/>' + tertiaryY.series.name + ' : ' + tertiaryY.y.toFixed(2);
+			}
 		    return s;
 		}
 
@@ -231,8 +248,8 @@
 		color: Highcharts.getOptions().colors[1]
             }, {
                 yAxis: 1,
-		type: "area",
-		fillOpacity: 0.1,
+//		type: "area",
+//		fillOpacity: 0.1,
 		color: Highcharts.getOptions().colors[3]
             }, {
                 yAxis: 2,
@@ -305,6 +322,11 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 
     <!-- 3. Add the container -->
     <div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+    <div>
+    <input type="button" onclick="showHide(0)" value="Pace" style="display: block; margin: 0 auto;">
+    <input type="button" onclick="showHide(1)" value="Altitude" style="display: block; margin: 0 auto;">
+    <input type="button" onclick="showHide(2)" value="Cadence" style="display: block; margin: 0 auto;">
+    </div>
     <div id="map" style="width: 800px; height: 400px; margin: 0 auto"></div>
     <div id="container2" style="width: 800px; height: 200px; margin: 0 auto">
     <form class="form-signin" method="post" action="/upload" enctype="multipart/form-data">
