@@ -97,7 +97,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         //Build the variable strings based on unit system.
         var xStr string = "Distance "
         var y0Str string = "Pace "
-        var y1Str string = "Altitude "
+        var y1Str string = "Elevation"
         var y2Str string = "Cadence "
         if toEnglish {
             xStr = xStr + "(mi)"
@@ -112,7 +112,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         //Create an object to contain various plot values.
-        p := Plotvals {Titletext: "Distance Graph", 
+        p := Plotvals {Titletext: "", 
                 XName: xStr, 
                 Y0Name: y0Str,
                 Y1Name: y1Str,
