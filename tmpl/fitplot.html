@@ -317,23 +317,27 @@
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y">
 </script>
 
+<style>
+.mytext { font-family: Dosis, serif; font-size: 12px;}
+</style>
+
+
 </head>
 <body>
-
-    <div id="container2" style="width: 800px; margin: 0 auto">
-    </br>Step 1: Load a FIT file from your computer.
-    <form class="form-signin" method="post" action="/upload" enctype="multipart/form-data">
-          <input type="file" name="myfiles" id="myfiles" multiple="multiple">
-          <input type="submit" name="submit" value="Load">
+    <div id="container2" style="width: 800px; margin: 0 auto;">
+    <form class="mytext" method="post" action="/upload" enctype="multipart/form-data">
+	    </br>Step 1: Load a FIT file from your computer.
+	    <input type="file" name="myfiles" class="mytext" id="myfiles" multiple="multiple">
+	    <input type="submit" name="submit" class="mytext" value="Load">
+	     </br>Step 2: Plot it.
+	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
+	   </br>Step 3: Select which trends to display. Button toggles.
+	    <input type="button" onclick="showHide(0)" class="mytext" value="Pace" >
+	    <input type="button" onclick="showHide(1)" class="mytext" value="Altitude" >
+	    <input type="button" onclick="showHide(2)" class="mytext" value="Cadence" >
+	    </br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
     </form>
-    </br>Step 2: Plot it.
-    <input type="button" onclick="requestData()" value="Plot">
-    </br>Step 3: Select which trends to display. Button toggles.
-    <input type="button" onclick="showHide(0)" value="Pace" >
-    <input type="button" onclick="showHide(1)" value="Altitude" >
-    <input type="button" onclick="showHide(2)" value="Cadence" >
-    </br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
-    </div>
+     </div>
     <div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
 
     <div id="map" style="width: 800px; height: 400px; margin: 0 auto"></div>
