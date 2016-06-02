@@ -47,6 +47,12 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//what has the user selected for unit system?
+	toEnglish = true
+	if (r.FormValue("unitsystem") == "Metric") {
+		toEnglish = false
+	}
+
 	//get a ref to the parsed multipart form
 	m := r.MultipartForm
 
