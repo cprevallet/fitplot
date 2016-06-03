@@ -340,10 +340,13 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 		    <input type="file" name="myfiles" id="myfiles" style="color:transparent" multiple="multiple">
 		     </br></br>Step 2: Plot it.
 		    <input type="button" onclick="requestData()" class="mytext" value="Plot">
-		    </br></br>Step 3: Toggle trends to display on/off.</br>
-		    <input type="button" onclick="showHide(0)" class="mytext" value="Pace" >
-		    <input type="button" onclick="showHide(1)" class="mytext" value="Elevation" >
-		    <input type="button" onclick="showHide(2)" class="mytext" value="Cadence" >
+		    </br></br>Step 3: Toggle to show/hide trends for:</br>
+		    <input type="checkbox" onclick="showHide(0)" class="mytext" value="Pace" checked="checked" >
+		    Pace
+		    <input type="checkbox" onclick="showHide(1)" class="mytext" value="Elevation" checked="checked" >
+		    Elevation
+		    <input type="checkbox" onclick="showHide(2)" class="mytext" value="Cadence" checked="checked" >
+		    Cadence
 		    </br></br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
 	    </form>
     </div>
