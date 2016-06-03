@@ -145,9 +145,12 @@
      * Request data from the server, and populate the graph and chart.
      */
     function requestData() {
+
+	var useEnglish = !$("#usemetric").is(':checked')
         $.ajax({
             url: '/getplot',
-
+            data: {toEnglish: useEnglish},
+            dataType: "json",
             success: function(data) {
 
 		// save a global copy
@@ -330,25 +333,23 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 <body>
 
 <div style="width: 800px;">
-    <div id="container2" class="myborder1"  style="float: left; width: 360px; height: 400px; padding-left: 10px" >
+    <div id="container2" class="myborder1 mytext"  style="float: left; width: 360px; height: 400px; padding-left: 10px" >
+	    How do I use this?
+	    </br></br>Step 1: Load a FIT file from your computer.
 	    <form id="myform" class="mytext" method="post" enctype="multipart/form-data">
-		     How do I use this?
-		    </br></br>Step 1: Load a FIT file from your computer.
-<!--
-		    </br><input type="checkbox" name="unitsystem" value="Metric"> Metric?</br>
--->
 		    <input type="file" name="myfiles" id="myfiles" style="color:transparent" multiple="multiple">
-		     </br></br>Step 2: Plot it.
-		    <input type="button" onclick="requestData()" class="mytext" value="Plot">
-		    </br></br>Step 3: Toggle to show/hide trends for:</br>
-		    <input type="checkbox" onclick="showHide(0)" class="mytext" value="Pace" checked="checked" >
-		    Pace
-		    <input type="checkbox" onclick="showHide(1)" class="mytext" value="Elevation" checked="checked" >
-		    Elevation
-		    <input type="checkbox" onclick="showHide(2)" class="mytext" value="Cadence" checked="checked" >
-		    Cadence
-		    </br></br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
 	    </form>
+	    </br>Step 2: Plot it.
+	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
+	    </br><input type="checkbox" name="unitsystem" id="usemetric"  value="Metric"> Metric?</br>
+	    </br></br>Step 3: Toggle to show/hide trends for:</br>
+	    <input type="checkbox" onclick="showHide(0)" class="mytext" value="Pace" checked="checked" >
+	    Pace
+	    <input type="checkbox" onclick="showHide(1)" class="mytext" value="Elevation" checked="checked" >
+	    Elevation
+	    <input type="checkbox" onclick="showHide(2)" class="mytext" value="Cadence" checked="checked" >
+	    Cadence
+	    </br></br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
     </div>
 
     <div id="map" class="myborder1"  style="float: left; width: 425px;  height: 400px;"></div>

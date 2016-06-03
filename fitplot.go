@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+//	"net/http/httputil"
 )
 
 var fitFname string = ""
@@ -47,11 +48,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//what has the user selected for unit system?
-	toEnglish = true
-	if (r.FormValue("unitsystem") == "Metric") {
-		toEnglish = false
-	}
 
 	//get a ref to the parsed multipart form
 	m := r.MultipartForm
@@ -95,6 +91,23 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    Y2coordinates [][]float64
             Latlongs[] map[string]float64 
 	}
+
+	//what has the user selected for unit system?
+
+	toEnglish = true
+	param1s := r.URL.Query()["toEnglish"];
+	if param1s != nil {
+		if (param1s[0] == "true")  {toEnglish = true}
+		if (param1s[0] == "false") {toEnglish = false}
+	}
+
+//	dump, err := httputil.DumpRequest(r, true)
+//		if err != nil {
+//			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+//			return
+//		}
+
+//		fmt.Printf("%s\n\n", dump)
 
         //Read .fit file.
         var fitStruct fit.FitFile
