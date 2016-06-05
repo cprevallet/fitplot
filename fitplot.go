@@ -167,7 +167,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-	// printTCX()  //testing tcx reader
+	printTCX()  //testing tcx reader
 	http.HandleFunc("/", pageloadHandler)    
 	http.HandleFunc("/getplot", plotHandler) 
 	//Listen on port 8080
