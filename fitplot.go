@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+        "github.com/cprevallet/fitplot/tcx"
         "github.com/jezard/fit"
 	"html/template"
 	"io"
@@ -11,7 +12,7 @@ import (
 //	"net/http/httputil"
 )
 
-var fitFname string = ""
+var uploadFname string = ""
 
 
 //Compile templates on start for better performance.
@@ -63,8 +64,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		dst, err := ioutil.TempFile("", "example")
-		fitFname = "" 
-		fitFname = dst.Name()
+		uploadFname = "" 
+		uploadFname = dst.Name()
 		defer dst.Close()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -91,6 +92,12 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    Y2coordinates [][]float64
             Latlongs[] map[string]float64 
 	}
+        //var fitStruct fit.FitFile
+        var runRecs []fit.Record
+        var xStr string = "Distance "
+        var y0Str string = "Pace "
+        var y1Str string = "Elevation"
+        var y2Str string = "Cadence "
 
 	//what has the user selected for unit system?
 
@@ -109,15 +116,25 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 //		fmt.Printf("%s\n\n", dump)
 
-        //Read .fit file.
-        var fitStruct fit.FitFile
-        fitStruct = fit.Parse(fitFname, false)
+        //Read file. uploadFname gets set in uploadHandler.
+	b, _ := ioutil.ReadFile(uploadFname)
+	rslt := http.DetectContentType(b)
+	switch {
+        case rslt == "application/octet-stream":
+	    // filetype is FIT, or at least it could be?
+	    fitStruct := fit.Parse(uploadFname, false)
+	    runRecs = fitStruct.Records
+        case rslt == "text/xml; charset=utf-8" :
+	    // filetype is TCX or at least it could be?
+	    db, _ := tcx.ReadTCXFile(uploadFname)
+	    runRecs = cvtToFitRecs(db)
+        }
+//	for _,record := range(runRecs) {
+//	      fmt.Println(record)
+//	}
+	
 
         //Build the variable strings based on unit system.
-        var xStr string = "Distance "
-        var y0Str string = "Pace "
-        var y1Str string = "Elevation"
-        var y2Str string = "Cadence "
         if toEnglish {
             xStr = xStr + "(mi)"
             y0Str = y0Str + "(min/mi)"
@@ -143,11 +160,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         //Convert to a form (x-y pairs) for graph.
-        p.Y0coordinates = getDvsP(fitStruct.Records, toEnglish)
-        p.Y1coordinates = getDvsA(fitStruct.Records, toEnglish)
-        p.Y2coordinates = getDvsC(fitStruct.Records, toEnglish)
+        p.Y0coordinates = getDvsP(runRecs, toEnglish)
+        p.Y1coordinates = getDvsA(runRecs, toEnglish)
+        p.Y2coordinates = getDvsC(runRecs, toEnglish)
         //Convert to a latitude longitude for graph.
-	p.Latlongs = getlatlong(fitStruct.Records)
+	p.Latlongs = getlatlong(runRecs)
 
         //Convert to json.
         js, err := json.Marshal(p)

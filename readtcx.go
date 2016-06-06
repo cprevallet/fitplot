@@ -4,62 +4,62 @@ import (
         "github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"math"
+	"time"
 )
-
-func readTCX(tcxFname string) (runRecs []fit.Record) {
-  
-  db, _ := tcx.ReadTCXFile(tcxFname)
-  /*
-	  for i, _ := range db.Acts.Act {
-		  for j, _ := range db.Acts.Act[i].Laps {
-			  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                   
-			  fmt.Println("Latitude", db.Acts.Act[i].Laps[j].Trk.Pt[k].Lat)       
-			  fmt.Println("Longitude", db.Acts.Act[i].Laps[j].Trk.Pt[k].Long)     
-			  fmt.Println("Altitude (m)", db.Acts.Act[i].Laps[j].Trk.Pt[k].Alt)   
-			  fmt.Println("Distance (m)", db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist)  
-			  fmt.Println("Speed (m/s)", db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed)  
-			  fmt.Println("Cadence (bpm)", db.Acts.Act[i].Laps[j].Trk.Pt[k].Cad)  
-			  }
-		  }
-	}
-*/
-
-  //Convert to a structure we already know how to handle!
-  //Then we can re-use the existing routines in graphdata.go.
-  return cvtToFitRecs(db)
-  
-}
 
 // Convert the TCXDB structure created from the XML to fit.Record structure
 func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
-  var startLat float64
-  var startLong float64
+  
+  var lasttime time.Time
+  var thistime time.Time
+  var deltaT time.Duration
+  var dist float64  //meters
+  var lastdist float64 //meters
+  
+  
   for i, _ := range db.Acts.Act {
 	  for j, _ := range db.Acts.Act[i].Laps {
 		  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                   
+		    
 		    var newRec fit.Record
 		    newRec.Position_lat = db.Acts.Act[i].Laps[j].Trk.Pt[k].Lat
 		    newRec.Position_long = db.Acts.Act[i].Laps[j].Trk.Pt[k].Long
 		    newRec.Altitude = db.Acts.Act[i].Laps[j].Trk.Pt[k].Alt
-		    // XML has no totalized run distance! Must calculate with lat/long.
-		    if (i==0 && j==0 && k==0) {
-		      newRec.Distance = float64(0.0)
-		      startLat = newRec.Position_lat
-		      startLong = newRec.Position_long
-		    } else {
-		      newRec.Distance = Distance(newRec.Position_lat, newRec.Position_long, startLat, startLong)
-		    }
-		    //newRec.Distance = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
-		    newRec.Speed = db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed
-		    // TODO the following typecast is generating zeros?
+		    newRec.Distance = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
+//		    newRec.Speed = db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed
 		    newRec.Cadence = uint8(db.Acts.Act[i].Laps[j].Trk.Pt[k].Cad)
-		    //fmt.Println(newRec.Cadence, db.Acts.Act[i].Laps[j].Trk.Pt[k].Cad)
-		    runRecs = append(runRecs, newRec)
+		    
+		    // XML has no speed calculated! Must calculate with distance and 
+		    // timestamp.
+		    
+		     if (i==0 && j==0 && k==0) {
+		        newRec.Speed = 0.0  //got to pick something
+		        lasttime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
+		        lastdist = 0.0
+		    } else {
+			thistime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
+			dist = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
+			deltaT = thistime.Sub(lasttime)
+			if deltaT.Seconds() > 0.01 {
+			  newRec.Speed = (dist - lastdist)/deltaT.Seconds()
+			} else {
+			  newRec.Speed = 0.0
+			}
+			lasttime = thistime
+			lastdist = dist
+		    }
+		    
+		    if newRec.Position_lat != 0.0 && newRec.Position_long != 0.0 {
+		      runRecs = append(runRecs, newRec)
+		    }
 		  }
 	  }
   }
   return runRecs
 }
+
+
+// We don't currently use this but it will be handy for .GPX files in the future.
 
 // Distance function returns the distance (in meters) between two points of
 //     a given longitude and latitude relatively accurately (using a spherical
