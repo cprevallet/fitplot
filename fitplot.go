@@ -143,11 +143,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         //Convert to a form (x-y pairs) for graph.
-        p.Y0coordinates = getDvsP(fitStruct, toEnglish)
-        p.Y1coordinates = getDvsA(fitStruct, toEnglish)
-        p.Y2coordinates = getDvsC(fitStruct, toEnglish)
+        p.Y0coordinates = getDvsP(fitStruct.Records, toEnglish)
+        p.Y1coordinates = getDvsA(fitStruct.Records, toEnglish)
+        p.Y2coordinates = getDvsC(fitStruct.Records, toEnglish)
         //Convert to a latitude longitude for graph.
-	p.Latlongs = getlatlong(fitStruct)
+	p.Latlongs = getlatlong(fitStruct.Records)
 
         //Convert to json.
         js, err := json.Marshal(p)
@@ -167,7 +167,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-	printTCX()  //testing tcx reader
 	http.HandleFunc("/", pageloadHandler)    
 	http.HandleFunc("/getplot", plotHandler) 
 	//Listen on port 8080

@@ -17,11 +17,10 @@ var paceToMetric float64 = 16.666667 // sec/meter -> min/km
 var toEnglish bool = true
 
 
-func getDvsA(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
+func getDvsA(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
-        for _, record := range fitStruct.Records {
+        for _, record := range runRecs {
 	    if toEnglish {
 		x = record.Distance * metersToMiles
                 y = record.Altitude * metersToFt
@@ -35,11 +34,10 @@ func getDvsA(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
         return
 }
 
-func getDvsC(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
+func getDvsC(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
-        for _, record := range fitStruct.Records {
+        for _, record := range runRecs {
 	    if toEnglish {
 		x = record.Distance * metersToMiles
                 y = float64(record.Cadence)
@@ -53,11 +51,10 @@ func getDvsC(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
         return
 }
 
-func getDvsP(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
-
+func getDvsP(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
-        for _, record := range fitStruct.Records {
+        for _, record := range runRecs {
 	    if toEnglish {
 		x = record.Distance * metersToMiles
                 if record.Speed > 0.0 {
@@ -79,10 +76,8 @@ func getDvsP(fitStruct fit.FitFile, toEnglish bool) (data [][]float64) {
         return
 }
 
-func getlatlong(fitStruct fit.FitFile) (data []map[string]float64) {
-
-
-        for _, record := range fitStruct.Records {
+func getlatlong(runRecs []fit.Record) (data []map[string]float64) {
+        for _, record := range runRecs {
 	    mapPos := map[string]float64{"lat": record.Position_lat, "lng": record.Position_long}
             data = append(data, mapPos)
         }
