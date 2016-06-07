@@ -16,18 +16,38 @@ var paceToMetric float64 = 16.666667 // sec/meter -> min/km
 
 var toEnglish bool = true
 
+func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
+	switch {
+        case valtype == "distance":
+	  if toEnglish {
+		cvtVal = val * metersToMiles
+	    } else {
+		cvtVal = val * metersToKm
+	   }
+        case valtype == "pace" :
+	  if toEnglish {
+		cvtVal = val * paceToEnglish
+	    } else {
+		cvtVal = val * paceToMetric
+	   }
+        case valtype == "altitude":
+	  if toEnglish {
+		cvtVal = val * metersToFt
+	    } else {
+		cvtVal = val
+	   }
+        case valtype == "cadence":
+	  cvtVal = val
+        }
+  return cvtVal
+}
 
 func getDvsA(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
         for _, record := range runRecs {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                y = record.Altitude * metersToFt
-	    } else {
-		x = record.Distance * metersToKm
-                y = record.Altitude
-	   }
+	    x = unitCvt(record.Distance, "distance", toEnglish)
+	    y = unitCvt(record.Altitude, "altitude", toEnglish)
 	    coordpair := []float64{x,y}
             data = append(data, coordpair)
         }
@@ -38,13 +58,8 @@ func getDvsC(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
         for _, record := range runRecs {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                y = float64(record.Cadence)
-	    } else {
-		x = record.Distance * metersToKm
-                y = float64(record.Cadence)
-	   }
+	    x = unitCvt(record.Distance, "distance", toEnglish)
+	    y = unitCvt(float64(record.Cadence), "cadence", toEnglish)
 	    coordpair := []float64{x,y}
             data = append(data, coordpair)
         }
@@ -55,21 +70,12 @@ func getDvsP(runRecs []fit.Record, toEnglish bool) (data [][]float64) {
 	var x float64
 	var y float64
         for _, record := range runRecs {
-	    if toEnglish {
-		x = record.Distance * metersToMiles
-                if record.Speed > 0.0 {
-                    y = 1.0/record.Speed * paceToEnglish
-                } else {
-                    y = 20.0  //min/mile...walking pace if standing still...gotta choose something
-                }
+	    x = unitCvt(record.Distance, "distance", toEnglish)
+	    if record.Speed > 0.0 {
+	      y = unitCvt(1.0/record.Speed, "pace", toEnglish)
 	    } else {
-		x = record.Distance * metersToKm
-                if record.Speed > 0.0 {
-                    y = 1.0/record.Speed * paceToMetric
-                } else {
-                    y = 12.0  //min/km...walking pace if standing still...gotta choose something
-                }
-	   }
+	      if toEnglish {y=20.0} else {y=12.0}
+	    }
 	    coordpair := []float64{x,y}
             data = append(data, coordpair)
         }
