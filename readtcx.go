@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
         "github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"math"
@@ -10,12 +11,75 @@ import (
 // Convert the TCXDB structure created from the XML to fit.Record structure
 func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
   
-  var lasttime time.Time
-  var thistime time.Time
-  var deltaT time.Duration
-  var dist float64  //meters
-  var lastdist float64 //meters
+
+  var hasspeed bool
+  var hasdist bool
+ 
+  // Determine if TCX file supplied cumulative distance and speed.
+    for i, _ := range db.Acts.Act {
+	  for j, _ := range db.Acts.Act[i].Laps {
+		  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                   
+		    if db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed != 0.0 {
+		      hasspeed = true
+		    }
+		    if db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist != 0.0 {
+		      hasdist = true
+		    }
+		  }  
+	  }
+    }
+ 
+  // Calculate cumulative distance in meters using latitude and longitude if not supplied in XML.
+  if (!hasdist) {
+     var lat0, long0, lat1, long1, totalDist, newDist float64
+     for i, _ := range db.Acts.Act {
+	  for j, _ := range db.Acts.Act[i].Laps {
+		  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                    
+		    if (i==0 && j==0 && k==0) {
+			lat0 = db.Acts.Act[0].Laps[0].Trk.Pt[0].Lat
+			long0 = db.Acts.Act[0].Laps[0].Trk.Pt[0].Long
+		      } else {
+			lat1 = db.Acts.Act[i].Laps[j].Trk.Pt[k].Lat
+			long1 = db.Acts.Act[i].Laps[j].Trk.Pt[k].Long
+			newDist = Distance(lat0, long0, lat1, long1)
+			totalDist = totalDist + newDist
+			lat0 = lat1
+			long0 = long1
+			db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist = totalDist
+		      }
+		  }
+	  }
+    }
+  }
   
+  // Calculate segment speed in meters/sec using distance and timestamp if not supplied in XML.
+  if (!hasspeed) {
+      var lasttime, thistime time.Time
+      var deltaT time.Duration
+      var dist, lastdist float64  //meters
+         for i, _ := range db.Acts.Act {
+	  for j, _ := range db.Acts.Act[i].Laps {
+		  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                    
+		    if (i==0 && j==0 && k==0) {
+		      lasttime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
+		      lastdist = 0.0
+		      db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed = 0.0
+		  } else {
+		      thistime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
+		      dist = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
+		      deltaT = thistime.Sub(lasttime)
+		      if deltaT.Seconds() > 0.01 {
+			db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed = (dist-lastdist)/deltaT.Seconds()
+		      } else {
+			db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed = 0.0
+		      }
+		      lasttime = thistime
+		      lastdist = dist
+		    }
+		    }
+	  }
+    }
+  }
   
   for i, _ := range db.Acts.Act {
 	  for j, _ := range db.Acts.Act[i].Laps {
@@ -26,29 +90,8 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
 		    newRec.Position_long = db.Acts.Act[i].Laps[j].Trk.Pt[k].Long
 		    newRec.Altitude = db.Acts.Act[i].Laps[j].Trk.Pt[k].Alt
 		    newRec.Distance = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
-//		    newRec.Speed = db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed
+		    newRec.Speed = db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed
 		    newRec.Cadence = uint8(db.Acts.Act[i].Laps[j].Trk.Pt[k].Cad)
-		    
-		    // XML has no speed calculated! Must calculate with distance and 
-		    // timestamp.
-		    
-		     if (i==0 && j==0 && k==0) {
-		        newRec.Speed = 0.0  //got to pick something
-		        lasttime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
-		        lastdist = 0.0
-		    } else {
-			thistime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
-			dist = db.Acts.Act[i].Laps[j].Trk.Pt[k].Dist
-			deltaT = thistime.Sub(lasttime)
-			if deltaT.Seconds() > 0.01 {
-			  newRec.Speed = (dist - lastdist)/deltaT.Seconds()
-			} else {
-			  newRec.Speed = 0.0
-			}
-			lasttime = thistime
-			lastdist = dist
-		    }
-		    
 		    if newRec.Position_lat != 0.0 && newRec.Position_long != 0.0 {
 		      runRecs = append(runRecs, newRec)
 		    }
@@ -58,8 +101,6 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
   return runRecs
 }
 
-
-// We don't currently use this but it will be handy for .GPX files in the future.
 
 // Distance function returns the distance (in meters) between two points of
 //     a given longitude and latitude relatively accurately (using a spherical
