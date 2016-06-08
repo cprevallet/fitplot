@@ -6,6 +6,8 @@ package main
 
 import (
   "github.com/jezard/fit"
+  "github.com/cprevallet/fitplot/stats"
+//  "fmt"
 )
 
 var metersToMiles float64 = 0.00062137119 //meter -> mile
@@ -52,9 +54,11 @@ func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
   return cvtVal
 }
 
-//Slice up a structure.
+// Slice up a structure.
 func unpackRecs( runRecs []fit.Record) (distance []float64, altitude []float64, cadence []float64, speed []float64, lat []float64, lng []float64) {
-        for _, record := range runRecs {
+  // TODO Consider make([]float64, len(record.Distance), len(record.Distance)
+  // Should reduce time to allocate on each iteration.
+  for _, record := range runRecs {
 	  distance = append(distance, record.Distance)
 	  altitude = append(altitude, record.Altitude)
 	  cadence = append(cadence, float64(record.Cadence))
@@ -65,7 +69,7 @@ func unpackRecs( runRecs []fit.Record) (distance []float64, altitude []float64, 
 	return	 
   }
 
-//Take two slices and pair the individual elements into x-y points.
+// Take two slices and pair the individual elements into x-y points.
 func createPlotCoordinates(xSlice []float64, ySlice []float64)(data [][]float64) {
   for i, _ := range xSlice {
     coordpair := []float64{xSlice[i], ySlice[i]}
@@ -74,7 +78,7 @@ func createPlotCoordinates(xSlice []float64, ySlice []float64)(data [][]float64)
   return
 }
 
-//Convert two arrays into a map used by Google maps.
+// Convert two arrays into a map used by Google maps.
 func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[string]float64) {
   for i, _ := range latSlice {
     mapPos := map[string]float64{"lat": latSlice[i], "lng": lngSlice[i]}
@@ -83,7 +87,7 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
   return
 }
 
-//Main entry point
+// Main entry point
 func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64 ) {
 
     // Get slices from the runRecs structure.
@@ -97,17 +101,55 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[strin
 	pace = append(pace, 0.56 )  // s/m = 15 min/mi
       }
     }
+    
+    // Clean up the data statistically before displaying.
+    outIdxs := markOutliers(pace)
+    distance_clean := removeOutliers(distance, outIdxs)
+    pace_clean := removeOutliers(pace, outIdxs)
+    altitude_clean := removeOutliers(altitude, outIdxs)
+    cadence_clean := removeOutliers(cadence, outIdxs)
+    lat_clean := removeOutliers(lat, outIdxs)
+    lng_clean := removeOutliers(lng, outIdxs)  
+    
     // Convert the units for the slices that have them.
-    dispDistance := convertUnits(distance, "distance", toEnglish)
-    dispPace := convertUnits(pace, "pace", toEnglish)
-    dispAltitude := convertUnits(altitude, "altitude", toEnglish)
-    dispCadence := convertUnits(cadence, "cadence", toEnglish)
+    dispDistance := convertUnits(distance_clean, "distance", toEnglish)
+    dispPace := convertUnits(pace_clean, "pace", toEnglish)
+    dispAltitude := convertUnits(altitude_clean, "altitude", toEnglish)
+    dispCadence := convertUnits(cadence_clean, "cadence", toEnglish)
     
     //Return the values used in the user interface.
     Y0Pairs = createPlotCoordinates(dispDistance, dispPace)
     Y1Pairs = createPlotCoordinates(dispDistance, dispAltitude)
     Y2Pairs = createPlotCoordinates(dispDistance, dispCadence)
-    mapData = getMapCoordinates(lat, lng)
+    mapData = getMapCoordinates(lat_clean, lng_clean)
     
     return
   }
+
+func markOutliers( x []float64 ) (outliersIdx []int) {
+   // Create a list of indexs where the value of x is outside of the 
+   // 99.7% (3 sigma) expected value assuming a normal distribution of x.
+   // In English, find the "unusual" points.
+   mean := stats.Sum(x) / float64(len(x))
+   sigma := stats.StdDev(x, mean)
+   upperLimit := mean + (3.0 * sigma)
+   lowerLimit := mean - (3.0 * sigma)
+   for i, _ := range(x) {
+     if x[i] < lowerLimit || x[i] > upperLimit {
+         outliersIdx = append(outliersIdx, i)
+     }
+  }
+  return outliersIdx
+}
+
+func removeOutliers(x[]float64, outliersIdx []int) (z[]float64)  {
+  // Remove values in x if it's index matches one in the list of outliers.
+  for i, item := range(x) {
+    found := false
+    for _, idx := range(outliersIdx) {
+      if i == idx { found = true }
+      }
+    if !found {z = append(z, item)}
+    }
+  return z
+}
