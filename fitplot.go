@@ -148,7 +148,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         //Create an object to contain various plot values.
-        p := Plotvals {Titletext: "", 
+        p := Plotvals {Titletext: "My Run", 
                 XName: xStr, 
                 Y0Name: y0Str,
                 Y1Name: y1Str,
