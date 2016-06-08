@@ -81,10 +81,10 @@
             },
             series: [{
 			yAxis: 0,
-			color: Highcharts.getOptions().colors[1]
+			color: Highcharts.getOptions().colors[0]
 		    }, {
 			yAxis: 1,
-			color: Highcharts.getOptions().colors[3]
+			color: Highcharts.getOptions().colors[1]
 		    }, {
 			yAxis: 2,
 			color: Highcharts.getOptions().colors[2]
@@ -95,12 +95,12 @@
 			title: {
 			    text: 'First axis',
 			    style: {
-				color: Highcharts.getOptions().colors[1]
+				color: Highcharts.getOptions().colors[0]
 			    }
 			},
 			labels: {
 			    style: {
-				color: Highcharts.getOptions().colors[1]
+				color: Highcharts.getOptions().colors[0]
 			    },
 			    formatter: function (){
 					 var minutes = this.value
@@ -114,12 +114,12 @@
 			title: {
 			    text: 'Second axis',
 			    style: {
-				color: Highcharts.getOptions().colors[3]
+				color: Highcharts.getOptions().colors[1]
 			    }
 			},
 			labels: {
 			    style: {
-				color: Highcharts.getOptions().colors[3]
+				color: Highcharts.getOptions().colors[1]
 			    }
 			},
 			opposite: true
@@ -181,7 +181,8 @@
                 chart.series[0].name = p.Y0Name
                 chart.series[1].name = p.Y1Name
                 chart.series[2].name = p.Y2Name
-
+                
+                // create a new map
 		map = new google.maps.Map(document.getElementById('map'), {
 		  zoom: 15,
 		  center: p.Latlongs[0],
@@ -192,7 +193,7 @@
 		  path: p.Latlongs,
 		  geodesic: true,
 		  strokeColor: '#FF0000',
-		  strokeOpacity: 1.0,
+		  strokeOpacity: 0.5,
 		  strokeWeight: 2
 		});
 
@@ -238,7 +239,6 @@
          * Grid-light theme for Highcharts JS
          * @author Torstein Honsi
          */
-
         // Load the fonts
         Highcharts.createElement('link', {
             href: 'https://fonts.googleapis.com/css?family=Dosis:400,600',
@@ -247,7 +247,8 @@
         }, null, document.getElementsByTagName('head')[0]);
 
         Highcharts.theme = {
-            colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+
+            colors: ["#70c6ea", "#6de8c3", "#b28585","#75bedd", "#aaeeee", "#ff0066", "#eeaaee",
                 "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"
             ],
             chart: {
@@ -297,7 +298,7 @@
             },
             plotOptions: {
                 series: {
-                    shadow: true
+                    shadow: false
                 },
                 candlestick: {
                     lineColor: '#404048'
@@ -314,7 +315,6 @@
         Highcharts.setOptions(Highcharts.theme);
 
     });
-
 
 </script>
 
