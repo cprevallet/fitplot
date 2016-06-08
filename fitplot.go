@@ -159,14 +159,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 Latlongs: nil,
         }
 
-        //Convert to a form (x-y pairs) for graph.
-        /*
-        p.Y0coordinates = getDvsP(runRecs, toEnglish)
-        p.Y1coordinates = getDvsA(runRecs, toEnglish)
-        p.Y2coordinates = getDvsC(runRecs, toEnglish)
-        //Convert to a latitude longitude for graph.
-	p.Latlongs = getlatlong(runRecs)
-	*/
 	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates =
 	processFitRecord(runRecs, toEnglish)
 

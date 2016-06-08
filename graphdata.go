@@ -91,10 +91,10 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[strin
     // Speed -> pace
     var pace []float64
     for i, _ := range(speed) {
-      if speed[i] > 0.1 {
+      if speed[i] > 1.8 {  //m/s
 	pace = append(pace, 1.0/speed[i])
       } else {
-	pace = append(pace, 12.0 )  //min/km
+	pace = append(pace, 0.56 )  // s/m = 15 min/mi
       }
     }
     // Convert the units for the slices that have them.
