@@ -343,14 +343,20 @@
             legend: {
                 itemStyle: {
                     fontWeight: 'bold',
-                    fontSize: '13px'
+                    fontSize: '14px'
                 }
             },
             xAxis: {
                 gridLineWidth: 1,
+                title: {
+                    style: {
+                        textTransform: 'uppercase',
+                        fontSize: '14px'
+                    }
+                },
                 labels: {
                     style: {
-                        fontSize: '12px'
+                        fontSize: '14px'
                     }
                 }
             },
@@ -358,12 +364,13 @@
                 minorTickInterval: 'auto',
                 title: {
                     style: {
-                        textTransform: 'uppercase'
+                        textTransform: 'uppercase',
+                        fontSize: '14px'
                     }
                 },
                 labels: {
                     style: {
-                        fontSize: '12px'
+                        fontSize: '14px'
                     }
                 }
             },
@@ -394,8 +401,9 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 </script>
 
 <style>
-.mytext { font-family: Dosis, serif; font-size: 12px;}
-.myborder1{ border: 1px ridge rgba(90, 90, 90, .3); }
+.mytext { font-family: Dosis, serif; font-size: 14px; opacity: 0.8 }
+.myborder1{ border: 1px ridge rgba(90, 90, 90, .5); }
+
 </style>
 
 
@@ -423,8 +431,8 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7
 	    </br></br>Step 4: Click and drag in the plot area to zoom in.  Shift-drag = pan
     </div>
 
-    <div id="map" class="myborder1"  style="float: left; width: 425px;  height: 400px;"></div>
-    <div id="container" class="myborder1" style="float: left; width: 800px; height: 400px;"></div>
+    <div id="map" class="myborder1"  style="float: left; width: 425px;  height: 400px; border-left:None"></div>
+    <div id="container" class="myborder1" style="float: left; width: 796px; height: 400px; border-top:None"></div>
     <br style="clear: left;" />
 </div>
 
