@@ -85,6 +85,7 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
 		  for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {                   
 		    
 		    var newRec fit.Record
+		    newRec.Timestamp = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time.Unix()
 		    newRec.Position_lat = db.Acts.Act[i].Laps[j].Trk.Pt[k].Lat
 		    newRec.Position_long = db.Acts.Act[i].Laps[j].Trk.Pt[k].Long
 		    newRec.Altitude = db.Acts.Act[i].Laps[j].Trk.Pt[k].Alt

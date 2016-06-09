@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 //	"net/http/httputil"
+	"time"
 )
 
 var uploadFname string = ""
@@ -147,8 +148,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
             y2Str = y2Str + "(bpm)"
         }
 
+        // fmt.Println("Timestamp",time.Unix(record.Timestamp, 0).UTC().Format(time.RFC3339))
         //Create an object to contain various plot values.
-        p := Plotvals {Titletext: "My Run", 
+        p := Plotvals {Titletext: "", 
                 XName: xStr, 
                 Y0Name: y0Str,
                 Y1Name: y1Str,
@@ -159,9 +161,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 Latlongs: nil,
         }
 
-	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates =
+	var timeStamps []int64
+	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates, timeStamps =
 	processFitRecord(runRecs, toEnglish)
 
+	//Get start time.
+	p.Titletext += time.Unix(timeStamps[0], 0).Format(time.UnixDate)
+	
         //Convert to json.
         js, err := json.Marshal(p)
 

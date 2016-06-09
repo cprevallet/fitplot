@@ -7,7 +7,6 @@ package main
 import (
   "github.com/jezard/fit"
   "github.com/cprevallet/fitplot/stats"
-//  "fmt"
 )
 
 var metersToMiles float64 = 0.00062137119 //meter -> mile
@@ -55,10 +54,12 @@ func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
 }
 
 // Slice up a structure.
-func unpackRecs( runRecs []fit.Record) (distance []float64, altitude []float64, cadence []float64, speed []float64, lat []float64, lng []float64) {
+func unpackRecs( runRecs []fit.Record) (timestamp []int64, distance []float64, altitude []float64, cadence []float64, speed []float64, lat []float64, lng []float64) {
   // TODO Consider make([]float64, len(record.Distance), len(record.Distance)
   // Should reduce time to allocate on each iteration.
   for _, record := range runRecs {
+//	  fmt.Println("Timestamp",time.Unix(record.Timestamp, 0).UTC().Format(time.RFC3339))
+	  timestamp = append(timestamp, record.Timestamp)
 	  distance = append(distance, record.Distance)
 	  altitude = append(altitude, record.Altitude)
 	  cadence = append(cadence, float64(record.Cadence))
@@ -88,10 +89,10 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
 }
 
 // Main entry point
-func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64 ) {
+func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64, dispTimestamp[]int64 ) {
 
     // Get slices from the runRecs structure.
-    distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
+    timestamp, distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
     // Speed -> pace
     var pace []float64
     for i, _ := range(speed) {
@@ -104,6 +105,13 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[strin
     
     // Clean up the data statistically before displaying.
     outIdxs := markOutliers(pace)
+    for _, item := range markOutliers(lat) {
+      outIdxs = append(outIdxs, item)
+    }
+    for _, item := range markOutliers(lng) {
+      outIdxs = append(outIdxs, item)
+    }
+    timestamp_clean := removeOutliersInt(timestamp, outIdxs)
     distance_clean := removeOutliers(distance, outIdxs)
     pace_clean := removeOutliers(pace, outIdxs)
     altitude_clean := removeOutliers(altitude, outIdxs)
@@ -116,6 +124,7 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[strin
     dispPace := convertUnits(pace_clean, "pace", toEnglish)
     dispAltitude := convertUnits(altitude_clean, "altitude", toEnglish)
     dispCadence := convertUnits(cadence_clean, "cadence", toEnglish)
+    dispTimestamp = timestamp_clean
     
     //Return the values used in the user interface.
     Y0Pairs = createPlotCoordinates(dispDistance, dispPace)
@@ -143,6 +152,18 @@ func markOutliers( x []float64 ) (outliersIdx []int) {
 }
 
 func removeOutliers(x[]float64, outliersIdx []int) (z[]float64)  {
+  // Remove values in x if it's index matches one in the list of outliers.
+  for i, item := range(x) {
+    found := false
+    for _, idx := range(outliersIdx) {
+      if i == idx { found = true }
+      }
+    if !found {z = append(z, item)}
+    }
+  return z
+}
+
+func removeOutliersInt(x[]int64, outliersIdx []int) (z[]int64)  {
   // Remove values in x if it's index matches one in the list of outliers.
   for i, item := range(x) {
     found := false
