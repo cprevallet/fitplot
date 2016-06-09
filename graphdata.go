@@ -7,6 +7,9 @@ package main
 import (
   "github.com/jezard/fit"
   "github.com/cprevallet/fitplot/stats"
+  "fmt"
+  "math"
+  "strconv"
 )
 
 var metersToMiles float64 = 0.00062137119 //meter -> mile
@@ -89,6 +92,7 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
 }
 
 // Main entry point
+// Convert the record structure to slices and maps suitable for use in the user interface.
 func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64, dispTimestamp[]int64 ) {
 
     // Get slices from the runRecs structure.
@@ -173,4 +177,38 @@ func removeOutliersInt(x[]int64, outliersIdx []int) (z[]int64)  {
     if !found {z = append(z, item)}
     }
   return z
+}
+
+
+//Main entry point
+// Convert the record structure to slices and maps suitable for use in the user interface.
+func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string){
+  for _, item := range(runLaps) {
+    dist := unitCvt(item.Total_distance, "distance", toEnglish)
+    cal := float64(item.Total_calories)
+    //Seconds to "min:sec"
+    laptime_str := decimalTimetoMinSec(float64(item.Total_elapsed_time/60.0))
+    //Calculate pace string.
+    pace := item.Total_elapsed_time/60.0/dist
+    //pace = unitCvt(pace, "pace", toEnglish)
+    pace_str := decimalTimetoMinSec(pace)
+    LapDist = append(LapDist, dist)
+    LapCal = append(LapCal, cal)
+    LapPace = append(LapPace, pace_str)
+    LapTime = append(LapTime, laptime_str)
+   }
+   return LapDist, LapTime, LapCal, LapPace
+}
+
+func decimalTimetoMinSec(in float64) (out string) {
+  in_min := int(math.Floor(in))
+  in_sec := int((in - float64(in_min))* 60)
+  out = strconv.Itoa(in_min) + ":"
+  fmt.Println( in_min, in_sec)
+  if in_sec < 10 {
+    out = out + "0" + strconv.Itoa(in_sec)
+  } else {
+    out = out + strconv.Itoa(in_sec)
+  }
+  return out
 }

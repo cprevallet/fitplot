@@ -15,7 +15,6 @@ import (
 
 var uploadFname string = ""
 
-
 //Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
 
@@ -82,6 +81,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func plotHandler(w http.ResponseWriter, r *http.Request) {
+
 	type Plotvals struct {
 	    Titletext string
 	    XName string
@@ -92,6 +92,10 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    Y1coordinates [][]float64
 	    Y2coordinates [][]float64
             Latlongs[] map[string]float64 
+            LapDist []float64
+            LapTime []string
+            LapCal  []float64
+            LapPace []string
 	}
 	var timeStamps []int64
         var xStr string = "Distance "
@@ -170,6 +174,10 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 Y1coordinates: nil,
                 Y2coordinates: nil,
                 Latlongs: nil,
+		LapDist: nil,
+		LapTime: nil,
+		LapCal: nil,
+		LapPace: nil,
         }
 
 
@@ -178,6 +186,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates, timeStamps =
 	  processFitRecord(runRecs, toEnglish)
 	
+	p.LapDist, p.LapTime, p.LapCal, p.LapPace = processFitLap(runLaps, toEnglish)
 	
 	//Get start time.
 	p.Titletext += time.Unix(timeStamps[0], 0).Format(time.UnixDate)
