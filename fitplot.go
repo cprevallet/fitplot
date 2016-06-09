@@ -93,12 +93,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    Y2coordinates [][]float64
             Latlongs[] map[string]float64 
 	}
-        //var fitStruct fit.FitFile
-        var runRecs []fit.Record
+	var timeStamps []int64
         var xStr string = "Distance "
         var y0Str string = "Pace "
         var y1Str string = "Elevation"
         var y2Str string = "Cadence "
+	var runRecs []fit.Record
+	var runLaps []fit.Lap
 
 	//what has the user selected for unit system?
 
@@ -125,16 +126,27 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    // filetype is FIT, or at least it could be?
 	    fitStruct := fit.Parse(uploadFname, false)
 	    runRecs = fitStruct.Records
+	    runLaps = fitStruct.Laps
+ 
+	    //for _, lap := range fitStruct.Laps {
+	    //  fmt.Printf("%+v\n", lap)
+	    //}
         case rslt == "text/xml; charset=utf-8" :
 	    // filetype is TCX or at least it could be?
 	    db, _ := tcx.ReadTCXFile(uploadFname)
+	    //We cleverly convert the values of interest into a structure we already 
+	    //can handle.
 	    runRecs = cvtToFitRecs(db)
-        }
-//	for _,record := range(runRecs) {
-//	      fmt.Println(record)
-//	}
-	
-
+	    runLaps = cvtToFitLaps(db)
+	    //Here's where the heavy lifting of pulling tracks and performance information
+            //from (portions of) the fit file into something we can view is done.
+	    //for i, _ := range db.Acts.Act {
+	//	for _, lap := range db.Acts.Act[i].Laps {
+	//	fmt.Printf("%+v\n", lap)
+	//	}
+	  
+	}
+	fmt.Printf("%+v\n", runLaps)
         //Build the variable strings based on unit system.
         if toEnglish {
             xStr = xStr + "(mi)"
@@ -148,7 +160,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
             y2Str = y2Str + "(bpm)"
         }
 
-        // fmt.Println("Timestamp",time.Unix(record.Timestamp, 0).UTC().Format(time.RFC3339))
         //Create an object to contain various plot values.
         p := Plotvals {Titletext: "", 
                 XName: xStr, 
@@ -161,10 +172,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 Latlongs: nil,
         }
 
-	var timeStamps []int64
-	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates, timeStamps =
-	processFitRecord(runRecs, toEnglish)
 
+	//Here's where the heavy lifting of pulling tracks and performance information
+        //from (portions of) the fit file into something we can view is done.
+	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates, timeStamps =
+	  processFitRecord(runRecs, toEnglish)
+	
+	
 	//Get start time.
 	p.Titletext += time.Unix(timeStamps[0], 0).Format(time.UnixDate)
 	
@@ -182,8 +196,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         w.Header().Set("Access-Control-Allow-Origin", "*")
         //Send
         w.Write(js)
-        }
-
+}
 
 func main() {
 	http.HandleFunc("/", pageloadHandler)    

@@ -101,6 +101,23 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
   return runRecs
 }
 
+// Convert the TCXDB structure created from the XML to fit.Laps structure
+func cvtToFitLaps(db *tcx.TCXDB) (runLaps []fit.Lap) {
+
+    for i, _ := range db.Acts.Act {
+	  for _,lap := range db.Acts.Act[i].Laps {
+		    var newLap fit.Lap
+		    //TODO This doesn't seem to work.  Maybe time.RFC3339 isn't right...
+		    //t, err :=  time.Parse(lap.Start, time.RFC3339)
+		    //if err != nil {newLap.Timestamp = t.Unix()} else {break}
+		    newLap.Total_elapsed_time = lap.TotalTime
+		    newLap.Total_distance = lap.Dist
+		    newLap.Total_calories = uint16(lap.Calories)
+		    runLaps = append(runLaps, newLap)
+		    }
+		  }
+     return runLaps
+}
 
 // Distance function returns the distance (in meters) between two points of
 //     a given longitude and latitude relatively accurately (using a spherical
