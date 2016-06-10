@@ -9,7 +9,8 @@
     var p; //global
     var marker; //global
 
-    function showHide(idx) {
+	
+    function hideIt(idx) {
 	if (chart.series[idx].visible) {
 	    chart.series[idx].hide();
 	    chart.yAxis[idx].visible = false;
@@ -145,8 +146,11 @@
      * Request data from the server, and populate the graph and chart.
      */
     function requestData() {
-
 	var useEnglish = !$("#usemetric").is(':checked')
+	var showPace = $("#pacechk").is(':checked')
+	var showElev = $("#elevchk").is(':checked')
+	var showCad = $("#cadchk").is(':checked')
+	
         $.ajax({
             url: '/getplot',
             data: {toEnglish: useEnglish},
@@ -181,6 +185,11 @@
                 chart.series[0].name = p.Y0Name
                 chart.series[1].name = p.Y1Name
                 chart.series[2].name = p.Y2Name
+               
+		// honor the user's preference on what to show
+		if (showPace == false) {hideIt(0);}
+		if (showElev == false) {hideIt(1);}
+		if (showCad == false) {hideIt(2);}
                 
                  // create a new map
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -315,12 +324,27 @@
 
     } 
 
+
+
     $(document).ready(function() {
 	
 	// Submit the file upload form.
 	document.getElementById("myfiles").onchange = function() {
+	    var file = myfiles.files[0]; // grab the first (and only) file in the list
+	    var fileExt = $("input#myfiles").val();
+	    fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
+	    fileExt = fileExt.toLowerCase();
+
+	    // check file formats
+	    if (fileExt != "fit" && fileExt != "tcx") {
+		alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
+		return false;
+	    } // end if file not the right type
+	
 	    document.getElementById("myform").submit();
 	}
+	
+
 
 	//
         //Here's the global options object...
@@ -413,6 +437,9 @@
         Highcharts.setOptions(Highcharts.theme);
 
     });
+    
+
+
 </script>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y">
@@ -445,7 +472,6 @@
 		    <input type="file" name="myfiles" id="myfiles" style="color:transparent" multiple="multiple">
 	    </form>
 	    </br>Step 2: Plot it.
-	    </br><input type="checkbox" name="unitsystem" id="usemetric"  value="Metric"> Metric?
 	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
 
     </div>
@@ -455,12 +481,13 @@
     <div id="rungraph" class="myborder1 mypadding" style="float: left; width: 776px; height: 400px; border-top:None; border-bottom:None;">
     </div>
     <div id= "controls" class="myborder1 mypadding" style="text-align: center; float: left; width: 776px; border-top:None;" >
-	    <input type="checkbox" onclick="showHide(0)" class="mytext" value="Pace" checked="checked" >
+	    <input id="pacechk" type="checkbox" onclick="hideIt(0)" class="mytext" value="Pace" checked="checked" >
 	    Pace
-	    <input type="checkbox" onclick="showHide(1)" class="mytext" value="Elevation" checked="checked" >
+	    <input id="elevchk" type="checkbox" onclick="hideIt(1)" class="mytext" value="Elevation" checked="checked" >
 	    Elevation
-	    <input type="checkbox" onclick="showHide(2)" class="mytext" value="Cadence" checked="checked" >
+	    <input id="cadchk" type="checkbox" onclick="hideIt(2)" class="mytext" value="Cadence" checked="checked" >
 	    Cadence
+	    <input id="usemetric" type="checkbox" onclick="requestData()" name="unitsystem" value="Metric"> Metric?
 	    <br/>Click and drag = zoom  
 	    <br/>Shift-drag = pan
     </div>
