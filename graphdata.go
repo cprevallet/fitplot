@@ -200,15 +200,14 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
    return LapDist, LapTime, LapCal, LapPace
 }
 
-// Convert decimal minutes to m:ss.
+// Convert decimal minutes to mm:ss.
 func decimalTimetoMinSec(in float64) (out string) {
   in_min := int(math.Floor(in))
+  in_min_str := strconv.Itoa(in_min)
+  if in_min < 10 { in_min_str = "0" + in_min_str}
   in_sec := int((in - float64(in_min))* 60)
-  out = strconv.Itoa(in_min) + ":"
-  if in_sec < 10 {
-    out = out + "0" + strconv.Itoa(in_sec)
-  } else {
-    out = out + strconv.Itoa(in_sec)
-  }
+  in_sec_str := strconv.Itoa(in_sec)
+  if in_sec < 10 { in_sec_str = "0" + in_sec_str}
+  out = in_min_str + ":" + in_sec_str
   return out
 }
