@@ -7,7 +7,7 @@ package main
 import (
   "github.com/jezard/fit"
   "github.com/cprevallet/fitplot/stats"
-  "fmt"
+//  "fmt"
   "math"
   "strconv"
 )
@@ -205,7 +205,6 @@ func decimalTimetoMinSec(in float64) (out string) {
   in_min := int(math.Floor(in))
   in_sec := int((in - float64(in_min))* 60)
   out = strconv.Itoa(in_min) + ":"
-  fmt.Println( in_min, in_sec)
   if in_sec < 10 {
     out = out + "0" + strconv.Itoa(in_sec)
   } else {

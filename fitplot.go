@@ -96,6 +96,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
             LapTime []string
             LapCal  []float64
             LapPace []string
+            C0Str string
+	    C1Str string
+	    C2Str string
+	    C3Str string
+	    C4Str string
 	}
 	var timeStamps []int64
         var xStr string = "Distance "
@@ -104,6 +109,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         var y2Str string = "Cadence "
 	var runRecs []fit.Record
 	var runLaps []fit.Lap
+	var c0Str, c1Str, c2Str, c3Str, c4Str string
 
 	//what has the user selected for unit system?
 
@@ -149,11 +155,21 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
             y0Str = y0Str + "(min/mi)"
             y1Str = y1Str + "(ft)"
             y2Str = y2Str + "(bpm)"
+	    c0Str = "Lap"
+	    c1Str = "Distance" + "(mi)"
+	    c2Str = "Pace" + "(min/mi)"
+	    c3Str = "Time" + "(min)"
+	    c4Str = "Calories" + "(kcal)"
         } else {
             xStr = xStr + "(km)"
             y0Str = y0Str + "(min/km)"
             y1Str = y1Str + "(m)"
             y2Str = y2Str + "(bpm)"
+	    c0Str = "Lap"
+	    c1Str = "Distance" + "(km)"
+	    c2Str = "Pace" + "(min/km)"
+	    c3Str = "Time" + "(min)"
+	    c4Str = "Calories" + "(kcal)"
         }
 
         //Create an object to contain various plot values.
@@ -170,6 +186,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		LapTime: nil,
 		LapCal: nil,
 		LapPace: nil,
+		C0Str: c0Str,
+		C1Str: c1Str,
+		C2Str: c2Str,
+		C3Str: c3Str,
+		C4Str: c4Str,
         }
 
 
