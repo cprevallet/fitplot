@@ -180,15 +180,15 @@ func removeOutliersInt(x[]int64, outliersIdx []int) (z[]int64)  {
 }
 
 
-//Main entry point
+// Main entry point
 // Convert the record structure to slices and maps suitable for use in the user interface.
 func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string){
   for _, item := range(runLaps) {
     dist := unitCvt(item.Total_distance, "distance", toEnglish)
     cal := float64(item.Total_calories)
-    //Seconds to "min:sec"
+    // Seconds to "min:sec"
     laptime_str := decimalTimetoMinSec(float64(item.Total_elapsed_time/60.0))
-    //Calculate pace string.
+    // Calculate pace string.
     pace := item.Total_elapsed_time/60.0/dist
     //pace = unitCvt(pace, "pace", toEnglish)
     pace_str := decimalTimetoMinSec(pace)
@@ -200,6 +200,7 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
    return LapDist, LapTime, LapCal, LapPace
 }
 
+// Convert decimal minutes to m:ss.
 func decimalTimetoMinSec(in float64) (out string) {
   in_min := int(math.Floor(in))
   in_sec := int((in - float64(in_min))* 60)

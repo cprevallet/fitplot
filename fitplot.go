@@ -138,19 +138,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         case rslt == "text/xml; charset=utf-8" :
 	    // filetype is TCX or at least it could be?
 	    db, _ := tcx.ReadTCXFile(uploadFname)
-	    //We cleverly convert the values of interest into a structure we already 
-	    //can handle.
+	    // We cleverly convert the values of interest into a structures we already 
+	    // can handle.
 	    runRecs = cvtToFitRecs(db)
 	    runLaps = cvtToFitLaps(db)
-	    //Here's where the heavy lifting of pulling tracks and performance information
-            //from (portions of) the fit file into something we can view is done.
-	    //for i, _ := range db.Acts.Act {
-	//	for _, lap := range db.Acts.Act[i].Laps {
-	//	fmt.Printf("%+v\n", lap)
-	//	}
-	  
 	}
-	fmt.Printf("%+v\n", runLaps)
         //Build the variable strings based on unit system.
         if toEnglish {
             xStr = xStr + "(mi)"

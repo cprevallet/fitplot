@@ -290,35 +290,17 @@
 			 moveMarker(e);
 			});
 			
-	var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Distance');
-        data.addColumn('string', 'Pace');
-        data.addColumn('string', 'Time');
-        data.addColumn('number', 'Calories');
-        /*
-        data.addColumn('string', 'Name');
-        data.addColumn('number', 'Salary');
-        data.addColumn('boolean', 'Full Time Employee');
-        data.addRows([
-          ['Mike',  {v: 10000, f: '$10,000'}, true],
-          ['Jim',   {v:8000,   f: '$8,000'},  false],
-          ['Alice', {v: 12500, f: '$12,500'}, true],
-          ['Bob',   {v: 7000,  f: '$7,000'},  true]
-        ]);
-        */
-        for (i = 0; i < p.LapDist.length; i++) { 
-//	    data.addRows([{v: p.LapDist[i]}, p.LapPace[i], p.LapTime[i], {v:p.LapCal[i]}]);
-//        data.addRows([{v: 1.0, f: '1.0'}, p.LapPace[i], '7:44', {v:126 ,f:'300'}]);
-        data.addRows([
-	  //[{v: p.LapDist[i], f: '1.0'}, p.LapPace[i], p.LapTime[i], {v:p.LapCal[i] ,f:'300'}],
-	  [ p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],
-	  ]);  //garbage data
-	}
-
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-
-        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
-        
+		// Add lap values to the data table.	
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', 'Distance');
+		data.addColumn('string', 'Pace');
+		data.addColumn('string', 'Time');
+		data.addColumn('number', 'Calories');
+		for (i = 0; i < p.LapDist.length; i++) { 
+		  data.addRows([[ p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],]);
+		}
+		var table = new google.visualization.Table(document.getElementById('table_div'));
+		table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
         
             },
             cache: false
