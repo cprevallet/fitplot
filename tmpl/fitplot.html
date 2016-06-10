@@ -466,14 +466,20 @@
 
 <div class="mytext" style="width: 800px; margin: 0 auto">
     <div id="instructions" class="myborder1 mypadding"  style="float: left; width: 776px; border-bottom:None; ">
-	    How do I use this?
-	    </br></br>Step 1: Load a fit or tcx format file from your computer.
+      <div id="topspan" style="float: left; width: 776px">
+      How do I use this?
+      </div>
+      <div id="leftcol" style="float: left; width: 380px">
+	    </br>Step 1: Load a fit or tcx format file from your computer.
 	    <form id="myform" class="mytext" method="post" enctype="multipart/form-data">
 		    <input type="file" name="myfiles" id="myfiles" style="color:transparent" multiple="multiple">
 	    </form>
+      </div>
+      <div id="rightcol" style="float: left" >
 	    </br>Step 2: Plot it.
+	    </br>
 	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
-
+      </div>
     </div>
     <div id="table_div" class="myborder1 mypadding"  style="float: left; width: 350px; height: 380px;" >
     </div>
