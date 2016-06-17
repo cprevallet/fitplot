@@ -494,6 +494,56 @@
   margin: 10px;
 }
 
+
+
+.btn {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Dosis;
+  color: #ffffff;
+  font-size: 14px;
+  background: #2196f3;
+  padding: 10px 10px 10px 10px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+label.myLabel input[type="file"] {
+    position: fixed;
+    top: -1000px;
+}
+
+/***** Example custom styling *****/
+.myLabel {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Dosis;
+  color: #ffffff;
+  font-size: 14px;
+  background: #2196f3;
+  padding: 10px 10px 10px 10px;
+  text-decoration: none;
+}
+.myLabel:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
 </style>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -513,15 +563,19 @@
       How do I use this?
       </div>
       <div id="leftcol" style="float: left; width: 380px">
-	    </br>Step 1: Load a fit or tcx format file from your computer.
-	    <form id="myform" class="mytext" method="post" enctype="multipart/form-data">
-		    <input type="file" name="myfiles" id="myfiles" style="color:transparent" multiple="multiple">
+
+	    <form id="myform" method="post" enctype="multipart/form-data"></br>
+	    <label class="myLabel">
+               <input type="file" name="myfiles" id="myfiles" multiple="multiple">
+ 
+                <span> Load a fit or tcx format file from your computer.</span>
+             </label>
+		   
 	    </form>
       </div>
       <div id="rightcol" style="float: left" >
-	    </br>Step 2: Plot it.
-	    </br>
-	    <input type="button" onclick="requestData()" class="mytext" value="Plot">
+
+	    <input type="button" onclick="requestData()" class="btn" value="Plot it.">
       </div>
     </div>
     <div id="table_div" class="myborder1 mypadding"  style="float: left; width: 350px; height: 380px;" >
