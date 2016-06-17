@@ -143,7 +143,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    //}
         case rslt == "text/xml; charset=utf-8" :
 	    // filetype is TCX or at least it could be?
-	    db, _ := tcx.ReadTCXFile(uploadFname)
+	    db, err:= tcx.ReadTCXFile(uploadFname)
+	    if err != nil {
+                fmt.Printf("Error parsing file", err)
+            }
+
 	    // We cleverly convert the values of interest into a structures we already 
 	    // can handle.
 	    runRecs = cvtToFitRecs(db)
