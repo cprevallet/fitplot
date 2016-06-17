@@ -500,6 +500,9 @@
   -webkit-border-radius: 28;
   -moz-border-radius: 28;
   border-radius: 28px;
+  -webkit-box-shadow: 0 3px 5px #333;
+  -moz-box-shadow: 0 3px 5px #333;
+  box-shadow: 0 3px 5px #333;
   font-family: Dosis;
   color: #ffffff;
   font-size: 14px;
@@ -522,11 +525,19 @@ label.myLabel input[type="file"] {
     top: -1000px;
 }
 
+label.myLabel2 input[type="button"] {
+    position: fixed;
+    top: -1000px;
+}
+
 /***** Example custom styling *****/
 .myLabel {
   -webkit-border-radius: 28;
-  -moz-border-radius: 28;
+  -moz-border-radius: 28;	
   border-radius: 28px;
+  -webkit-box-shadow: 0 3px 5px #333;
+  -moz-box-shadow: 0 3px 5px #333;
+  box-shadow: 0 3px 5px #333;
   font-family: Dosis;
   color: #ffffff;
   font-size: 14px;
@@ -560,22 +571,20 @@ label.myLabel input[type="file"] {
 <div class="mytext" style="width: 800px; margin: 0 auto; background-color:white">
     <div id="instructions" class="myborder1 mypadding"  style="float: left; width: 778px; border-bottom:None; ">
       <div id="topspan" style="float: left; width: 776px,">
-      How do I use this?
-      </div>
-      <div id="leftcol" style="float: left; width: 380px">
 
-	    <form id="myform" method="post" enctype="multipart/form-data"></br>
+      </div>
+      <div id="leftcol" style="display: inline-block; ">
+
+	    <form id="myform" method="post" enctype="multipart/form-data">
 	    <label class="myLabel">
                <input type="file" name="myfiles" id="myfiles" multiple="multiple">
- 
-                <span> Load a fit or tcx format file from your computer.</span>
+		<span> Load a fit or tcx format file from your computer.</span>
              </label>
 		   
 	    </form>
       </div>
-      <div id="rightcol" style="float: left" >
-
-	    <input type="button" onclick="requestData()" class="btn" value="Plot it.">
+      <div id="rightcol" style="display: inline-block" >
+               <input type="button" onclick="requestData()" class="btn" value="Plot it.">
       </div>
     </div>
     <div id="table_div" class="myborder1 mypadding"  style="float: left; width: 350px; height: 380px;" >
