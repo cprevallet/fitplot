@@ -566,70 +566,55 @@ label.myLabel2 input[type="button"] {
     </script>
 
 </head>
-<body  style="background-color:lightblue;" >
-
-<div class="mytext" style="width: 800px; margin: 0 auto; background-color:white">
-    <div id="instructions" class="myborder1 mypadding"  style="float: left; width: 778px; border-bottom:None; ">
-      <div id="topspan" style="float: left; width: 776px,">
-
+  <body style="background-color:lightblue;">
+    <div class="mytext" style="width: 800px; margin: 0 auto; background-color:white">
+      <div id="instructions" class="myborder1 mypadding" style=
+      "float: left; width: 778px; border-bottom:None;">
+        <div id="topspan" style="float: left; width: 776px,"></div>
+        <div id="leftcol" style="display: inline-block;">
+          <form id="myform" method="post" enctype="multipart/form-data">
+            <label class="myLabel"><input type="file" name="myfiles" id="myfiles"
+            multiple="multiple"> <span>Load a fit or tcx format file from your
+            computer.</span></label>
+          </form>
+        </div>
+        <div id="rightcol" style="display: inline-block">
+          <input type="button" onclick="requestData()" class="btn" value="Plot it.">
+        </div>
       </div>
-      <div id="leftcol" style="display: inline-block; ">
-
-	    <form id="myform" method="post" enctype="multipart/form-data">
-	    <label class="myLabel">
-               <input type="file" name="myfiles" id="myfiles" multiple="multiple">
-		<span> Load a fit or tcx format file from your computer.</span>
-             </label>
-		   
-	    </form>
+      <div id="table_div" class="myborder1 mypadding" style=
+      "float: left; width: 350px; height: 380px;"></div>
+      <div id="map" class="myborder1 mypadding" style=
+      "float: left;width: 407px;height: 380px;border-left:None;"></div>
+      <div id="rungraph" class="myborder1 mypadding" style=
+      "float: left; width: 778px; height: 400px; border-top:None; border-bottom:None;">
       </div>
-      <div id="rightcol" style="display: inline-block" >
-               <input type="button" onclick="requestData()" class="btn" value="Plot it.">
-      </div>
+      <div id="controls" class="myborder1 mypadding" style=
+      "width: 778px; border-top:None;">
+        <div class="onoffswitch mybox">
+          <input type="checkbox" name="pacechk" onclick="hideIt(0)" class=
+          "onoffswitch-checkbox" id="pacechk" checked>
+	  <label class="onoffswitch-label" for="pacechk"></label>
+        </div>Pace
+        <div class="onoffswitch mybox">
+          <input type="checkbox" name="elevchk" onclick="hideIt(1)" class=
+          "onoffswitch-checkbox" id="elevchk" checked>
+	<label class="onoffswitch-label" for="elevchk"></label>
+        </div>Elevation
+        <div class="onoffswitch mybox">
+          <input type="checkbox" name="cadchk" onclick="hideIt(2)" class=
+          "onoffswitch-checkbox" id="cadchk" checked>
+	<label class="onoffswitch-label" for="cadchk"></label>
+        </div>Cadence
+        <div class="onoffswitch mybox">
+          <input type="checkbox" name="usemetric" onclick="requestData()" class=
+          "onoffswitch-checkbox" id="usemetric" value="Metric">
+	  <label class="onoffswitch-label" for="usemetric"></label>
+        </div>Metric?<br>
+        Click and drag = zoom<br>
+        Shift-drag = pan
+      </div><br style="clear: left;">
     </div>
-    <div id="table_div" class="myborder1 mypadding"  style="float: left; width: 350px; height: 380px;" >
-    </div>
-    <div id="map" class="myborder1 mypadding" style="float: left;width: 407px;height: 380px;border-left:None;"></div>
-    <div id="rungraph" class="myborder1 mypadding" style="float: left; width: 778px; height: 400px; border-top:None; border-bottom:None;">
-    </div>
-    <div id= "controls" class="myborder1 mypadding" style="width: 778px; border-top:None;" >
-   <div class="onoffswitch mybox">
-    <input type="checkbox" name="pacechk" onclick="hideIt(0)" class="onoffswitch-checkbox" id="pacechk" checked>
-    <label class="onoffswitch-label" for="pacechk"></label>
-    </div>
-    Pace 
-
-    
-     <div class="onoffswitch mybox">
-    <input type="checkbox" name="elevchk" onclick="hideIt(1)" class="onoffswitch-checkbox" id="elevchk" checked>
-    <label class="onoffswitch-label" for="elevchk"></label>
-    </div>	   
-    Elevation 
-
-
-    
-     <div class="onoffswitch mybox">
-    <input type="checkbox" name="cadchk" onclick="hideIt(2)" class="onoffswitch-checkbox" id="cadchk" checked>
-    <label class="onoffswitch-label" for="cadchk"></label>
-    </div>	   
-   Cadence 
-
-    
-    
-     <div class="onoffswitch mybox">
-    <input type="checkbox" name="usemetric" onclick="requestData()" class="onoffswitch-checkbox" id="usemetric" value="Metric">
-    <label class="onoffswitch-label" for="usemetric"></label>
-    </div>	   
-  Metric? 
-
-
-	    <br/>Click and drag = zoom  
-	    <br/>Shift-drag = pan
-    </div>
-    <br style="clear: left;" />
-</div>
-
-
   </body>
 </html>
 
