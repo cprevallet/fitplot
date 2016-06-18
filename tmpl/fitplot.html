@@ -450,43 +450,6 @@
 .myborder1{ border: 1px ridge rgba(90, 90, 90, .5); }
 .mypadding {padding-top: 10px;padding-left: 10px;padding-right: 10px;padding-bottom: 10px }
 
-.onoffswitch {
-    position: relative; width: 42px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-}
-.onoffswitch-checkbox {
-    display: none;
-}
-.onoffswitch-label {
-    display: block; overflow: hidden; cursor: pointer;
-    height: 6px; padding: 0; line-height: 6px;
-    border: 0px solid #FFFFFF; border-radius: 17px;
-    background-color: #9E9E9E;
-}
-.onoffswitch-label:before {
-    content: "";
-    display: block; width: 17px; margin: -5.5px;
-    background: #FFFFFF;
-    position: absolute; top: 0; bottom: 0;
-    right: 32px;
-    border-radius: 17px;
-    box-shadow: 0 6px 12px 0px #757575;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label {
-    background-color: #42A5F5;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label, .onoffswitch-checkbox:checked + .onoffswitch-label:before {
-   border-color: #42A5F5;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label:before {
-    right: 0px; 
-    background-color: #2196F3; 
-    box-shadow: 3px 6px 18px 0px rgba(0, 0, 0, 0.2);
-}
-
 .mybox {
   display: inline-block;
   width: 42px;
@@ -564,6 +527,10 @@ label.myLabel2 input[type="button"] {
 
 
     </script>
+    
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-purple.min.css" />
+<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
 </head>
   <body style="background-color:lightblue;">
@@ -591,25 +558,29 @@ label.myLabel2 input[type="button"] {
       </div>
       <div id="controls" class="myborder1 mypadding" style=
       "width: 778px; border-top:None;">
-        <div class="onoffswitch mybox">
-          <input type="checkbox" name="pacechk" onclick="hideIt(0)" class=
-          "onoffswitch-checkbox" id="pacechk" checked>
-	  <label class="onoffswitch-label" for="pacechk"></label>
+        <div class="mybox">
+	  <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="pacechk">
+	     <input type="checkbox" id="pacechk" onclick="hideIt(0)" class="mdl-switch__input" checked>
+	     <span class="mdl-switch__label"></span>
+	   </label>
         </div>Pace
-        <div class="onoffswitch mybox">
-          <input type="checkbox" name="elevchk" onclick="hideIt(1)" class=
-          "onoffswitch-checkbox" id="elevchk" checked>
-	<label class="onoffswitch-label" for="elevchk"></label>
+        <div class="mybox">
+	<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="elevchk">
+	     <input type="checkbox" id="elevchk" onclick="hideIt(1)" class="mdl-switch__input" checked>
+	     <span class="mdl-switch__label"></span>
+	   </label>
         </div>Elevation
-        <div class="onoffswitch mybox">
-          <input type="checkbox" name="cadchk" onclick="hideIt(2)" class=
-          "onoffswitch-checkbox" id="cadchk" checked>
-	<label class="onoffswitch-label" for="cadchk"></label>
+        <div class="mybox">
+	  <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="cadchk">
+	     <input type="checkbox" id="cadchk" onclick="hideIt(2)" class="mdl-switch__input" checked>
+	     <span class="mdl-switch__label"></span>
+	   </label>
         </div>Cadence
-        <div class="onoffswitch mybox">
-          <input type="checkbox" name="usemetric" onclick="requestData()" class=
-          "onoffswitch-checkbox" id="usemetric" value="Metric">
-	  <label class="onoffswitch-label" for="usemetric"></label>
+        <div class="mybox">
+	   <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="usemetric">
+	     <input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-switch__input" >
+	     <span class="mdl-switch__label"></span>
+	   </label>
         </div>Metric?<br>
         Click and drag = zoom<br>
         Shift-drag = pan
