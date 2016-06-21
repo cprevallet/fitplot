@@ -150,7 +150,6 @@
 	var showPace = $("#pacechk").is(':checked')
 	var showElev = $("#elevchk").is(':checked')
 	var showCad = $("#cadchk").is(':checked')
-	
         $.ajax({
             url: '/getplot',
             data: {toEnglish: useEnglish},
@@ -437,7 +436,7 @@
 
     });
     
-
+   
 
 </script>
 
@@ -459,64 +458,8 @@
 
 
 
-.btn {
-  -webkit-border-radius: 28;
-  -moz-border-radius: 28;
-  border-radius: 28px;
-  -webkit-box-shadow: 0 3px 5px #333;
-  -moz-box-shadow: 0 3px 5px #333;
-  box-shadow: 0 3px 5px #333;
-  font-family: Dosis;
-  color: #ffffff;
-  font-size: 14px;
-  background: #2196f3;
-  padding: 10px 10px 10px 10px;
-  text-decoration: none;
-}
 
-.btn:hover {
-  background: #3cb0fd;
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-  text-decoration: none;
-}
-label.myLabel input[type="file"] {
-    position: fixed;
-    top: -1000px;
-}
-
-label.myLabel2 input[type="button"] {
-    position: fixed;
-    top: -1000px;
-}
-
-/***** Example custom styling *****/
-.myLabel {
-  -webkit-border-radius: 28;
-  -moz-border-radius: 28;	
-  border-radius: 28px;
-  -webkit-box-shadow: 0 3px 5px #333;
-  -moz-box-shadow: 0 3px 5px #333;
-  box-shadow: 0 3px 5px #333;
-  font-family: Dosis;
-  color: #ffffff;
-  font-size: 14px;
-  background: #2196f3;
-  padding: 10px 10px 10px 10px;
-  text-decoration: none;
-}
-.myLabel:hover {
-  background: #3cb0fd;
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-  text-decoration: none;
-}
+#myfiles { display: none }
 
 </style>
 
@@ -534,21 +477,31 @@ label.myLabel2 input[type="button"] {
 
 </head>
   <body style="background-color:lightblue;">
-    <div class="mytext" style="width: 800px; margin: 0 auto; background-color:white">
-      <div id="instructions" class="myborder1 mypadding" style=
-      "float: left; width: 778px; border-bottom:None;">
-        <div id="topspan" style="float: left; width: 776px,"></div>
-        <div id="leftcol" style="display: inline-block;">
-          <form id="myform" method="post" enctype="multipart/form-data">
-            <label class="myLabel"><input type="file" name="myfiles" id="myfiles"
-            multiple="multiple"> <span>Load a fit or tcx format file from your
-            computer.</span></label>
-          </form>
-        </div>
-        <div id="rightcol" style="display: inline-block">
-          <input type="button" onclick="requestData()" class="btn" value="Plot it.">
-        </div>
+
+  
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--5-col"></div>
+      <div class="mdl-cell mdl-cell--1-col">
+	      <!-- FAB button with ripple -->   
+	  <form id="myform" method="post" enctype="multipart/form-data">
+	  <label for="myfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect ">
+	    <i class="material-icons">file_upload</i>
+	    <input type="file" name="myfiles" id="myfiles" multiple="multiple"> 
+	  </label>
+	  </form>       
       </div>
+      <div class="mdl-cell mdl-cell--1-col">
+	      <!-- FAB button with ripple -->
+	  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestData()">
+	    <i class="material-icons">play_circle_filled</i>
+	  </button>    
+      </div>
+      <div class="mdl-cell mdl-cell--5-col"></div>
+    </div>  
+  
+     
+    <div class="mytext" style="width: 800px; margin: 0 auto; background-color:white">
+
       <div id="table_div" class="myborder1 mypadding" style=
       "float: left; width: 350px; height: 380px;"></div>
       <div id="map" class="myborder1 mypadding" style=
@@ -586,6 +539,10 @@ label.myLabel2 input[type="button"] {
         Shift-drag = pan
       </div><br style="clear: left;">
     </div>
+
+  
+  
+
   </body>
 </html>
 
