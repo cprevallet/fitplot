@@ -35,7 +35,7 @@ func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 		// File load request
         	fmt.Println("pageloadHandler POST Received Request")
 		uploadHandler(w, r)
-		display(w, "fitplot", nil)
+		//display(w, "fitplot", nil)
 	}
 
 }

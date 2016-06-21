@@ -198,6 +198,7 @@
 		});               
 		
 		// https://snazzymaps.com/style/134/light-dream
+/*		
 		var mapstyles = [{
 		      "featureType": "landscape",
 		      "stylers": [{
@@ -267,13 +268,13 @@
 		  }];
 
 		map.setOptions({styles: mapstyles});
-
+*/
 		var runPath = new google.maps.Polyline({
 		  path: p.Latlongs,
 		  geodesic: true,
 		  strokeColor: '#ff0000',
-		  strokeOpacity: 0.5,
-		  strokeWeight: 2
+//		  strokeOpacity: 0.5,
+//		  strokeWeight: 2
 		});
 
 		runPath.setMap(map);
@@ -327,6 +328,8 @@
 
     $(document).ready(function() {
 	
+
+	
 	// Submit the file upload form.
 	document.getElementById("myfiles").onchange = function() {
 	    var file = myfiles.files[0]; // grab the first (and only) file in the list
@@ -341,6 +344,8 @@
 	    } // end if file not the right type
 	
 	    document.getElementById("myform").submit();
+	    document.getElementById("runbtn").MaterialButton.enable()
+	    
 	}
 	
 
@@ -375,7 +380,7 @@
             chart: {
                 backgroundColor: null,
                 style: {
-                    fontFamily: "Dosis, sans-serif"
+                    fontFamily: "Roboto, sans-serif"
                 }
             },
             title: {
@@ -446,7 +451,6 @@
    
 
 </script>
-
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y">
 </script>
 
@@ -469,13 +473,16 @@
 
 </head>
   <body>
-
+  
+  
+    <!-- Used to prevent the page from redirecting/reloading on upload. Receives response from server. -->
+    <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
   
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--5-col"></div>
       <div class="mdl-cell mdl-cell--1-col">
 	      <!-- FAB button with ripple -->   
-	  <form id="myform" method="post" enctype="multipart/form-data">
+	  <form id="myform" method="post" enctype="multipart/form-data" target="dummyframe">
 	  <label for="myfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 	    <i class="material-icons">file_upload</i>
 	    <input type="file" name="myfiles" id="myfiles" multiple="multiple"> 
@@ -484,8 +491,8 @@
       </div>
       <div class="mdl-cell mdl-cell--1-col">
 	      <!-- FAB button with ripple -->
-	  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--primary" onclick="requestData()">
-	    <i class="material-icons">play_circle_filled</i>
+	  <button id="runbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--primary" onclick="requestData()" disabled>
+	    <i class="material-icons">directions_run</i>
 	  </button>    
       </div>
       <div class="mdl-cell mdl-cell--5-col"></div>
@@ -532,22 +539,22 @@
   <div class="mdl-grid">
 	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
       <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Laps/Splits</h2>
-      </div>
-      <div id="table_div">
-      </div>
-    <div class="mdl-card__supporting-text">
-          Click the headers to sort.
-    </div>      
-    </div>
-	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
-      <div class="mdl-card__title">
 	<h2 class="mdl-card__title-text">Map</h2>
       </div>
 	<div id="map" style="height: 380px;"></div>
       <div class="mdl-card__actions">
 	<a href="https://support.google.com/maps/answer/144349?hl=e">Google Maps Help</a>
       </div>
+    </div>
+    	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">Laps/Splits</h2>
+      </div>
+      <div id="table_div" style="height: 380px">
+      </div>
+    <div class="mdl-card__supporting-text">
+          Click the headers to sort.
+    </div>      
     </div>
   </div>
   
