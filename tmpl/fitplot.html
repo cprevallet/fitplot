@@ -305,7 +305,7 @@
 		data.addColumn('string', p.C2Str);
 		data.addColumn('string', p.C3Str);
 		data.addColumn('number', p.C4Str);
-		var cellStyle = {style: 'font-family: Dosis, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
+		var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
 		for (i = 0; i < p.LapDist.length; i++) { 
 		  data.addRows([[i+1, p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],]);
 		  data.setProperties(i, 0, cellStyle);
@@ -354,12 +354,19 @@
          * @author Torstein Honsi
          */
         // Load the fonts
+        
+        Highcharts.createElement('link', {
+            href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+            rel: 'stylesheet',
+            type: 'text/css'
+        }, null, document.getElementsByTagName('head')[0]);
+/*        
         Highcharts.createElement('link', {
             href: 'https://fonts.googleapis.com/css?family=Dosis:400,600',
             rel: 'stylesheet',
             type: 'text/css'
-        }, null, document.getElementsByTagName('head')[0]);
-
+        }, null, document.getElementsByTagName('head')[0]); 
+*/
         Highcharts.theme = {
 
             colors: ["#70c6ea", "#6de8c3", "#ce7190", "#b28585","#75bedd", "#aaeeee", "#ff0066", "#eeaaee",
@@ -445,7 +452,7 @@
 
 
 <style>
-.mytext { font-family: Dosis, serif; font-size: 14px; opacity: 1.0 }
+.mytext { font-family: Roboto, serif; font-size: 14px; opacity: 1.0 }
 .myborder1{ border: 1px ridge rgba(90, 90, 90, .5); }
 .mypadding {padding-top: 10px;padding-left: 10px;padding-right: 10px;padding-bottom: 10px }
 
@@ -472,11 +479,11 @@
     </script>
     
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-purple.min.css" />
+<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
 </head>
-  <body style="background-color:lightblue;">
+  <body>
 
   
     <div class="mdl-grid">
@@ -484,7 +491,7 @@
       <div class="mdl-cell mdl-cell--1-col">
 	      <!-- FAB button with ripple -->   
 	  <form id="myform" method="post" enctype="multipart/form-data">
-	  <label for="myfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect ">
+	  <label for="myfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 	    <i class="material-icons">file_upload</i>
 	    <input type="file" name="myfiles" id="myfiles" multiple="multiple"> 
 	  </label>
@@ -492,7 +499,7 @@
       </div>
       <div class="mdl-cell mdl-cell--1-col">
 	      <!-- FAB button with ripple -->
-	  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestData()">
+	  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--primary" onclick="requestData()">
 	    <i class="material-icons">play_circle_filled</i>
 	  </button>    
       </div>
@@ -509,6 +516,7 @@
       <div id="rungraph" class="myborder1 mypadding" style=
       "float: left; width: 778px; height: 400px; border-top:None; border-bottom:None;">
       </div>
+      
       <div id="controls" class="myborder1 mypadding" style=
       "width: 778px; border-top:None;">
         <div class="mybox">
@@ -538,6 +546,7 @@
         Click and drag = zoom<br>
         Shift-drag = pan
       </div><br style="clear: left;">
+      
     </div>
 
   
