@@ -33,33 +33,33 @@
 		var moveLatlong = p.Latlongs[point.index];
 		marker.setPosition(moveLatlong);
 		}
-        }
+	}
 
     function createEmptyChart() {
 
 	//
-        //Here's a chart object with good defaults for a distance chart.
+	//Here's a chart object with good defaults for a distance chart.
 	//
 
-        newChart = new Highcharts.Chart({
-            chart: {
-                zoomType: 'xy',
-                renderTo: 'rungraph',
-                defaultSeriesType: 'spline',
+	newChart = new Highcharts.Chart({
+	    chart: {
+		zoomType: 'xy',
+		renderTo: 'rungraph',
+		defaultSeriesType: 'spline',
 		panning: true,
 		panKey: 'shift'
-            },
-            credits: {
-                enabled: false
-            },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: 'Point plot'
-            },
-            tooltip: {
-                shared: true,
+	    },
+	    credits: {
+		enabled: false
+	    },
+	    legend: {
+		enabled: false
+	    },
+	    title: {
+		text: 'Point plot'
+	    },
+	    tooltip: {
+		shared: true,
 		formatter: function () {
 		    var s = '<b>' + 'Distance : ' + this.x.toFixed(2) + '</b>';
 		    var primaryY = this.points[0];
@@ -79,8 +79,8 @@
 			}
 		    return s;
 		}
-            },
-            series: [{
+	    },
+	    series: [{
 			yAxis: 0,
 			color: Highcharts.getOptions().colors[0]
 		    }, {
@@ -89,9 +89,9 @@
 		    }, {
 			yAxis: 2,
 			color: Highcharts.getOptions().colors[2]
-            }],
+	    }],
 
-            yAxis: [{ // Primary yAxis
+	    yAxis: [{ // Primary yAxis
 			reversed: true,
 			title: {
 			    text: 'First axis',
@@ -104,11 +104,11 @@
 				color: Highcharts.getOptions().colors[0]
 			    },
 			    formatter: function (){
-					 var minutes = this.value
-					 var sign = minutes < 0 ? "-" : "";
-					 var min = Math.floor(Math.abs(minutes));
-					 var sec = Math.floor((Math.abs(minutes) * 60) % 60);
-					 return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+					var minutes = this.value
+					var sign = minutes < 0 ? "-" : "";
+					var min = Math.floor(Math.abs(minutes));
+					var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+					return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
 					}
 			}
 		    }, { // Secondary yAxis
@@ -137,60 +137,60 @@
 			    }
 			},
 			opposite: true
-            }]
-        });
+	    }]
+	});
 	return newChart;
 	} //createEmptyChart
 
     /**
-     * Request data from the server, and populate the graph and chart.
-     */
+    * Request data from the server, and populate the graph and chart.
+    */
     function requestData() {
 	var useEnglish = !$("#usemetric").is(':checked')
 	var showPace = $("#pacechk").is(':checked')
 	var showElev = $("#elevchk").is(':checked')
 	var showCad = $("#cadchk").is(':checked')
-        $.ajax({
-            url: '/getplot',
-            data: {toEnglish: useEnglish},
-            dataType: "json",
-            success: function(data) {
+	$.ajax({
+	    url: '/getplot',
+	    data: {toEnglish: useEnglish},
+	    dataType: "json",
+	    success: function(data) {
 
 		// save a global copy
-                p = data
+		p = data
 
 		// create a new chart
 		chart = createEmptyChart();
 
-                // add the points
-                chart.series[0].setData(eval(p.Y0coordinates));
-                chart.series[1].setData(eval(p.Y1coordinates));
-                chart.series[2].setData(eval(p.Y2coordinates));
-                chart.setTitle({
-                    text: p.Titletext
-                });
-                chart.xAxis[0].setTitle({
-                    text: p.XName
-                });
-                chart.yAxis[0].setTitle({
-                    text: p.Y0Name
-                });
-                chart.yAxis[1].setTitle({
-                    text: p.Y1Name
-                });
-                chart.yAxis[2].setTitle({
-                    text: p.Y2Name
-                });
-                chart.series[0].name = p.Y0Name
-                chart.series[1].name = p.Y1Name
-                chart.series[2].name = p.Y2Name
-               
+		// add the points
+		chart.series[0].setData(eval(p.Y0coordinates));
+		chart.series[1].setData(eval(p.Y1coordinates));
+		chart.series[2].setData(eval(p.Y2coordinates));
+		chart.setTitle({
+		    text: p.Titletext
+		});
+		chart.xAxis[0].setTitle({
+		    text: p.XName
+		});
+		chart.yAxis[0].setTitle({
+		    text: p.Y0Name
+		});
+		chart.yAxis[1].setTitle({
+		    text: p.Y1Name
+		});
+		chart.yAxis[2].setTitle({
+		    text: p.Y2Name
+		});
+		chart.series[0].name = p.Y0Name
+		chart.series[1].name = p.Y1Name
+		chart.series[2].name = p.Y2Name
+	      
 		// honor the user's preference on what to show
 		if (showPace == false) {hideIt(0);}
 		if (showElev == false) {hideIt(1);}
 		if (showCad == false) {hideIt(2);}
-                
-                 // create a new map
+		
+		// create a new map
 		map = new google.maps.Map(document.getElementById('map'), {
 		  zoom: 15,
 		  center: p.Latlongs[0],
@@ -296,7 +296,7 @@
 		// Listen to mouse moves over the chart.
 		chartDiv = document.getElementById('rungraph');
 		google.maps.event.addDomListener(chartDiv, 'mousemove', function(e){
-			 moveMarker(e);
+			moveMarker(e);
 			});
 			
 		// Add lap values to the data table.	
@@ -317,23 +317,24 @@
 		}
 		var table = new google.visualization.Table(document.getElementById('table_div'));
 		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
-        
-            },
-            cache: false
-        }); 
+	
+	    },
+	    cache: false
+	}); 
 
     } 
 
 
 
+	      
     $(document).ready(function() {
 	
 
 	
 	// Submit the file upload form.
-	document.getElementById("myfiles").onchange = function() {
-	    var file = myfiles.files[0]; // grab the first (and only) file in the list
-	    var fileExt = $("input#myfiles").val();
+	document.getElementById("runfile").onchange = function() {
+	    var file = runfile.files[0]; // grab the first (and only) file in the list
+	    var fileExt = $("input#runfile").val();
 	    fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
 	    fileExt = fileExt.toLowerCase();
 
@@ -343,112 +344,123 @@
 		return false;
 	    } // end if file not the right type
 	
-	    document.getElementById("myform").submit();
-	    document.getElementById("runbtn").MaterialButton.enable()
-	    
+	    var file = $('#runfile').get(0).files[0];
+	    var formData = new FormData();
+	    formData.append('file', file)
+	    $.ajax({
+		url: "",
+		type: "post",
+		data: formData,
+		processData: false,
+		contentType: false,
+		success: function(){
+		  requestData();
+		},
+		error:function(){
+		  alert("Sorry! Error uploading file.");
+		}   
+	    }); 
 	}
+
+	//
+	//Here's the global options object...
+	//
+
+	/**
+	* Grid-light theme for Highcharts JS
+	* @author Torstein Honsi
+	*/
+	// Load the fonts
 	
-
-
-	//
-        //Here's the global options object...
-	//
-
-        /**
-         * Grid-light theme for Highcharts JS
-         * @author Torstein Honsi
-         */
-        // Load the fonts
-        
-        Highcharts.createElement('link', {
-            href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
-            rel: 'stylesheet',
-            type: 'text/css'
-        }, null, document.getElementsByTagName('head')[0]);
+	Highcharts.createElement('link', {
+	    href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+	    rel: 'stylesheet',
+	    type: 'text/css'
+	}, null, document.getElementsByTagName('head')[0]);
 /*        
-        Highcharts.createElement('link', {
-            href: 'https://fonts.googleapis.com/css?family=Dosis:400,600',
-            rel: 'stylesheet',
-            type: 'text/css'
-        }, null, document.getElementsByTagName('head')[0]); 
+	Highcharts.createElement('link', {
+	    href: 'https://fonts.googleapis.com/css?family=Dosis:400,600',
+	    rel: 'stylesheet',
+	    type: 'text/css'
+	}, null, document.getElementsByTagName('head')[0]); 
 */
-        Highcharts.theme = {
+	Highcharts.theme = {
 
-            colors: ["#70c6ea", "#6de8c3", "#ce7190", "#b28585","#75bedd", "#aaeeee", "#ff0066", "#eeaaee",
-                "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"
-            ],
-            chart: {
-                backgroundColor: null,
-                style: {
-                    fontFamily: "Roboto, sans-serif"
-                }
-            },
-            title: {
-                style: {
-                    fontSize: '14px',
+	    colors: ["#70c6ea", "#6de8c3", "#ce7190", "#b28585","#75bedd", "#aaeeee", "#ff0066", "#eeaaee",
+		"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"
+	    ],
+	    chart: {
+		backgroundColor: null,
+		style: {
+		    fontFamily: "Roboto, sans-serif"
+		}
+	    },
+	    title: {
+		style: {
+		    fontSize: '14px',
 //                    textTransform: 'uppercase'
-                }
-            },
-            tooltip: {
-                borderWidth: 0,
-                backgroundColor: 'rgba(219,219,216,0.8)',
-                shadow: false
-            },
-            legend: {
-                itemStyle: {
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                }
-            },
-            xAxis: {
-                gridLineWidth: 2,
-                title: {
-                    style: {
+		}
+	    },
+	    tooltip: {
+		borderWidth: 0,
+		backgroundColor: 'rgba(219,219,216,0.8)',
+		shadow: false
+	    },
+	    legend: {
+		itemStyle: {
+		    fontWeight: 'bold',
+		    fontSize: '14px'
+		}
+	    },
+	    xAxis: {
+		gridLineWidth: 2,
+		title: {
+		    style: {
 //                        textTransform: 'uppercase',
-                        fontSize: '14px'
-                    }
-                },
-                labels: {
-                    style: {
-                        fontSize: '14px'
-                    }
-                }
-            },
-            yAxis: {
-                minorTickInterval: 'auto',
-                title: {
-                    style: {
+			fontSize: '16px'
+		    }
+		},
+		labels: {
+		    style: {
+			fontSize: '14px'
+		    }
+		}
+	    },
+	    yAxis: {
+		minorTickInterval: 'auto',
+		title: {
+		    style: {
 //                        textTransform: 'uppercase',
-                        fontSize: '14px'
-                    }
-                },
-                labels: {
-                    style: {
-                        fontSize: '14px'
-                    }
-                }
-            },
-            plotOptions: {
-                series: {
-                    shadow: false
-                },
-                candlestick: {
-                    lineColor: '#404048'
-                }
-            },
+			fontSize: '14px'
+		    }
+		},
+		labels: {
+		    style: {
+			fontSize: '14px'
+		    }
+		}
+	    },
+	    plotOptions: {
+		series: {
+		    shadow: false
+		},
+		candlestick: {
+		    lineColor: '#404048'
+		}
+	    },
 
 
-            // General
-            background2: '#F0F0EA'
+	    // General
+	    background2: '#F0F0EA'
 
-        };
+	};
 
-        // Apply the theme
-        Highcharts.setOptions(Highcharts.theme);
+	// Apply the theme
+	Highcharts.setOptions(Highcharts.theme);
 
     });
     
-   
+  
 
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y">
@@ -456,16 +468,13 @@
 
 
 <style>
-#myfiles { display: none }
+#runfile { display: none }
 </style>
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['table']});
-//      google.charts.setOnLoadCallback(drawTable);
-
-
-    </script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['table']});
+</script>
     
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
@@ -474,30 +483,15 @@
 </head>
   <body>
   
-  
-    <!-- Used to prevent the page from redirecting/reloading on upload. Receives response from server. -->
-    <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
-  
     <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--5-col"></div>
-      <div class="mdl-cell mdl-cell--1-col">
+      <div class="mdl-cell mdl-cell--12-col"></div>
 	      <!-- FAB button with ripple -->   
-	  <form id="myform" method="post" enctype="multipart/form-data" target="dummyframe">
-	  <label id="mylabel" for="myfiles" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
-	    <i class="material-icons">file_upload</i>
-	    <input type="file" name="myfiles" id="myfiles" multiple="multiple"> 
-	  </label>
-	  </form>       
-	  <span for="mylabel" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
-      </div>
-      <div class="mdl-cell mdl-cell--1-col">
-	      <!-- FAB button with ripple -->
-	  <button id="runbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--primary" onclick="requestData()" disabled>
+	  <label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 	    <i class="material-icons">directions_run</i>
-	  </button>    
-	  <span for="runbtn" class="mdl-tooltip">Generate plot.</span>
+	    <input type="file" name="runfile" id="runfile"> 
+	  </label>
+	  <span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
       </div>
-      <div class="mdl-cell mdl-cell--5-col"></div>
     </div>  
   
   
@@ -538,7 +532,7 @@
     </div>
   </div>
     <div class="mdl-card__supporting-text">
-          Click and drag = zoom, Shift-drag = pan
+	  Click and drag = zoom, Shift-drag = pan
     </div>
   </div>
   
@@ -552,14 +546,14 @@
 	<a href="https://support.google.com/maps/answer/144349?hl=e">Google Maps Help</a>
       </div>
     </div>
-    	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
       <div class="mdl-card__title">
 	<h2 class="mdl-card__title-text">Laps/Splits</h2>
       </div>
       <div id="table_div" style="height: 380px">
       </div>
     <div class="mdl-card__supporting-text">
-          Click the headers to sort.
+	  Click the headers to sort.
     </div>      
     </div>
   </div>

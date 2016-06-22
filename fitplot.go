@@ -52,32 +52,31 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	//get a ref to the parsed multipart form
 	m := r.MultipartForm
-
+	
 	//get the *fileheaders
-	files := m.File["myfiles"]
-	for i, _ := range files {
-		//for each fileheader, get a handle to the actual file
-		file, err := files[i].Open()
-		defer file.Close()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		dst, err := ioutil.TempFile("", "example")
-		uploadFname = "" 
-		uploadFname = dst.Name()
-		defer dst.Close()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		//copy the uploaded file to the destination file
-		if _, err := io.Copy(dst, file); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	myfile := m.File["file"]
+	//get a handle to the actual file
+	file, err := myfile[0].Open()
+	defer file.Close()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	dst, err := ioutil.TempFile("", "example")
+	uploadFname = "" 
+	uploadFname = dst.Name()
+	defer dst.Close()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//copy the uploaded file to the destination file
+	if _, err := io.Copy(dst, file); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	fmt.Println("uploadHandler Received Request")
+	
 }
 
 func plotHandler(w http.ResponseWriter, r *http.Request) {
