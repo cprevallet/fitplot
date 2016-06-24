@@ -482,12 +482,14 @@ google.charts.load('current', {'packages':['table']});
 
 <script type='text/javascript'>
     $(window).load(function(){
+    // Set the checkbox based on the cookie when the window loads.
     $("input.mdl-checkbox__input").each(function() {
 	var mycookie = $.cookie($(this).attr('id'));
 	if (mycookie && mycookie == "true") {
 	    $(this).prop('checked', mycookie);
 	}
     });
+    // Store/update the cookie when the checkbox changes.
     $("input.mdl-checkbox__input").change(function() {
 	$.cookie($(this).attr("id"), $(this).prop('checked'), {
 	    path: '/',

@@ -224,6 +224,10 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//Serve static files if the prefix is "static"
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+  
 	http.HandleFunc("/", pageloadHandler)    
 	http.HandleFunc("/getplot", plotHandler) 
 	//Listen on port 8080
