@@ -20,7 +20,7 @@ var paceToMetric float64 = 16.666667 // sec/meter -> min/km
 
 var toEnglish bool = true
 
-// Do unit conversion for slices of type valtype
+// Do unit conversion for slices of type valtype.
 func convertUnits(vals []float64, valtype string, toEnglish bool) (cvtVals []float64) {
         for _, val := range vals {
 	  converted := unitCvt(val, valtype, toEnglish)
@@ -29,7 +29,7 @@ func convertUnits(vals []float64, valtype string, toEnglish bool) (cvtVals []flo
 	return cvtVals
 }
 
-// Convert a single value (e.g. from a slice)
+// Convert a single value (e.g. from a slice).
 func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
 	switch {
         case valtype == "distance":

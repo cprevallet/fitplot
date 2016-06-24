@@ -42,7 +42,7 @@ func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 
 //Upload a copy the fit file to a temporary local directory.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	//parse the multipart form in the request
+	// Parse the multipart form in the request.
 	err := r.ParseMultipartForm(100000)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -50,12 +50,12 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	//get a ref to the parsed multipart form
+	// Get a ref to the parsed multipart form.
 	m := r.MultipartForm
 	
-	//get the *fileheaders
+	// Get the *fileheaders.
 	myfile := m.File["file"]
-	//get a handle to the actual file
+	// Get a handle to the actual file.
 	file, err := myfile[0].Open()
 	defer file.Close()
 	if err != nil {
@@ -70,7 +70,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//copy the uploaded file to the destination file
+	// Copy the uploaded file to the destination file.
 	if _, err := io.Copy(dst, file); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -110,7 +110,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var runLaps []fit.Lap
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
 
-	//what has the user selected for unit system?
+	// What has the user selected for unit system?
 
 	toEnglish = true
 	param1s := r.URL.Query()["toEnglish"];
@@ -127,7 +127,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 //		fmt.Printf("%s\n\n", dump)
 
-        //Read file. uploadFname gets set in uploadHandler.
+        // Read file. uploadFname gets set in uploadHandler.
 	b, _ := ioutil.ReadFile(uploadFname)
 	rslt := http.DetectContentType(b)
 	switch {
@@ -152,7 +152,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    runRecs = cvtToFitRecs(db)
 	    runLaps = cvtToFitLaps(db)
 	}
-        //Build the variable strings based on unit system.
+        // Build the variable strings based on unit system.
         if toEnglish {
             xStr = xStr + "(mi)"
             y0Str = y0Str + "(min/mi)"
@@ -175,7 +175,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    c4Str = "Calories" + "(kcal)"
         }
 
-        //Create an object to contain various plot values.
+        // Create an object to contain various plot values.
         p := Plotvals {Titletext: "", 
                 XName: xStr, 
                 Y0Name: y0Str,
@@ -197,8 +197,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
         }
 
 
-	//Here's where the heavy lifting of pulling tracks and performance information
-        //from (portions of) the fit file into something we can view is done.
+	// Here's where the heavy lifting of pulling tracks and performance information
+        // from (portions of) the fit file into something we can view is done.
 	p.Latlongs ,p.Y0coordinates, p.Y1coordinates, p.Y2coordinates, timeStamps =
 	  processFitRecord(runRecs, toEnglish)
 	
