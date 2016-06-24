@@ -29,6 +29,7 @@
 	});
     });
 
+    // Show or hide the trends.
     function hideIt(idx) {
 	if (chart.series[idx].visible) {
 	    chart.series[idx].hide();
@@ -43,6 +44,7 @@
 	}
 	}
 
+    // Move the map marker based on the chart pointer.
     function moveMarker(evnt){
 	// undocumented api function, may change?
 	// http://jsfiddle.net/highcharts/K7pN9/
@@ -54,11 +56,9 @@
 		}
 	}
 
+    // Create a chart object with good defaults for a distance chart.
     function createEmptyChart() {
 
-	//
-	// Here's a chart object with good defaults for a distance chart.
-	//
 
 	newChart = new Highcharts.Chart({
 	    chart: {
@@ -175,13 +175,13 @@
 	    dataType: "json",
 	    success: function(data) {
 
-		// save a global copy
+		// Save a global copy.
 		p = data
 
-		// create a new chart
+		// Create a new chart.
 		chart = createEmptyChart();
 
-		// add the points
+		// Add the points.
 		chart.series[0].setData(eval(p.Y0coordinates));
 		chart.series[1].setData(eval(p.Y1coordinates));
 		chart.series[2].setData(eval(p.Y2coordinates));
@@ -204,12 +204,12 @@
 		chart.series[1].name = p.Y1Name
 		chart.series[2].name = p.Y2Name
 	      
-		// honor the user's preference on what to show
+		// Honor the user's preference on what to show.
 		if (showPace == false) {hideIt(0);}
 		if (showElev == false) {hideIt(1);}
 		if (showCad == false) {hideIt(2);}
 		
-		// create a new map
+		// Create a new map.
 		map = new google.maps.Map(document.getElementById('map'), {
 		  zoom: 15,
 		  center: p.Latlongs[0],
@@ -224,7 +224,7 @@
 
 		runPath.setMap(map);
 
-		// Center map based on path
+		// Center map based on path.
 		var bound = new google.maps.LatLngBounds();
 		for (i = 0; i < p.Latlongs.length; i++) {
 		  bound.extend( new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng) );
@@ -278,7 +278,7 @@
 	    fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
 	    fileExt = fileExt.toLowerCase();
 
-	    // check file formats
+	    // Check file extension.
 	    if (fileExt != "fit" && fileExt != "tcx") {
 		alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
 		return false;
@@ -302,18 +302,14 @@
 	    }); 
 	}
 
-	//
-	// Create the global options object...
-	//
-
-	// Load the fonts
-	
+	// Load the fonts.
 	Highcharts.createElement('link', {
 	    href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
 	    rel: 'stylesheet',
 	    type: 'text/css'
 	}, null, document.getElementsByTagName('head')[0]);
 
+	// Create the global options object.
 	Highcharts.theme = {
 
 	    colors: ["#70c6ea", "#6de8c3", "#ce7190"],
@@ -371,27 +367,19 @@
 	    plotOptions: {
 		series: {
 		    shadow: false
-		},
-		candlestick: {
-		    lineColor: '#404048'
 		}
 	    },
 
-
-	    // General
-	    background2: '#F0F0EA'
-
 	};
 
-	// Apply the theme
+	// Apply the theme.
 	Highcharts.setOptions(Highcharts.theme);
 
     });
     
 </script>
 
-// Styling
-
+<!-- Styling -->
 <style>#runfile { display: none }</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
