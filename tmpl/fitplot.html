@@ -13,9 +13,8 @@
     var map;    // global
     var p;      //global
     var marker; //global
-    var trace1; //global
 
-    function createPlotly(p){
+    function createPlotly(p, showPace, showElev, showCad){
 	// Boilerplate for fluid layout.
 	var d3 = Plotly.d3;
 	var WIDTH_IN_PERCENT_OF_PARENT = 99,
@@ -34,11 +33,14 @@
 	Plotly.purge(plotlyDiv);
 	
 	//Create a Plotly chart.
-	trace1 = {
+	var trace1 = {
 	  x: p.DispDistance, 
 	  y: p.DispPace, 
 	  name: p.Y0Name, 
 	  type: 'scatter',
+	  yaxis:'y',
+	  line:{color:"#1f77b4"},
+	  visible: showPace,
 	};
 
 	var trace2 = {
@@ -46,7 +48,9 @@
 	  y: p.DispAltitude, 
 	  name: p.Y1Name, 
 	  yaxis: 'y2', 
-	  type: 'scatter'
+	  type: 'scatter',
+	  line:{color:"#ff7f0e"},
+	  visible: showElev,
 	};
 
 	var trace3 = {
@@ -54,56 +58,69 @@
 	  y: p.DispCadence, 
 	  name: p.Y2Name, 
 	  yaxis: 'y3', 
-	  type: 'scatter'
+	  type: 'scatter',
+	  line:{color:"#4DAF4A"},
+	  visible: showCad,
 	};
 
 
 	var data = [trace1, trace2, trace3];
+	
+	var yaxisTitle = showPace ? p.Y0Name : '';
+	var yaxis2Title = showElev ? p.Y1Name : '';
+	var yaxis3Title = showCad ? p.Y2Name : '';
+	
 	var layout = {
-//	  showlegend: false,
+	  showlegend: false,
 	  title: p.Titletext, 
 	  xaxis: {
 	    title: p.XName,
-	    domain: [0.0, 0.80],
+	    domain: [0.0, 0.90],
 	    titlefont:{size:14},
 	    tickfont: {size:14},
 	    gridcolor: '#bdbdbd',
 	    gridwidth: 1,
 	  }, 
-	  legend: {
-	    orientation: "h",
-	  },
+//	  legend: {
+//	    orientation: "h",
+//	  },
+	  
+	  
 	  yaxis: {
-	    title: p.Y0Name, 
+	    title: yaxisTitle,
 	    titlefont: {color: '#1f77b4', size:14}, 
 	    tickfont: {color: '#1f77b4', size:14},
 	    autorange: 'reversed',
 	    anchor:'x',
 	    side:'left',
 	    position:0,
-	    gridcolor: '#bdbdbd',
-	    gridwidth: 1,
-	  }, 
+	    showgrid: showPace,
+	    showticklabels: showPace,
+	    zeroline: false,
+	  },
+	  
 	  yaxis2: {
-	    title: p.Y1Name, 
+	    title: yaxis2Title, 
 	    titlefont: {color: '#ff7f0e', size:14}, 
 	    tickfont: {color: '#ff7f0e', size:14}, 
 	    overlaying: 'y', 
 	    anchor:'x',
 	    side:'right',
-	    showgrid: false,
+	    showgrid: showElev,
+	    showticklabels: showElev,
 	    zeroline: false,
 	    
 	  }, 
 	  yaxis3: {
-	    title: p.Y2Name, 
+	    title: yaxis3Title, 
 	    titlefont: {color: '#4DAF4A', size:14}, 
-	    tickfont: {color: '#4DAF4A', size:14}, 
+	    tickfont: {color: '#4DAF4A', size:14},
 	    anchor: 'free', 
 	    overlaying: 'y', 
 	    side: 'right',
 	    position:1,
-	    showgrid: false,
+	    showgrid: showCad,
+	    showticklabels: showCad,
 	    zeroline: false,
 	  },
 	    font:{
@@ -139,12 +156,10 @@
     // Show or hide the trends.
     function hideIt(idx) {
 	if (chart.series[idx].visible) {
-//	    trace1.visible = false;
 	    chart.series[idx].hide();
 	    chart.yAxis[idx].visible = false;
 	    chart.yAxis[idx].setTitle({text: ''});
 	} else {
-//	    trace1.visible = true;
 	    chart.series[idx].show();
 	    chart.yAxis[idx].visible = true;
 	    if (idx == 0) {chart.yAxis[0].setTitle({text: p.Y0Name})};
@@ -286,7 +301,7 @@
 
 		// Save a global copy.
 		p = data
-/*
+
 		// Create a new chart.
 		chart = createEmptyChart();
 
@@ -312,11 +327,11 @@
 		chart.series[0].name = p.Y0Name
 		chart.series[1].name = p.Y1Name
 		chart.series[2].name = p.Y2Name
-*/	      
+	      
 		// Honor the user's preference on what to show.
-		if (showPace == false) {hideIt(0);}
-		if (showElev == false) {hideIt(1);}
-		if (showCad == false) {hideIt(2);}
+		//if (showPace == false) {hideIt(0);}
+		//if (showElev == false) {hideIt(1);}
+		//if (showCad == false) {hideIt(2);}
 		
 		// Create a new map.
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -373,7 +388,7 @@
 		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
 
 		// Create the run chart.
-		createPlotly(p);
+		createPlotly(p, showPace, showElev, showCad);
 		
 	    },
 	    cache: false
@@ -530,21 +545,21 @@
     <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--3-col">    
       <label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
-	  <input type="checkbox" id="pacechk" onclick="hideIt(0)" class="mdl-checkbox__input">
+	  <input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
 	  <span class="mdl-checkbox__label"></span>
       </label> Pace
       <span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
     </div>
     <div class="mdl-cell mdl-cell--3-col">   
     <label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
-	    <input type="checkbox" id="elevchk" onclick="hideIt(1)" class="mdl-checkbox__input">
+	    <input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
 	    <span class="mdl-checkbox__label"></span>
 	  </label> Elevation
       <span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
     </div>
     <div class="mdl-cell mdl-cell--3-col">
       <label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
-	<input type="checkbox" id="cadchk" onclick="hideIt(2)" class="mdl-checkbox__input">
+	<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
 	<span class="mdl-checkbox__label"></span>
       </label>  Cadence
       <span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
