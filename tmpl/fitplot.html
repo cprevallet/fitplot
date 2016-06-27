@@ -14,7 +14,7 @@
     var p;      //global
     var marker; //global
 
-    function createPlotly(){
+    function createPlotly(p){
 	// Boilerplate for fluid layout.
 	var d3 = Plotly.d3;
 	var WIDTH_IN_PERCENT_OF_PARENT = 90,
@@ -59,18 +59,22 @@
 	var data = [trace1, trace2, trace3];
 	var layout = {
 	  showlegend: false,
-	  title: 'multiple y-axes example', 
-	  xaxis: {domain: [0.0, 0.95]}, 
+	  title: p.Titletext, 
+	  xaxis: {
+	    title: p.XName,
+	    domain: [0.0, 0.90]
+	  }, 
 	  yaxis: {
-	    title: 'yaxis title', 
+	    title: p.Y0Name, 
 	    titlefont: {color: '#1f77b4'}, 
 	    tickfont: {color: '#1f77b4'},
+	    autorange: 'reversed',
 	    anchor:'x',
 	    side:'left',
 	    position:0
 	  }, 
 	  yaxis2: {
-	    title: 'yaxis2 title', 
+	    title: p.Y1Name, 
 	    titlefont: {color: '#ff7f0e'}, 
 	    tickfont: {color: '#ff7f0e'}, 
 	    overlaying: 'y', 
@@ -78,14 +82,18 @@
 	    side:'right',
 	  }, 
 	  yaxis3: {
-	    title: 'yaxis3 title', 
+	    title: p.Y2Name, 
 	    titlefont: {color: '#4DAF4A'}, 
 	    tickfont: {color: '#4DAF4A'}, 
 	    anchor: 'free', 
 	    overlaying: 'y', 
 	    side: 'right',
 	    position:1
-	  }, 
+	  },
+	    font:{
+	    family:"Roboto, sans-serif",
+	    size:14
+	  }
 	  };	
 	  Plotly.plot(gd, data, layout);
 	  
@@ -347,7 +355,7 @@
 		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
 
 		// Create the run chart.
-		createPlotly();
+		createPlotly(p);
 		
 	    },
 	    cache: false
