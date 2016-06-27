@@ -13,14 +13,14 @@
     var map;    // global
     var p;      //global
     var marker; //global
+    var trace1; //global
 
     function createPlotly(p){
 	// Boilerplate for fluid layout.
 	var d3 = Plotly.d3;
-	var WIDTH_IN_PERCENT_OF_PARENT = 90,
+	var WIDTH_IN_PERCENT_OF_PARENT = 99,
 	    HEIGHT_IN_PERCENT_OF_PARENT = 80;
 	var gd3 = d3.select("#plotlyDiv")
-//	    .append('div')
 	    .style({
 		width: WIDTH_IN_PERCENT_OF_PARENT + '%',
 		'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
@@ -34,11 +34,11 @@
 	Plotly.purge(plotlyDiv);
 	
 	//Create a Plotly chart.
-	var trace1 = {
+	trace1 = {
 	  x: p.DispDistance, 
 	  y: p.DispPace, 
 	  name: p.Y0Name, 
-	  type: 'scatter'
+	  type: 'scatter',
 	};
 
 	var trace2 = {
@@ -60,41 +60,55 @@
 
 	var data = [trace1, trace2, trace3];
 	var layout = {
-	  showlegend: false,
+//	  showlegend: false,
 	  title: p.Titletext, 
 	  xaxis: {
 	    title: p.XName,
-	    domain: [0.0, 0.90]
+	    domain: [0.0, 0.80],
+	    titlefont:{size:14},
+	    tickfont: {size:14},
+	    gridcolor: '#bdbdbd',
+	    gridwidth: 1,
 	  }, 
+	  legend: {
+	    orientation: "h",
+	  },
 	  yaxis: {
 	    title: p.Y0Name, 
-	    titlefont: {color: '#1f77b4'}, 
-	    tickfont: {color: '#1f77b4'},
+	    titlefont: {color: '#1f77b4', size:14}, 
+	    tickfont: {color: '#1f77b4', size:14},
 	    autorange: 'reversed',
 	    anchor:'x',
 	    side:'left',
-	    position:0
+	    position:0,
+	    gridcolor: '#bdbdbd',
+	    gridwidth: 1,
 	  }, 
 	  yaxis2: {
 	    title: p.Y1Name, 
-	    titlefont: {color: '#ff7f0e'}, 
-	    tickfont: {color: '#ff7f0e'}, 
+	    titlefont: {color: '#ff7f0e', size:14}, 
+	    tickfont: {color: '#ff7f0e', size:14}, 
 	    overlaying: 'y', 
 	    anchor:'x',
 	    side:'right',
+	    showgrid: false,
+	    zeroline: false,
+	    
 	  }, 
 	  yaxis3: {
 	    title: p.Y2Name, 
-	    titlefont: {color: '#4DAF4A'}, 
-	    tickfont: {color: '#4DAF4A'}, 
+	    titlefont: {color: '#4DAF4A', size:14}, 
+	    tickfont: {color: '#4DAF4A', size:14}, 
 	    anchor: 'free', 
 	    overlaying: 'y', 
 	    side: 'right',
-	    position:1
+	    position:1,
+	    showgrid: false,
+	    zeroline: false,
 	  },
 	    font:{
 	    family:"Roboto, sans-serif",
-	    size:14
+	    size:0,
 	  }
 	  };	
 	  Plotly.plot(gd, data, layout);
@@ -125,10 +139,12 @@
     // Show or hide the trends.
     function hideIt(idx) {
 	if (chart.series[idx].visible) {
+//	    trace1.visible = false;
 	    chart.series[idx].hide();
 	    chart.yAxis[idx].visible = false;
 	    chart.yAxis[idx].setTitle({text: ''});
 	} else {
+//	    trace1.visible = true;
 	    chart.series[idx].show();
 	    chart.yAxis[idx].visible = true;
 	    if (idx == 0) {chart.yAxis[0].setTitle({text: p.Y0Name})};
@@ -270,7 +286,7 @@
 
 		// Save a global copy.
 		p = data
-
+/*
 		// Create a new chart.
 		chart = createEmptyChart();
 
@@ -296,7 +312,7 @@
 		chart.series[0].name = p.Y0Name
 		chart.series[1].name = p.Y1Name
 		chart.series[2].name = p.Y2Name
-	      
+*/	      
 		// Honor the user's preference on what to show.
 		if (showPace == false) {hideIt(0);}
 		if (showElev == false) {hideIt(1);}
@@ -509,7 +525,8 @@
     </div>
     <div id="rungraph">
     </div>
-    <div id="plotlyDiv" style="height: 600px;">
+    <div id="plotlyDiv">
+    </div>
     <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--3-col">    
       <label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
