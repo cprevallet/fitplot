@@ -5,6 +5,8 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript"> google.charts.load('current', {'packages':['table']}); </script>
 
+
+
 <!--  Add the JavaScript to initialize the chart on document ready -->
 <script>
     var chart;  // global
@@ -262,12 +264,72 @@
 		}
 		var table = new google.visualization.Table(document.getElementById('table_div'));
 		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
-	
+
+		//Create a Plotly chart.
+		var trace1 = {
+		  x: [1, 2, 3], 
+		  y: [4, 5, 6], 
+		  name: 'yaxis1 data', 
+		  type: 'scatter'
+		};
+
+		var trace2 = {
+		  x: [2, 3, 4], 
+		  y: [40, 50, 60], 
+		  name: 'yaxis2 data', 
+		  yaxis: 'y2', 
+		  type: 'scatter'
+		};
+
+		var trace3 = {
+		  x: [4, 5, 6], 
+		  y: [40000, 50000, 60000], 
+		  name: 'yaxis3 data', 
+		  yaxis: 'y3', 
+		  type: 'scatter'
+		};
+
+
+		var data = [trace1, trace2, trace3];
+		var layout = {
+		  showlegend: false,
+		  title: 'multiple y-axes example', 
+		  xaxis: {domain: [0.0, 0.95]}, 
+		  yaxis: {
+		    title: 'yaxis title', 
+		    titlefont: {color: '#1f77b4'}, 
+		    tickfont: {color: '#1f77b4'},
+		    anchor:'x',
+		    side:'left',
+		    position:0
+		  }, 
+		  yaxis2: {
+		    title: 'yaxis2 title', 
+		    titlefont: {color: '#ff7f0e'}, 
+		    tickfont: {color: '#ff7f0e'}, 
+		    overlaying: 'y', 
+		    anchor:'x',
+		    side:'right',
+		  }, 
+		  yaxis3: {
+		    title: 'yaxis3 title', 
+		    titlefont: {color: '#4DAF4A'}, 
+		    tickfont: {color: '#4DAF4A'}, 
+		    anchor: 'free', 
+		    overlaying: 'y', 
+		    side: 'right',
+		    position:1
+		  }, 
+		  };	
+
+		  
+		  Plotly.newPlot('plotlyDiv', data, layout);
+		
+		
 	    },
 	    cache: false
-	}); 
-
-    } 
+	});
+};
 
     $(document).ready(function() {
 	
@@ -386,6 +448,7 @@
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
 </head>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <body>
   
     <div class="mdl-grid">
@@ -399,13 +462,26 @@
       </div>
     </div>  
   
+  </div>
   
+    <div class="mdl-card mdl-cell--12-col mdl-shadow--3dp">
+    <div class="mdl-card__title">
+      <h2 class="mdl-card__title-text">Graph</h2>
+    </div>
+    <div id="plotlyDiv" style="height: 600px;">
+    <div class="mdl-card__supporting-text">
+	  Click and drag = zoom, Shift-drag = pan
+    </div>
+  </div>
+    
+    
     <div class="mdl-card mdl-cell--12-col mdl-shadow--3dp">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text">Graph</h2>
     </div>
     <div id="rungraph">
     </div>
+    <div id="plotlyDiv" style="height: 600px;">
     <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--3-col">    
       <label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
