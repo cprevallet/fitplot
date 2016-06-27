@@ -93,7 +93,7 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
 
 // Main entry point
 // Convert the record structure to slices and maps suitable for use in the user interface.
-func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64, dispTimestamp[]int64 ) {
+func processFitRecord(runRecs []fit.Record, toEnglish bool) ( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64, dispTimestamp[]int64, dispDistance []float64, dispPace []float64, dispAltitude []float64, dispCadence []float64 ) {
 
     // Get slices from the runRecs structure.
     timestamp, distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
@@ -124,10 +124,10 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool)( mapData []map[strin
     lng_clean := removeOutliers(lng, outIdxs)  
     
     // Convert the units for the slices that have them.
-    dispDistance := convertUnits(distance_clean, "distance", toEnglish)
-    dispPace := convertUnits(pace_clean, "pace", toEnglish)
-    dispAltitude := convertUnits(altitude_clean, "altitude", toEnglish)
-    dispCadence := convertUnits(cadence_clean, "cadence", toEnglish)
+    dispDistance = convertUnits(distance_clean, "distance", toEnglish)
+    dispPace = convertUnits(pace_clean, "pace", toEnglish)
+    dispAltitude = convertUnits(altitude_clean, "altitude", toEnglish)
+    dispCadence = convertUnits(cadence_clean, "cadence", toEnglish)
     dispTimestamp = timestamp_clean
     
     //Return the values used in the user interface.
