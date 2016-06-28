@@ -73,14 +73,6 @@ func unpackRecs( runRecs []fit.Record) (timestamp []int64, distance []float64, a
 	return	 
   }
 
-// Take two slices and pair the individual elements into x-y points.
-func createPlotCoordinates(xSlice []float64, ySlice []float64)(data [][]float64) {
-  for i, _ := range xSlice {
-    coordpair := []float64{xSlice[i], ySlice[i]}
-    data = append(data, coordpair)
-  }
-  return
-}
 
 // Convert two arrays into a map used by Google maps.
 func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[string]float64) {
@@ -93,7 +85,7 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
 
 // Main entry point
 // Convert the record structure to slices and maps suitable for use in the user interface.
-func processFitRecord(runRecs []fit.Record, toEnglish bool) ( mapData []map[string]float64,Y0Pairs [][]float64, Y1Pairs [][]float64, Y2Pairs [][]float64, dispTimestamp[]int64, dispDistance []float64, dispPace []float64, dispAltitude []float64, dispCadence []float64 ) {
+func processFitRecord(runRecs []fit.Record, toEnglish bool) ( mapData []map[string]float64, dispTimestamp[]int64, dispDistance []float64, dispPace []float64, dispAltitude []float64, dispCadence []float64 ) {
 
     // Get slices from the runRecs structure.
     timestamp, distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
@@ -131,9 +123,6 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool) ( mapData []map[stri
     dispTimestamp = timestamp_clean
     
     //Return the values used in the user interface.
-    Y0Pairs = createPlotCoordinates(dispDistance, dispPace)
-    Y1Pairs = createPlotCoordinates(dispDistance, dispAltitude)
-    Y2Pairs = createPlotCoordinates(dispDistance, dispCadence)
     mapData = getMapCoordinates(lat_clean, lng_clean)
     
     return
