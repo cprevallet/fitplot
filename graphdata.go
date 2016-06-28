@@ -17,6 +17,7 @@ var metersToKm float64 = 0.001  //meter -> km
 var metersToFt float64 = 3.2808399 //meter ->ft
 var paceToEnglish float64 = 26.8224  // sec/meter -> min/mile
 var paceToMetric float64 = 16.666667 // sec/meter -> min/km
+var stridestoSteps float64 = 2.0 //strides/min -> steps/min (for bipeds)
 
 var toEnglish bool = true
 
@@ -51,7 +52,7 @@ func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
 		cvtVal = val
 	   }
         case valtype == "cadence":
-	  cvtVal = val
+	  cvtVal = val * stridestoSteps
         }
   return cvtVal
 }
