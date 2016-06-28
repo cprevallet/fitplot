@@ -10,6 +10,7 @@ import (
 //  "fmt"
   "math"
   "strconv"
+  "time"
 )
 
 var metersToMiles float64 = 0.00062137119 //meter -> mile
@@ -201,3 +202,39 @@ func decimalTimetoMinSec(in float64) (out string) {
   out = in_min_str + ":" + in_sec_str
   return out
 }
+
+// Create the summary statistics strings.
+func createStats(toEnglish bool, DispDistance[]float64, TimeStamps[]int64, 
+		 LapCal[]float64) (totalDistance string, totalPace string, 
+		elapsedTime string, totalCal string, startDateStamp string, 
+		endDateStamp string, device string) {
+   
+    // Calculate run start and end times.
+    startDateStamp = time.Unix(TimeStamps[0], 0).Format(time.UnixDate)
+    endDateStamp = time.Unix(TimeStamps[len(TimeStamps)-1], 0).Format(time.UnixDate)
+    // Calculate overall distance.
+    totalDistance = strconv.FormatFloat(DispDistance[len(DispDistance)-1], 'f', 2, 64)
+    if toEnglish {totalDistance += " mi"} else {totalDistance += " km"}
+    // Calculate mm:ss for totalPace.
+    timeDiffinMinutes := (TimeStamps[len(TimeStamps)-1] - TimeStamps[0])/60.0
+    decimalPace := float64(timeDiffinMinutes)/DispDistance[len(DispDistance)-1]
+    totalPace = decimalTimetoMinSec(decimalPace)
+    if toEnglish {totalPace += " min/mi"} else {totalPace+= " min/km"}
+    // Calculate hh:mm:ss for elapsedTime.
+    timeDiff := float64(timeDiffinMinutes * 60.0) //seconds
+    hours := math.Floor(timeDiff / 3600.0)
+    timeDiff -= hours * (3600)
+    mins := math.Floor(timeDiff / 60.0)
+    min_str := decimalTimetoMinSec(mins)
+    elapsedTime = strconv.Itoa(int(math.Floor(hours))) + ":" + min_str
+    // Sum up the lap calories
+    totcal := 0.0
+    for _, calorie := range(LapCal) {
+      totcal += calorie
+    }
+    totalCal = strconv.Itoa(int((math.Floor(totcal)))) + " kcal"
+    // TODO Get the device name.
+    device = "not available"
+    return
+}
+	  

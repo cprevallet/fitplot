@@ -194,45 +194,15 @@
 		
 		// Write summary information.
 		$("#over_div").empty();
-		var startDateStamp = new Date(p.TimeStamps[0]*1000);	  
-		var endDateStamp = new Date(p.TimeStamps[p.TimeStamps.length-1]*1000);
-		var totalDistance = p.DispDistance[p.DispDistance.length -1]; 
-		var distunits = useEnglish ? "mi":"km";
-		var timeDiff = endDateStamp.getTime() - startDateStamp.getTime(); //milliseconds
-		var timeDiffinMinutes = timeDiff/ (1000 * 60);
-		var decimalPace = timeDiffinMinutes/totalDistance;
-		var totalPaceMin = Math.floor(decimalPace);
-		var totalPaceSecs = Math.floor((decimalPace % 1) * 60);
-		var totalPace = '';
-		if (totalPaceSecs < 10) {
-		    totalPace += totalPaceMin + ':0' + totalPaceSecs;
-		} else {
-		    totalPace += totalPaceMin + ':' + totalPaceSecs;
-		}
-		var paceunits = useEnglish ? "min/mi":"min/km";
-		var hours = Math.floor(timeDiff / (1000 * 60 * 60));
-		timeDiff -= hours * (1000 * 60 * 60);
-		var mins = Math.floor(timeDiff / (1000 * 60));
-		timeDiff -= mins * (1000 * 60);
-		var secs = Math.floor(timeDiff / 1000)
-		timeDiff -= secs * 1000;
-		if (mins < 10) {mins = '0' + mins;}
-		if (secs < 10) {secs = '0' + secs;}
-		elapsedTime = hours + ':' + mins + ':' + secs;
-		var totalCal = 0.0;
-		for(var j=0; j < p.LapCal.length; j++) {
-		      totalCal += p.LapCal[j];
-		  }
-		
 		summary = document.getElementById('over_div')
 		summary.innerHTML += '</br>Congrats on your run!</br>';
-		summary.innerHTML += '</br><b>Distance: </b> ' + totalDistance.toFixed(2) + ' ' + distunits;
-		summary.innerHTML += '</br><b>Time: </b> ' + elapsedTime;
-		summary.innerHTML += '</br><b>Pace: </b> ' + totalPace + ' ' + paceunits;
-		summary.innerHTML += '</br><b>Start:</b> ' + startDateStamp;
-		summary.innerHTML += '</br><b>End: </b> ' + endDateStamp;
-		summary.innerHTML += '</br><b>Calories: </b>' + totalCal + ' ' + 'kcal';
-		summary.innerHTML += '</br><b>Device:</b>';
+		summary.innerHTML += '</br><b>Distance: </b> ' + p.TotalDistance;
+		summary.innerHTML += '</br><b>Time: </b> ' + p.ElapsedTime;
+		summary.innerHTML += '</br><b>Pace: </b> ' + p.TotalPace;
+		summary.innerHTML += '</br><b>Start:</b> ' + p.StartDateStamp;
+		summary.innerHTML += '</br><b>End: </b> ' + p.EndDateStamp;
+		summary.innerHTML += '</br><b>Calories: </b>' + p.TotalCal;
+		summary.innerHTML += '</br><b>Device:</b>' + p.Device;
 		
 		// Create a new map.
 		map = new google.maps.Map(document.getElementById('map'), {

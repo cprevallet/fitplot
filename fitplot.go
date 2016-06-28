@@ -102,6 +102,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    C2Str string
 	    C3Str string
 	    C4Str string
+	    TotalDistance string
+	    TotalPace string
+	    ElapsedTime string
+	    TotalCal string
+	    StartDateStamp string
+	    EndDateStamp string
+	    Device string
 	}
         var xStr string = "Distance "
         var y0Str string = "Pace "
@@ -197,6 +204,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		C2Str: c2Str,
 		C3Str: c3Str,
 		C4Str: c4Str,
+		TotalDistance: "",
+		TotalPace: "",
+		ElapsedTime: "",
+		TotalCal: "",
+		StartDateStamp: "",
+		EndDateStamp: "",
+		Device: "",
         }
 
 
@@ -209,6 +223,10 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	
 	//Get start time.
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
+	
+	// Calculate the summary string information.
+	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, p.EndDateStamp, 
+	p.Device = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal) 
 	
         //Convert to json.
         js, err := json.Marshal(p)
