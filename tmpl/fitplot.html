@@ -192,6 +192,48 @@
 		// Save a global copy.
 		p = data
 		
+		// Write summary information.
+		$("#over_div").empty();
+		var startDateStamp = new Date(p.TimeStamps[0]*1000);	  
+		var endDateStamp = new Date(p.TimeStamps[p.TimeStamps.length-1]*1000);
+		var totalDistance = p.DispDistance[p.DispDistance.length -1]; 
+		var distunits = useEnglish ? "mi":"km";
+		var timeDiff = endDateStamp.getTime() - startDateStamp.getTime(); //milliseconds
+		var timeDiffinMinutes = timeDiff/ (1000 * 60);
+		var decimalPace = timeDiffinMinutes/totalDistance;
+		var totalPaceMin = Math.floor(decimalPace);
+		var totalPaceSecs = Math.floor((decimalPace % 1) * 60);
+		var totalPace = '';
+		if (totalPaceSecs < 10) {
+		    totalPace += totalPaceMin + ':0' + totalPaceSecs;
+		} else {
+		    totalPace += totalPaceMin + ':' + totalPaceSecs;
+		}
+		var paceunits = useEnglish ? "min/mi":"min/km";
+		var hours = Math.floor(timeDiff / (1000 * 60 * 60));
+		timeDiff -= hours * (1000 * 60 * 60);
+		var mins = Math.floor(timeDiff / (1000 * 60));
+		timeDiff -= mins * (1000 * 60);
+		var secs = Math.floor(timeDiff / 1000)
+		timeDiff -= secs * 1000;
+		if (mins < 10) {mins = '0' + mins;}
+		if (secs < 10) {secs = '0' + secs;}
+		elapsedTime = hours + ':' + mins + ':' + secs;
+		var totalCal = 0.0;
+		for(var j=0; j < p.LapCal.length; j++) {
+		      totalCal += p.LapCal[j];
+		  }
+		
+		summary = document.getElementById('over_div')
+		summary.innerHTML += '</br>Congrats on your run!</br>';
+		summary.innerHTML += '</br><b>Distance: </b> ' + totalDistance.toFixed(2) + ' ' + distunits;
+		summary.innerHTML += '</br><b>Time: </b> ' + elapsedTime;
+		summary.innerHTML += '</br><b>Pace: </b> ' + totalPace + ' ' + paceunits;
+		summary.innerHTML += '</br><b>Start:</b> ' + startDateStamp;
+		summary.innerHTML += '</br><b>End: </b> ' + endDateStamp;
+		summary.innerHTML += '</br><b>Calories: </b>' + totalCal + ' ' + 'kcal';
+		summary.innerHTML += '</br><b>Device:</b>';
+		
 		// Create a new map.
 		map = new google.maps.Map(document.getElementById('map'), {
 		  zoom: 15,
@@ -304,11 +346,30 @@
 	  </label>
 	  <span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
       </div>
-    </div>  
-  
+
+  <div class="mdl-grid">
+	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">Summary</h2>
+      </div>
+    <div id="over_div" class="mdl-card__supporting-text">
+    </div>      
+    </div>
+	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">Laps/Splits</h2>
+      </div>
+      <div id="table_div" style="height: 380px">
+      </div>
+    <div class="mdl-card__supporting-text">
+	  Click the headers to sort.
+    </div>      
+    </div>
   </div>
+      
   
-    
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--12-col"></div>    
     <div class="mdl-card mdl-cell--6-col mdl-shadow--3dp" style="height: 600px">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text">Graph</h2>
@@ -348,10 +409,9 @@
     <div class="mdl-card__supporting-text">
 	  Click and drag = zoom, Shift-drag = pan
     </div>
-  </div>
-  
-  <div class="mdl-grid">
-	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+    </div>
+    
+    	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
       <div class="mdl-card__title">
 	<h2 class="mdl-card__title-text">Map</h2>
       </div>
@@ -360,17 +420,9 @@
 	<a href="https://support.google.com/maps/answer/144349?hl=e">Google Maps Help</a>
       </div>
     </div>
-	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Laps/Splits</h2>
-      </div>
-      <div id="table_div" style="height: 380px">
-      </div>
-    <div class="mdl-card__supporting-text">
-	  Click the headers to sort.
-    </div>      
-    </div>
   </div>
+
+
   
 
   </body>

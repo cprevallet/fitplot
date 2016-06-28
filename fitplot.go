@@ -91,6 +91,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    DispPace []float64
 	    DispAltitude []float64
 	    DispCadence []float64
+	    TimeStamps []int64
             Latlongs[] map[string]float64 
             LapDist []float64
             LapTime []string
@@ -102,7 +103,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    C3Str string
 	    C4Str string
 	}
-	var TimeStamps []int64
         var xStr string = "Distance "
         var y0Str string = "Pace "
         var y1Str string = "Elevation"
@@ -186,6 +186,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DispPace: nil,
 		DispAltitude: nil,
 		DispCadence: nil,
+		TimeStamps: nil,
                 Latlongs: nil,
 		LapDist: nil,
 		LapTime: nil,
@@ -201,13 +202,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Here's where the heavy lifting of pulling tracks and performance information
         // from (portions of) the fit file into something we can view is done.
-	p.Latlongs, TimeStamps, p.DispDistance, p.DispPace, p.DispAltitude, p.DispCadence =
+	p.Latlongs, p.TimeStamps, p.DispDistance, p.DispPace, p.DispAltitude, p.DispCadence =
 	  processFitRecord(runRecs, toEnglish)
 	
 	p.LapDist, p.LapTime, p.LapCal, p.LapPace = processFitLap(runLaps, toEnglish)
 	
 	//Get start time.
-	p.Titletext += time.Unix(TimeStamps[0], 0).Format(time.UnixDate)
+	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 	
         //Convert to json.
         js, err := json.Marshal(p)
