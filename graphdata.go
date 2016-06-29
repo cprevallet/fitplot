@@ -7,7 +7,9 @@ package main
 import (
   "github.com/jezard/fit"
   "github.com/cprevallet/fitplot/stats"
-//  "fmt"
+  "github.com/cprevallet/fitplot/strutil"
+  "github.com/cprevallet/fitplot/predict"
+  "fmt"
   "math"
   "strconv"
   "time"
@@ -178,11 +180,11 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
     dist := unitCvt(item.Total_distance, "distance", toEnglish)
     cal := float64(item.Total_calories)
     // Seconds to "min:sec"
-    laptime_str := decimalTimetoMinSec(float64(item.Total_elapsed_time/60.0))
+    laptime_str := strutil.DecimalTimetoMinSec(float64(item.Total_elapsed_time/60.0))
     // Calculate pace string.
     pace := item.Total_elapsed_time/60.0/dist
     //pace = unitCvt(pace, "pace", toEnglish)
-    pace_str := decimalTimetoMinSec(pace)
+    pace_str := strutil.DecimalTimetoMinSec(pace)
     LapDist = append(LapDist, dist)
     LapCal = append(LapCal, cal)
     LapPace = append(LapPace, pace_str)
@@ -191,17 +193,6 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
    return LapDist, LapTime, LapCal, LapPace
 }
 
-// Convert decimal minutes to mm:ss.
-func decimalTimetoMinSec(in float64) (out string) {
-  in_min := int(math.Floor(in))
-  in_min_str := strconv.Itoa(in_min)
-  if in_min < 10 { in_min_str = "0" + in_min_str}
-  in_sec := int((in - float64(in_min))* 60)
-  in_sec_str := strconv.Itoa(in_sec)
-  if in_sec < 10 { in_sec_str = "0" + in_sec_str}
-  out = in_min_str + ":" + in_sec_str
-  return out
-}
 
 // Create the summary statistics strings.
 func createStats(toEnglish bool, DispDistance[]float64, TimeStamps[]int64, 
@@ -218,15 +209,10 @@ func createStats(toEnglish bool, DispDistance[]float64, TimeStamps[]int64,
     // Calculate mm:ss for totalPace.
     timeDiffinMinutes := (TimeStamps[len(TimeStamps)-1] - TimeStamps[0])/60.0
     decimalPace := float64(timeDiffinMinutes)/DispDistance[len(DispDistance)-1]
-    totalPace = decimalTimetoMinSec(decimalPace)
+    totalPace = strutil.DecimalTimetoMinSec(decimalPace)
     if toEnglish {totalPace += " min/mi"} else {totalPace+= " min/km"}
     // Calculate hh:mm:ss for elapsedTime.
-    timeDiff := float64(timeDiffinMinutes * 60.0) //seconds
-    hours := math.Floor(timeDiff / 3600.0)
-    timeDiff -= hours * (3600)
-    mins := math.Floor(timeDiff / 60.0)
-    min_str := decimalTimetoMinSec(mins)
-    elapsedTime = strconv.Itoa(int(math.Floor(hours))) + ":" + min_str
+    elapsedTime = strutil.DecimalTimetoHourMinSec(float64(timeDiffinMinutes))
     // Sum up the lap calories
     totcal := 0.0
     for _, calorie := range(LapCal) {
@@ -237,4 +223,30 @@ func createStats(toEnglish bool, DispDistance[]float64, TimeStamps[]int64,
     device = "not available"
     return
 }
-	  
+
+func createPredictions(toEnglish bool, DispDistance[]float64, 
+    TimeStamps[]int64) (PredictedRaceTimes map[string]string, VO2max float64) {
+										    
+    // Do a prediction based on this run.  
+    // Need distance back in meters as PredictRaces demands metric units.
+    d := DispDistance[len(DispDistance)-1]
+    var dist float64 
+    if toEnglish {
+      dist = d / metersToMiles
+    } else {
+      dist = d / metersToKm
+    }
+    PredictedTimes, v, _ := predict.PredictRaces(0.0, dist, 
+	float64(TimeStamps[0]), float64(TimeStamps[len(TimeStamps)-1]))
+    VO2max = v
+
+    // Convert the times from decimal minutes to hh:mm:ss for the user.
+    PredictedRaceTimes = make(map[string]string)
+    for key,val := range(PredictedTimes) {
+      PredictedRaceTimes[key] = strutil.DecimalTimetoHourMinSec(val)
+    }
+    fmt.Println("%v", PredictedRaceTimes)
+    fmt.Println("%v", PredictedTimes)
+    PredictedRaceTimes = nil
+    return
+}

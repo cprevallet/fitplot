@@ -73,7 +73,7 @@ func Bisect(fn func(float64, float64)float64, a float64, b float64, tol float64,
   return math.NaN(), errors.New("Failed to converge.")
 }
 
-func Daniels (providedVO2Max float64, runLengthMeters float64, tStart int64, tEnd int64, 
+func Daniels (providedVO2Max float64, runLengthMeters float64, tStart float64, tEnd float64, 
 	      raceLengthMeters float64) (tOut float64, VO2max float64, err error) {
 //
 // Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
@@ -94,14 +94,14 @@ func Daniels (providedVO2Max float64, runLengthMeters float64, tStart int64, tEn
     }
     
     // Calculate the runner's VO2max based on a current run/race.
-    tRun := float64((tEnd - tStart))/60.0 // run elapsed in mins
+    tRun := (tEnd - tStart)/60.0 // run elapsed in mins
     vRun := runLengthMeters / tRun  // run velocity meters/min
     VO2max = calcVO2max(vRun, tRun)
   } else {
     VO2max = providedVO2Max
   }
   
-  // For a race prediction, we need to solve the VO2max equation for time 
+  // For a race prediction, we need to solve the VO2max equation for time,
   // given a VO2max either measured or from a training run or race (above) and a 
   // distance for the race.
   // We'll use a simple bisection root solver method.
@@ -122,22 +122,35 @@ func Daniels (providedVO2Max float64, runLengthMeters float64, tStart int64, tEn
   
 }
 
-func PredictRaces (providedVO2Max float64, runLengthMeters float64, tStart int64, 
-		   tEnd int64) (tOut []float64, VO2max float64, err error) {
+func PredictRaces (providedVO2Max float64, runLengthMeters float64, tStart float64, 
+		   tEnd float64) (PredictedTimes map[string]float64, VO2max float64, err error) {
 //
 // Make predictions.  Tell the future.  :)
+//
+// Predicted race times using the Daniel's Gilbert VO2max criteria.
+// Inputs are either:
+// a. A measured VO2max -or-
+// b. a run length in meters and the start and end timestamps expressed 
+//    as Unix-style timestamp in secs since a given reference time/date.  
 //		
-  racelength := [6]float64 {400.0, 800.0, 5000.0, 10000.0, 21097.0, 42195.0}
-  if providedVO2Max != 0.0 {VO2max = providedVO2Max}
-  for _, raceLengthMeters := range(racelength) {
-    t, v, err := Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, raceLengthMeters)
-    if err == nil {
-      tOut = append(tOut,t)
-      } else {
-      tOut = append(tOut,math.NaN())
-      }
-    VO2max = v
-  }
-  return tOut, VO2max, err
+// Outputs are:
+// tOut represents an array of the number of minutes predicted for common race lengths
+// VO2max is expressed in milliliters of oxygen per kilogram of the runner's 
+// weight per minute (ml/kg/min).
+// err will be set if the solver failed to converge.
+
+//  racelength := [6]float64 {400.0, 800.0, 5000.0, 10000.0, 21097.0, 42195.0}
+
+  PredictedTimes = make(map[string]float64)
+  PredictedTimes["400"],VO2max,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 400.0)
+  PredictedTimes["800"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 800.0)
+  PredictedTimes["5k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 5000.0)
+  PredictedTimes["10k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 10000.0)
+  PredictedTimes["10mi"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 16093.4)
+  PredictedTimes["HM"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 21097.4)
+  PredictedTimes["25k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 25000.0)
+  PredictedTimes["30k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 30000.0)
+  PredictedTimes["Mara"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 42195.0)
+  return PredictedTimes, VO2max, err
   }
 		
