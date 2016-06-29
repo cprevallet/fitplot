@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
         "github.com/cprevallet/fitplot/tcx"
+	"github.com/cprevallet/fitplot/predict"
         "github.com/jezard/fit"
 	"html/template"
 	"io"
