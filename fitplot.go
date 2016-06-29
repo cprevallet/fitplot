@@ -229,6 +229,25 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, p.EndDateStamp, 
 	p.Device = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal) 
 	
+	// Do a prediction based on this run.  Need distance back in meters.
+	d := p.DispDistance[len(p.DispDistance)-1]
+	var dist float64 
+	if toEnglish {
+	  dist = d / metersToMiles
+	} else {
+	  dist = d / metersToKm
+	}
+	tStart := p.TimeStamps[0]
+	tEnd := p.TimeStamps[len(p.TimeStamps)-1]
+	fmt.Println(dist, tStart, tEnd)
+//	fiveKTime, VO2max, err := predict.Daniels (0.0, dist, tStart, tEnd, 5000.0)
+	PredictedTimes, VO2max, err := predict.PredictRaces (0.0, dist, tStart, tEnd)
+	if err != nil {
+	  fmt.Println(err)
+	} else {
+	  fmt.Printf("+%v\n", PredictedTimes, VO2max)
+	}
+	
         //Convert to json.
         js, err := json.Marshal(p)
 

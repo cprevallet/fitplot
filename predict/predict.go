@@ -48,17 +48,6 @@ func calcVO2max (v, t float64) (float64) {
   return VO2max
 }
 
-func sign(x, y float64) bool {
-//
-// Do the two arguments have the same sign or both zero?
-//  
-    if (x > 0.0 && y > 0.0) || (x < 0.0 && y < 0.0) || (x == 0.0 && y == 0.0) {
-      return true
-    } else {
-      return false
-    }
-}
-
 func Bisect(fn func(float64, float64)float64, a float64, b float64, tol float64,
   maxIter int, raceLengthMeters float64) (c float64, err error) {
 //
@@ -69,11 +58,12 @@ func Bisect(fn func(float64, float64)float64, a float64, b float64, tol float64,
   n := 1
   for n <= maxIter {
     c := (a + b) / 2.0   // new midpoint
+//    fmt.Printf("%6.2f|%6.2f|%6.2f|%6.2f|%6.2f|%6.2f\n", a,b,c, fn(c, raceLengthMeters), fn(a, raceLengthMeters), fn(10.0, 5000.0))
     if fn(c, raceLengthMeters) == 0 || (b - a)/2.0 < tol {
       return c, nil
     } else {
       n += 1
-      if sign(fn(c, raceLengthMeters), fn(a, raceLengthMeters)) {
+      if fn(c, raceLengthMeters) * fn(a, raceLengthMeters) > 0.0 {
 	a = c
       } else {
 	b = c
@@ -83,29 +73,42 @@ func Bisect(fn func(float64, float64)float64, a float64, b float64, tol float64,
   return math.NaN(), errors.New("Failed to converge.")
 }
 
-func Daniels (runLengthMeters float64, tStart int64, tEnd int64, 
-	      raceLengthMeters float64) (tOut float64, err error) {
+func Daniels (providedVO2Max float64, runLengthMeters float64, tStart int64, tEnd int64, 
+	      raceLengthMeters float64) (tOut float64, VO2max float64, err error) {
 //
 // Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
-// Inputs are the run length in meters and the start and end timestamps expressed
-// as Unix-style timestamp in secs since a given reference time/date.  
-// Output tOut represents the number of minutes predicted for raceLengthMeters. 
-  if tStart > tEnd {
-    return math.NaN(), errors.New("start time after end time")
+// Inputs are either:
+// a. A measured VO2max -or-
+// b. a run length in meters and the start and end timestamps expressed 
+//    as Unix-style timestamp in secs since a given reference time/date.  
+//		
+// Outputs are:
+// tOut represents the number of minutes predicted for raceLengthMeters
+// VO2max is expressed in milliliters of oxygen per kilogram of the runner's 
+// weight per minute (ml/kg/min).
+// err will be set if the solver failed to converge.
+
+  if providedVO2Max == 0.0 {		
+    if tStart > tEnd {
+      return math.NaN(), math.NaN(), errors.New("start time after end time")
+    }
+    
+    // Calculate the runner's VO2max based on a current run/race.
+    tRun := float64((tEnd - tStart))/60.0 // run elapsed in mins
+    vRun := runLengthMeters / tRun  // run velocity meters/min
+    VO2max = calcVO2max(vRun, tRun)
+  } else {
+    VO2max = providedVO2Max
   }
   
-  // Calculate the runner's VO2max based on a current run/race.
-  tRun := float64((tEnd - tStart))/60.0 // run elapsed in mins
-  vRun := runLengthMeters / tRun  // run velocity meters/min
-  VO2max := calcVO2max(vRun, tRun)
-  
   // For a race prediction, we need to solve the VO2max equation for time 
-  // given a VO2max from a training run or race (above) and a distance for the
-  // race.
+  // given a VO2max either measured or from a training run or race (above) and a 
+  // distance for the race.
   // We'll use a simple bisection root solver method.
-  // Implementation: What sorcery is this?  Go allows function to be passed as arguments.
+  // Implementation: What sorcery is this?  
+  // Go allows function to be passed as arguments.
   // Ref: https://tour.golang.org/moretypes/24
-  fn := func(raceLengthMeters, raceTimeinMinutes float64) float64 {
+  fn := func(raceTimeinMinutes, raceLengthMeters float64) float64 {
 	    v := raceLengthMeters/raceTimeinMinutes
 	    return calcVO2max(v, raceTimeinMinutes) - VO2max
 	}
@@ -114,6 +117,27 @@ func Daniels (runLengthMeters float64, tStart int64, tEnd int64,
   tol := 0.1    // Solution tolerance 0.1 min = 6 secs = margin of error.
   maxIter := 100  //Fail if not converged after maxIter loops.
   root, err := Bisect(fn, a, b, tol, maxIter, raceLengthMeters)
-  return root, err
+  tOut = root
+  return tOut, VO2max, err
   
 }
+
+func PredictRaces (providedVO2Max float64, runLengthMeters float64, tStart int64, 
+		   tEnd int64) (tOut []float64, VO2max float64, err error) {
+//
+// Make predictions.  Tell the future.  :)
+//		
+  racelength := [6]float64 {400.0, 800.0, 5000.0, 10000.0, 21097.0, 42195.0}
+  if providedVO2Max != 0.0 {VO2max = providedVO2Max}
+  for _, raceLengthMeters := range(racelength) {
+    t, v, err := Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, raceLengthMeters)
+    if err == nil {
+      tOut = append(tOut,t)
+      } else {
+      tOut = append(tOut,math.NaN())
+      }
+    VO2max = v
+  }
+  return tOut, VO2max, err
+  }
+		
