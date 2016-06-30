@@ -53,4 +53,4 @@ func ReadTCXFile(path string) (db *TCXDB, err error) {
 	db = new(TCXDB)
 	err = xml.Unmarshal(filebytes, db)
 	return
-} 
+}

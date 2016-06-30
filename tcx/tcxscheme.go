@@ -44,7 +44,7 @@ type Activity struct {
 
 type Device struct {
 	Name      string       `xml:",omitempty"`
-	UnitId    uint          `xml:",omitempty"`
+	UnitId    uint         `xml:",omitempty"`
 	ProductID string       `xml:",omitempty"`
 	Version   BuildVersion `xml:",omitempty"`
 }
