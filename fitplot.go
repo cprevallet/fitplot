@@ -1,5 +1,9 @@
 package main
 
+//
+// Provide webserver functionality.
+//
+
 import (
 	"encoding/json"
 	"fmt"
@@ -9,7 +13,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	//	"net/http/httputil"
+	//"net/http/httputil"
 	"time"
 )
 
@@ -76,7 +80,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Handle the requests for data from the client.
+// Parse the uploaded file, parse it and return run information suitable
+// to construct the user interface.
 func plotHandler(w http.ResponseWriter, r *http.Request) {
 	type Plotvals struct {
 		Titletext      string
