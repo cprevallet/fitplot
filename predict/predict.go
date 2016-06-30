@@ -114,7 +114,7 @@ func Daniels (providedVO2Max float64, runLengthMeters float64, tStart float64, t
 	}
   a := 1.0      // Initial low guess for solution e.g. 1 minute 400 m
   b := 300.0    // Initial high guess for solution e.g. 5 hour marathon in minutes.
-  tol := 0.1    // Solution tolerance 0.1 min = 6 secs = margin of error.
+  tol := 0.01    // Solution tolerance 0.05 min = 3 secs = margin of error.
   maxIter := 100  //Fail if not converged after maxIter loops.
   root, err := Bisect(fn, a, b, tol, maxIter, raceLengthMeters)
   tOut = root
@@ -144,6 +144,7 @@ func PredictRaces (providedVO2Max float64, runLengthMeters float64, tStart float
   PredictedTimes = make(map[string]float64)
   PredictedTimes["400"],VO2max,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 400.0)
   PredictedTimes["800"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 800.0)
+  PredictedTimes["1 mi"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 1609.34)
   PredictedTimes["5k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 5000.0)
   PredictedTimes["10k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 10000.0)
   PredictedTimes["10mi"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 16093.4)

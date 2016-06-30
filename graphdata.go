@@ -207,7 +207,7 @@ func createStats(toEnglish bool, DispDistance[]float64, TimeStamps[]int64,
     totalDistance = strconv.FormatFloat(DispDistance[len(DispDistance)-1], 'f', 2, 64)
     if toEnglish {totalDistance += " mi"} else {totalDistance += " km"}
     // Calculate mm:ss for totalPace.
-    timeDiffinMinutes := (TimeStamps[len(TimeStamps)-1] - TimeStamps[0])/60.0
+    timeDiffinMinutes := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0]))/60.0
     decimalPace := float64(timeDiffinMinutes)/DispDistance[len(DispDistance)-1]
     totalPace = strutil.DecimalTimetoMinSec(decimalPace)
     if toEnglish {totalPace += " min/mi"} else {totalPace+= " min/km"}
