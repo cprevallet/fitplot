@@ -18,7 +18,7 @@
 		$('#fader').hide();
 
 		document.getElementById("runfile").onclick = function() {
-			$('#fader').fadeOut(500);
+			$('#fader').slideUp(500);
 	}
     	// Set the hook for submitting the file upload form.
     	document.getElementById("runfile").onchange = function () {
@@ -50,7 +50,7 @@
     				alert("Sorry! Error uploading file.");
     			}
     		});
-			$('#fader').fadeIn(800);
+			$('#fader').fadeIn(500);
     	}
     });
 
