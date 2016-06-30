@@ -9,6 +9,7 @@
 
 <script>
 
+    "use strict";
     //
     // This event fires when the document's DOM is loaded (which may be some 
     // time before the images, etc. are loaded).
@@ -78,14 +79,13 @@
 	    url: '/getplot',
 	    data: {toEnglish: useEnglish},
 	    dataType: "json",
-	    success: function(data) {
+	    success: function(serverdata) {
 		// Save a global copy.
-		p = data
-		createSummary(p);
-		marker = createMap(p);
-		createGraph(p, showPace, showElev, showCad, marker);
-		createLaps(p);
-		createRace(p);
+		createSummary(serverdata);
+		var marker = createMap(serverdata);
+		createGraph(serverdata, showPace, showElev, showCad, marker);
+		createLaps(serverdata);
+		createRace(serverdata);
 	    },
 	    cache: false
 	});
@@ -97,7 +97,7 @@
     function createSummary(p) {
 	// Write summary information.
 	$("#over_div").empty();
-	summary = document.getElementById('over_div')
+	var summary = document.getElementById('over_div')
 	summary.innerHTML += '</br>Congrats on your run!</br>';
 	summary.innerHTML += '</br><b>Distance: </b> ' + p.TotalDistance;
 	summary.innerHTML += '</br><b>Time: </b> ' + p.ElapsedTime;
@@ -113,7 +113,7 @@
     //
     function createMap(p) {
 	// Create a new map.
-	map = new google.maps.Map(document.getElementById('map'), {
+	var map = new google.maps.Map(document.getElementById('map'), {
 	  zoom: 15,
 	  center: p.Latlongs[0],
 	  mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -127,13 +127,13 @@
 	runPath.setMap(map);
 	// Center map based on path.
 	var bound = new google.maps.LatLngBounds();
-	for (i = 0; i < p.Latlongs.length; i++) {
+	for (var i = 0; i < p.Latlongs.length; i++) {
 	  bound.extend( new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng) );
 	}
 	map.setCenter(bound.getCenter());
 	map.fitBounds(bound);
 	// Add a marker.
-	marker = new google.maps.Marker({
+	var marker = new google.maps.Marker({
 	    position: p.Latlongs[0],
 	    title:"Here we are!"
 	});
@@ -301,7 +301,7 @@
 	data.addColumn('string', p.C3Str);
 	data.addColumn('number', p.C4Str);
 	var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
-	for (i = 0; i < p.LapDist.length; i++) { 
+	for (var i = 0; i < p.LapDist.length; i++) { 
 	  data.addRows([[i+1, p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],]);
 	  data.setProperties(i, 0, cellStyle);
 	  data.setProperties(i, 1, cellStyle);
@@ -334,7 +334,7 @@
 	var predtable = new google.visualization.Table(document.getElementById('prediction_div'));
 	predtable.draw(preddata, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
 	$("#prediction_support").empty();
-	ps = document.getElementById('prediction_support')
+	var ps = document.getElementById('prediction_support')
 	ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
     }
 
