@@ -14,8 +14,15 @@
     // time before the images, etc. are loaded).
     //
     $(document).ready(function () {
+		//Hide all the elements that aren't yet useful.
+		$('#fader').hide();
+
+		document.getElementById("runfile").onclick = function() {
+			$('#fader').fadeOut(500);
+	}
     	// Set the hook for submitting the file upload form.
     	document.getElementById("runfile").onchange = function () {
+			//$('#fader').fadeOut(500);
     		var file = runfile.files[0]; // grab the first (and only) file in the list
     		var fileExt = $("input#runfile").val();
     		fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
@@ -43,6 +50,7 @@
     				alert("Sorry! Error uploading file.");
     			}
     		});
+			$('#fader').fadeIn(800);
     	}
     });
 
@@ -404,6 +412,8 @@
 	  <span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
       </div>
 
+<div id="fader"> <!-- Fader -->
+
   <div class="mdl-grid">
 	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
       <div class="mdl-card__title">
@@ -491,6 +501,8 @@
     </div>      
     </div>
   </div>  
+
+</div> <!-- Fader -->
 
   </body>
 </html>
