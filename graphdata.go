@@ -9,7 +9,7 @@ import (
   "github.com/cprevallet/fitplot/stats"
   "github.com/cprevallet/fitplot/strutil"
   "github.com/cprevallet/fitplot/predict"
-  "fmt"
+//  "fmt"
   "math"
   "strconv"
   "time"
@@ -245,8 +245,7 @@ func createPredictions(toEnglish bool, DispDistance[]float64,
     for key,val := range(PredictedTimes) {
       PredictedRaceTimes[key] = strutil.DecimalTimetoHourMinSec(val)
     }
-    fmt.Println("%v", PredictedRaceTimes)
-    fmt.Println("%v", PredictedTimes)
-    PredictedRaceTimes = nil
+//    fmt.Println("%v", PredictedRaceTimes)
+//    fmt.Println("%v", PredictedTimes)
     return
 }

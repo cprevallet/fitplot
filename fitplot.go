@@ -109,6 +109,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	    StartDateStamp string
 	    EndDateStamp string
 	    Device string
+	    PredictedTimes map[string]string
+	    VO2max float64
 	}
         var xStr string = "Distance "
         var y0Str string = "Pace "
@@ -211,6 +213,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		StartDateStamp: "",
 		EndDateStamp: "",
 		Device: "",
+		PredictedTimes: nil,
+		VO2max: 0.0,
         }
 
 
@@ -227,6 +231,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Calculate the summary string information.
 	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, p.EndDateStamp, 
 	p.Device = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal) 
+
+	// Make race predictions.
+	p.PredictedTimes, p.VO2max = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
 	
         //Convert to json.
         js, err := json.Marshal(p)
@@ -235,8 +242,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
         }
-	PredictedTimes, VO2max := createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
-	fmt.Printf("+%v\n", PredictedTimes, VO2max)
 
         fmt.Println("plotHandler Received Request")
         w.Header().Set("Content-Type", "text/json")
