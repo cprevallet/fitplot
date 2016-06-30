@@ -15,17 +15,16 @@ import (
 
 var uploadFname string = ""
 
-//Compile templates on start for better performance.
+// Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
 
-//Display the named template.
+// Display the named template.
 func display(w http.ResponseWriter, tmpl string, data interface{}) {
 	templates.ExecuteTemplate(w, tmpl+".html", data)
 }
 
 // Handle requests to "/".
 func pageloadHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method == "GET" {
 		// Load page.
 		fmt.Println("pageloadHandler Received Request")
@@ -37,7 +36,6 @@ func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 		uploadHandler(w, r)
 		//display(w, "fitplot", nil)
 	}
-
 }
 
 //Upload a copy the fit file to a temporary local directory.
@@ -78,8 +76,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Handle the requests for data from the client.
 func plotHandler(w http.ResponseWriter, r *http.Request) {
-
 	type Plotvals struct {
 		Titletext      string
 		XName          string
@@ -120,7 +118,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
 
 	// What has the user selected for unit system?
-
 	toEnglish = true
 	param1s := r.URL.Query()["toEnglish"]
 	if param1s != nil {
@@ -145,16 +142,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	rslt := http.DetectContentType(b)
 	switch {
 	case rslt == "application/octet-stream":
-		// filetype is FIT, or at least it could be?
+		// Filetype is FIT, or at least it could be?
 		fitStruct := fit.Parse(uploadFname, false)
 		runRecs = fitStruct.Records
 		runLaps = fitStruct.Laps
 
-		//for _, lap := range fitStruct.Laps {
-		//  fmt.Printf("%+v\n", lap)
-		//}
 	case rslt == "text/xml; charset=utf-8":
-		// filetype is TCX or at least it could be?
+		// Filetype is TCX or at least it could be?
 		db, err := tcx.ReadTCXFile(uploadFname)
 		if err != nil {
 			fmt.Printf("Error parsing file", err)
@@ -227,7 +221,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	p.LapDist, p.LapTime, p.LapCal, p.LapPace = processFitLap(runLaps, toEnglish)
 
-	//Get start time.
+	// Get the start time.
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
@@ -253,10 +247,10 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	//Serve static files if the prefix is "static"
+	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
+    // Handle normal requests.
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
 	//Listen on port 8080

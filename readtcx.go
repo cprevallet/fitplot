@@ -9,7 +9,6 @@ import (
 
 // Convert the TCXDB structure created from the XML to fit.Record structure
 func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
-
 	var hasspeed bool
 	var hasdist bool
 
@@ -78,7 +77,7 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
 			}
 		}
 	}
-
+	// Create the run records.
 	for i, _ := range db.Acts.Act {
 		for j, _ := range db.Acts.Act[i].Laps {
 			for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {
@@ -102,7 +101,6 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
 
 // Convert the TCXDB structure created from the XML to fit.Laps structure
 func cvtToFitLaps(db *tcx.TCXDB) (runLaps []fit.Lap) {
-
 	for i, _ := range db.Acts.Act {
 		for _, lap := range db.Acts.Act[i].Laps {
 			var newLap fit.Lap

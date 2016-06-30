@@ -10,51 +10,48 @@ import (
 	"math"
 )
 
+// Oxygen Cost Formula:
+// O2cost = 0.000104 x (velocity)2 + 0.182258 X (velocity) - 4.60
+// The reference to "velocity" is, of course, referring to the running velocity.
+// The velocity is expressed in meters per minute (m/min).
+// The oxygen cost is expressed in milliliters of oxygen per kilogram of the runner's
+// weight per minute (ml/kg/min).
+//
+// Ref: J. Daniels, R. Fitts and G. Sheehan  The Conditioning for Distance Running--
+//  the Scientific Aspects (John Wiley & Sons, New York, 1978)]
+//
 func calcO2cost(v float64) (O2cost float64) {
-	// Oxygen Cost Formula:
-	// O2cost = 0.000104 x (velocity)2 + 0.182258 X (velocity) - 4.60
-	// The reference to "velocity" is, of course, referring to the running velocity.
-	// The velocity is expressed in meters per minute (m/min).
-	// The oxygen cost is expressed in milliliters of oxygen per kilogram of the runner's
-	// weight per minute (ml/kg/min).
-	//
-	// Ref: J. Daniels, R. Fitts and G. Sheehan  The Conditioning for Distance Running--
-	//  the Scientific Aspects (John Wiley & Sons, New York, 1978)]
-	//
 	O2cost = 0.000104*math.Pow(v, 2) + (0.182258 * v) - 4.60
 	return O2cost
 }
 
+// Intensity (aka "Drop Dead Formula")
+// I = 0.2989558e-0.1932605t + 0.1894393e-0.012778t + 0.8
+// The "t" is the amount of time in minutes that a human can run at the calculated
+// intensity expressed as a percentage of a person's maximum oxygen uptake capacity.
+// Ref: Daniels, Gilbert
 func calcIntensity(t float64) float64 {
-	// Intensity (aka "Drop Dead Formula")
-	// I = 0.2989558e-0.1932605t + 0.1894393e-0.012778t + 0.8
-	// The "t" is the amount of time in minutes that a human can run at the calculated
-	// intensity expressed as a percentage of a person's maximum oxygen uptake capacity.
-	// Ref: Daniels, Gilbert
 	Intensity := 0.2989558*math.Exp(-0.1932605*t) + 0.1894393*math.Exp(-0.012778*t) + 0.8
 	return Intensity
 }
 
+// Calculatate V02max using the Daniel's and Gilbert formula.
+// The velocity is expressed in meters per minute.
+// The time is expressed in minutes.
+//
 func calcVO2max(v, t float64) float64 {
-	//
-	// Calculatate V02max using the Daniel's and Gilbert formula.
-	// The velocity is expressed in meters per minute.
-	// The time is expressed in minutes.
-	//
-
 	O2Cost := calcO2cost(v)
 	Intensity := calcIntensity(t)
 	VO2max := O2Cost / Intensity
 	return VO2max
 }
 
+// Find the root of the function (in this case, calcVO2max) by bisecting
+// https://en.wikipedia.org/wiki/Bisection_method
+// The function argument (fn) signature is specific to calcVO2max.
 func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64,
 	maxIter int, raceLengthMeters float64) (c float64, err error) {
-	//
-	// Find the root of the function (in this case, calcVO2max) by bisecting
-	// https://en.wikipedia.org/wiki/Bisection_method
-	// The function argument (fn) signature is specific to calcVO2max.
-	//
+
 	n := 1
 	for n <= maxIter {
 		c := (a + b) / 2.0 // new midpoint
@@ -72,10 +69,9 @@ func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64
 	return math.NaN(), errors.New("Failed to converge.")
 }
 
+// Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
 func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tEnd float64,
 	raceLengthMeters float64) (tOut float64, VO2max float64, err error) {
-	//
-	// Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
 	// Inputs are either:
 	// a. A measured VO2max -or-
 	// b. a run length in meters and the start and end timestamps expressed
@@ -86,7 +82,6 @@ func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tE
 	// VO2max is expressed in milliliters of oxygen per kilogram of the runner's
 	// weight per minute (ml/kg/min).
 	// err will be set if the solver failed to converge.
-
 	if providedVO2Max == 0.0 {
 		if tStart > tEnd {
 			return math.NaN(), math.NaN(), errors.New("start time after end time")
@@ -99,7 +94,6 @@ func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tE
 	} else {
 		VO2max = providedVO2Max
 	}
-
 	// For a race prediction, we need to solve the VO2max equation for time,
 	// given a VO2max either measured or from a training run or race (above) and a
 	// distance for the race.
@@ -121,12 +115,11 @@ func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tE
 
 }
 
+// Predicted race times using the Daniel's Gilbert VO2max criteria.
 func PredictRaces(providedVO2Max float64, runLengthMeters float64, tStart float64,
 	tEnd float64) (PredictedTimes map[string]float64, VO2max float64, err error) {
-	//
 	// Make predictions.  Tell the future.  :)
 	//
-	// Predicted race times using the Daniel's Gilbert VO2max criteria.
 	// Inputs are either:
 	// a. A measured VO2max -or-
 	// b. a run length in meters and the start and end timestamps expressed
@@ -137,9 +130,6 @@ func PredictRaces(providedVO2Max float64, runLengthMeters float64, tStart float6
 	// VO2max is expressed in milliliters of oxygen per kilogram of the runner's
 	// weight per minute (ml/kg/min).
 	// err will be set if the solver failed to converge.
-
-	//  racelength := [6]float64 {400.0, 800.0, 5000.0, 10000.0, 21097.0, 42195.0}
-
 	PredictedTimes = make(map[string]float64)
 	PredictedTimes["400"], VO2max, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 400.0)
 	PredictedTimes["800"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 800.0)

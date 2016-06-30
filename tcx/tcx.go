@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 )
 
+// Read the track points.
 func ReadTpts(path string) (track *Track, err error) {
 	filebytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -15,6 +16,7 @@ func ReadTpts(path string) (track *Track, err error) {
 	return
 }
 
+// Read the lap.
 func ReadLap(path string) (lap *Lap, err error) {
 	filebytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -25,6 +27,7 @@ func ReadLap(path string) (lap *Lap, err error) {
 	return
 }
 
+// Read the activity.
 func ReadActivity(path string) (act *Activity, err error) {
 	filebytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -35,6 +38,7 @@ func ReadActivity(path string) (act *Activity, err error) {
 	return
 }
 
+// Read the the activities.
 func ReadActivities(path string) (acts *Activities, err error) {
 	filebytes, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -45,6 +49,7 @@ func ReadActivities(path string) (acts *Activities, err error) {
 	return
 }
 
+// Read the TCX file.
 func ReadTCXFile(path string) (db *TCXDB, err error) {
 	filebytes, err := ioutil.ReadFile(path)
 	if err != nil {

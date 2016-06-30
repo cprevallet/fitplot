@@ -9,19 +9,20 @@ import (
 	"github.com/cprevallet/fitplot/stats"
 	"github.com/cprevallet/fitplot/strutil"
 	"github.com/jezard/fit"
-	//  "fmt"
+	//"fmt"
 	"math"
 	"strconv"
 	"time"
 )
 
-var metersToMiles float64 = 0.00062137119 //meter -> mile
-var metersToKm float64 = 0.001            //meter -> km
-var metersToFt float64 = 3.2808399        //meter ->ft
+// Conversions
+var metersToMiles float64 = 0.00062137119 // meter -> mile
+var metersToKm float64 = 0.001            // meter -> km
+var metersToFt float64 = 3.2808399        // meter ->ft
 var paceToEnglish float64 = 26.8224       // sec/meter -> min/mile
 var paceToMetric float64 = 16.666667      // sec/meter -> min/km
-var stridestoSteps float64 = 2.0          //strides/min -> steps/min (for bipeds)
-
+var stridestoSteps float64 = 2.0          // strides/min -> steps/min (for bipeds)
+// Unit system set by user.
 var toEnglish bool = true
 
 // Do unit conversion for slices of type valtype.
@@ -64,10 +65,7 @@ func unitCvt(val float64, valtype string, toEnglish bool) (cvtVal float64) {
 func unpackRecs(runRecs []fit.Record) (timestamp []int64, distance []float64,
 	altitude []float64, cadence []float64, speed []float64,
 	lat []float64, lng []float64) {
-	// TODO Consider make([]float64, len(record.Distance), len(record.Distance)
-	// Should reduce time to allocate on each iteration.
 	for _, record := range runRecs {
-		//	  fmt.Println("Timestamp",time.Unix(record.Timestamp, 0).UTC().Format(time.RFC3339))
 		timestamp = append(timestamp, record.Timestamp)
 		distance = append(distance, record.Distance)
 		altitude = append(altitude, record.Altitude)
@@ -88,10 +86,9 @@ func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[strin
 	return
 }
 
-// Main entry point
+// This is a main entry point
 // Convert the record structure to slices and maps suitable for use in the user interface.
 func processFitRecord(runRecs []fit.Record, toEnglish bool) (mapData []map[string]float64, dispTimestamp []int64, dispDistance []float64, dispPace []float64, dispAltitude []float64, dispCadence []float64) {
-
 	// Get slices from the runRecs structure.
 	timestamp, distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
 	// Speed -> pace
@@ -133,10 +130,10 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool) (mapData []map[strin
 	return
 }
 
+// Create a list of indexs where the value of x is outside of the
+// 99.7% (3 sigma) expected value assuming a normal distribution of x.
+// In English, find the "unusual" points.
 func markOutliers(x []float64) (outliersIdx []int) {
-	// Create a list of indexs where the value of x is outside of the
-	// 99.7% (3 sigma) expected value assuming a normal distribution of x.
-	// In English, find the "unusual" points.
 	mean := stats.Sum(x) / float64(len(x))
 	sigma := stats.StdDev(x, mean)
 	upperLimit := mean + (3.0 * sigma)
@@ -149,8 +146,8 @@ func markOutliers(x []float64) (outliersIdx []int) {
 	return outliersIdx
 }
 
+// Remove values in x if it's index matches one in the list of outliers.
 func removeOutliers(x []float64, outliersIdx []int) (z []float64) {
-	// Remove values in x if it's index matches one in the list of outliers.
 	for i, item := range x {
 		found := false
 		for _, idx := range outliersIdx {
@@ -165,8 +162,8 @@ func removeOutliers(x []float64, outliersIdx []int) (z []float64) {
 	return z
 }
 
+// Same as above except for integer x.
 func removeOutliersInt(x []int64, outliersIdx []int) (z []int64) {
-	// Remove values in x if it's index matches one in the list of outliers.
 	for i, item := range x {
 		found := false
 		for _, idx := range outliersIdx {
@@ -181,7 +178,7 @@ func removeOutliersInt(x []int64, outliersIdx []int) (z []int64) {
 	return z
 }
 
-// Main entry point
+// This is a main entry point.
 // Convert the record structure to slices and maps suitable for use in the user interface.
 func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string) {
 	for _, item := range runLaps {
@@ -239,10 +236,9 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 	return
 }
 
+// Do a prediction based on this run.
 func createPredictions(toEnglish bool, DispDistance []float64,
 	TimeStamps []int64) (PredictedRaceTimes map[string]string, VO2max float64) {
-
-	// Do a prediction based on this run.
 	// Need distance back in meters as PredictRaces demands metric units.
 	d := DispDistance[len(DispDistance)-1]
 	var dist float64

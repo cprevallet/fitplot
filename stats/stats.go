@@ -1,11 +1,12 @@
 package stats
 
 import (
-	//    "fmt"
+	//"fmt"
 	"math"
 	"sort"
 )
 
+// Sum up the inputs.
 func Sum(numbers []float64) (total float64) {
 	for _, x := range numbers {
 		total += x
@@ -13,6 +14,7 @@ func Sum(numbers []float64) (total float64) {
 	return total
 }
 
+// Find the middle number.
 func Median(numbers []float64) float64 {
 	middle := len(numbers) / 2
 	result := numbers[middle]
@@ -22,6 +24,7 @@ func Median(numbers []float64) float64 {
 	return result
 }
 
+// Find the number that appears the most often.
 func Mode(numbers []float64) (modes []float64) {
 	frequencies := make(map[float64]int, len(numbers))
 	highestFrequency := 0
@@ -43,6 +46,7 @@ func Mode(numbers []float64) (modes []float64) {
 	return modes
 }
 
+// Calculate the amount of variation or dispersion.
 func StdDev(numbers []float64, mean float64) float64 {
 	total := 0.0
 	for _, number := range numbers {
@@ -51,17 +55,3 @@ func StdDev(numbers []float64, mean float64) float64 {
 	variance := total / float64(len(numbers)-1)
 	return math.Sqrt(variance)
 }
-
-// Return low-pass filter output samples, given input samples,
-// 0.0 <= filterConstant <= 1.0
-
-/*
-func lowpass(unfiltered[]float64, filterConstant float64) (filtered []float64) {
-   filtered = append(filtered, unfiltered[0])
-   for i := 1; i < len(unfiltered); i++ {
-       newfiltered := filterConstant * unfiltered[i] + (1-filterConstant) * filtered[i-1]
-       filtered = append(filtered, newfiltered)
-   }
-   return filtered
-}
-*/
