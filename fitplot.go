@@ -113,6 +113,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		Device         string
 		PredictedTimes map[string]string
 		VO2max         float64
+		DeviceName     string
+		DeviceUnitID   string
+		DeviceProdID   string
 	}
 	var xStr string = "Distance "
 	var y0Str string = "Pace "
@@ -121,6 +124,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var runRecs []fit.Record
 	var runLaps []fit.Lap
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
+	var fitStruct fit.FitFile
+	var db *tcx.TCXDB = nil
 
 	// What has the user selected for unit system?
 	toEnglish = true
@@ -148,16 +153,16 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case rslt == "application/octet-stream":
 		// Filetype is FIT, or at least it could be?
-		fitStruct := fit.Parse(uploadFname, false)
+		fitStruct = fit.Parse(uploadFname, false)
 		runRecs = fitStruct.Records
 		runLaps = fitStruct.Laps
 
 	case rslt == "text/xml; charset=utf-8":
 		// Filetype is TCX or at least it could be?
-		db, err := tcx.ReadTCXFile(uploadFname)
-		if err != nil {
-			fmt.Printf("Error parsing file", err)
-		}
+		db, _ = tcx.ReadTCXFile(uploadFname)
+//		if err != nil {
+//			fmt.Printf("Error parsing file", err)
+//		}
 
 		// We cleverly convert the values of interest into a structures we already
 		// can handle.
@@ -217,8 +222,20 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		Device:         "",
 		PredictedTimes: nil,
 		VO2max:         0.0,
+		DeviceName:     "",
+		DeviceUnitID:   "",
+		DeviceProdID:   "",
 	}
-
+	
+	if rslt == "application/octet-stream" {
+		p.DeviceName = fitStruct.DeviceInfo[0].Manufacturer
+		p.DeviceProdID = fitStruct.DeviceInfo[0].Product
+		p.DeviceUnitID = fmt.Sprint(fitStruct.DeviceInfo[0].Serial_number)
+	}
+	if rslt == "text/xml; charset=utf-8" {
+		p.DeviceName, p.DeviceUnitID, p.DeviceProdID = tcx.DeviceInfo(db)
+	}
+	
 	// Here's where the heavy lifting of pulling tracks and performance information
 	// from (portions of) the fit file into something we can view is done.
 	p.Latlongs, p.TimeStamps, p.DispDistance, p.DispPace, p.DispAltitude, p.DispCadence =
@@ -230,8 +247,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
-	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, p.EndDateStamp,
-		p.Device = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
+	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, 
+		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
 	// Make race predictions.
 	p.PredictedTimes, p.VO2max = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)

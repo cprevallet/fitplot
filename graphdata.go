@@ -202,7 +202,7 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
 func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 	LapCal []float64) (totalDistance string, totalPace string,
 	elapsedTime string, totalCal string, startDateStamp string,
-	endDateStamp string, device string) {
+	endDateStamp string) {
 
 	// Calculate run start and end times.
 	startDateStamp = time.Unix(TimeStamps[0], 0).Format(time.UnixDate)
@@ -231,8 +231,6 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 		totcal += calorie
 	}
 	totalCal = strconv.Itoa(int((math.Floor(totcal)))) + " kcal"
-	// TODO Get the device name.
-	device = "not available"
 	return
 }
 

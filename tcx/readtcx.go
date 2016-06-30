@@ -1,11 +1,21 @@
 package tcx
 
 import (
-	//"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"math"
 	"time"
+	"fmt"
 )
+
+// Convert the TCXDB structure to device information.
+func DeviceInfo(db *TCXDB) (DevName string, DevUnitId string, DevProdID string) {
+	for _, item := range db.Acts.Act {
+		DevName = item.Creator.Name
+		DevUnitId = fmt.Sprint(item.Creator.UnitId)
+		DevProdID = item.Creator.ProductID
+	}
+	return
+}
 
 // Convert the TCXDB structure created from the XML to fit.Record structure
 func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
