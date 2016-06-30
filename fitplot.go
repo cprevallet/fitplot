@@ -156,8 +156,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 		// We cleverly convert the values of interest into a structures we already
 		// can handle.
-		runRecs = cvtToFitRecs(db)
-		runLaps = cvtToFitLaps(db)
+		runRecs = tcx.CvtToFitRecs(db)
+		runLaps = tcx.CvtToFitLaps(db)
 	}
 	// Build the variable strings based on unit system.
 	if toEnglish {

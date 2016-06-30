@@ -1,14 +1,14 @@
-package main
+package tcx
 
 import (
-	"github.com/cprevallet/fitplot/tcx"
+	//"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"math"
 	"time"
 )
 
 // Convert the TCXDB structure created from the XML to fit.Record structure
-func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
+func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 	var hasspeed bool
 	var hasdist bool
 
@@ -100,7 +100,7 @@ func cvtToFitRecs(db *tcx.TCXDB) (runRecs []fit.Record) {
 }
 
 // Convert the TCXDB structure created from the XML to fit.Laps structure
-func cvtToFitLaps(db *tcx.TCXDB) (runLaps []fit.Lap) {
+func CvtToFitLaps(db *TCXDB) (runLaps []fit.Lap) {
 	for i, _ := range db.Acts.Act {
 		for _, lap := range db.Acts.Act[i].Laps {
 			var newLap fit.Lap
