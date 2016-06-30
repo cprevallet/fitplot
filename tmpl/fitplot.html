@@ -252,6 +252,25 @@
 		var table = new google.visualization.Table(document.getElementById('table_div'));
 		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
 
+		// Add predicted race values to the prediction table.	
+		var preddata = new google.visualization.DataTable();
+		preddata.addColumn('string', 'Race');
+		preddata.addColumn('string', 'Time (hh:mm:ss)');
+		var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
+		var row = 0;
+		for (var k in p.PredictedTimes){
+		  if (p.PredictedTimes.hasOwnProperty(k)) {
+		    preddata.addRows([[k, p.PredictedTimes[k],]]);
+		  }
+		  data.setProperties(row, 0, cellStyle);
+		  data.setProperties(row, 1, cellStyle);
+		  row = row + 1
+		}
+		var predtable = new google.visualization.Table(document.getElementById('prediction_div'));
+		predtable.draw(preddata, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
+		ps = document.getElementById('prediction_support')
+		ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
+		
 		// Create the run graph.
 		createPlotly(p, showPace, showElev, showCad);
 		
@@ -393,7 +412,17 @@
   </div>
 
 
-  
+  <div class="mdl-grid">
+	<div class="mdl-card mdl-cell--6-col mdl-shadow--3dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
+      </div>
+      <div id="prediction_div" style="height: 380px">
+      </div>
+    <div id="prediction_support" class="mdl-card__supporting-text">
+    </div>      
+    </div>
+  </div>  
 
   </body>
 </html>

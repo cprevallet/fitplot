@@ -147,10 +147,10 @@ func PredictRaces (providedVO2Max float64, runLengthMeters float64, tStart float
   PredictedTimes["5k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 5000.0)
   PredictedTimes["10k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 10000.0)
   PredictedTimes["10mi"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 16093.4)
-  PredictedTimes["HM"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 21097.4)
+  PredictedTimes["Half Marathon"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 21097.4)
   PredictedTimes["25k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 25000.0)
   PredictedTimes["30k"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 30000.0)
-  PredictedTimes["Mara"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 42195.0)
+  PredictedTimes["Marathon"],_,_ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 42195.0)
   return PredictedTimes, VO2max, err
   }
 		
