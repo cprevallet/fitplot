@@ -3,17 +3,150 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript"> google.charts.load('current', {'packages':['table']}); </script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+<!-- JavaScript/jQuery code starts here. -->   
 
-
-<!--  Add the JavaScript to initialize the chart on document ready -->
 <script>
-    var chart;  // global
-    var map;    // global
-    var p;      //global
-    var marker; //global
 
-    function createPlotly(p, showPace, showElev, showCad){
+    //
+    // This event fires when the document's DOM is loaded (which may be some 
+    // time before the images, etc. are loaded).
+    //
+    $(document).ready(function() {
+	// Set the hook for submitting the file upload form.
+	document.getElementById("runfile").onchange = function() {
+	    var file = runfile.files[0]; // grab the first (and only) file in the list
+	    var fileExt = $("input#runfile").val();
+	    fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
+	    fileExt = fileExt.toLowerCase();
+
+	    // Check file extension.
+	    if (fileExt != "fit" && fileExt != "tcx") {
+		alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
+		return false;
+	    } // end if file not the right type
+	
+	    var file = $('#runfile').get(0).files[0];
+	    var formData = new FormData();
+	    formData.append('file', file)
+	    $.ajax({
+		url: "",
+		type: "post",
+		data: formData,
+		processData: false,
+		contentType: false,
+		success: function(){
+		  requestData();
+		},
+		error:function(){
+		  alert("Sorry! Error uploading file.");
+		}   
+	    }); 
+	}
+    });
+    
+    //
+    // This event fires after entire page loads.
+    //
+    $(window).load(function(){
+	// Set the checkboxes based on the cookie when the window loads.
+	$("input.mdl-checkbox__input").each(function() {
+	    var mycookie = $.cookie($(this).attr('id'));
+	    if (mycookie && mycookie == "true") {
+		$(this).prop('checked', mycookie);
+	    }
+	});
+	// Set the hook for storing/updating the cookie when the checkbox changes.
+	$("input.mdl-checkbox__input").change(function() {
+	    $.cookie($(this).attr("id"), $(this).prop('checked'), {
+		path: '/',
+		expires: 365
+	    });
+	});
+    });
+    
+    //
+    // Request data from the server.
+    //
+    function requestData() {
+	var useEnglish = !$("#usemetric").is(':checked')
+	var showPace = $("#pacechk").is(':checked')
+	var showElev = $("#elevchk").is(':checked')
+	var showCad = $("#cadchk").is(':checked')
+	$.ajax({
+	    url: '/getplot',
+	    data: {toEnglish: useEnglish},
+	    dataType: "json",
+	    success: function(data) {
+		// Save a global copy.
+		p = data
+		createSummary(p);
+		marker = createMap(p);
+		createGraph(p, showPace, showElev, showCad, marker);
+		createLaps(p);
+		createRace(p);
+	    },
+	    cache: false
+	});
+    };    
+    
+    //
+    // Create the summary using the DOM.
+    //
+    function createSummary(p) {
+	// Write summary information.
+	$("#over_div").empty();
+	summary = document.getElementById('over_div')
+	summary.innerHTML += '</br>Congrats on your run!</br>';
+	summary.innerHTML += '</br><b>Distance: </b> ' + p.TotalDistance;
+	summary.innerHTML += '</br><b>Time: </b> ' + p.ElapsedTime;
+	summary.innerHTML += '</br><b>Pace: </b> ' + p.TotalPace;
+	summary.innerHTML += '</br><b>Start:</b> ' + p.StartDateStamp;
+	summary.innerHTML += '</br><b>End: </b> ' + p.EndDateStamp;
+	summary.innerHTML += '</br><b>Calories: </b>' + p.TotalCal;
+	summary.innerHTML += '</br><b>Device:</b>' + p.Device;
+    }
+    
+    //
+    // Create the map using the Google map API.
+    //
+    function createMap(p) {
+	// Create a new map.
+	map = new google.maps.Map(document.getElementById('map'), {
+	  zoom: 15,
+	  center: p.Latlongs[0],
+	  mapTypeId: google.maps.MapTypeId.TERRAIN
+	});               
+	// Create a path line.  
+	var runPath = new google.maps.Polyline({
+	  path: p.Latlongs,
+	  geodesic: true,
+	  strokeColor: '#ff0000',
+	});
+	runPath.setMap(map);
+	// Center map based on path.
+	var bound = new google.maps.LatLngBounds();
+	for (i = 0; i < p.Latlongs.length; i++) {
+	  bound.extend( new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng) );
+	}
+	map.setCenter(bound.getCenter());
+	map.fitBounds(bound);
+	// Add a marker.
+	marker = new google.maps.Marker({
+	    position: p.Latlongs[0],
+	    title:"Here we are!"
+	});
+	marker.setMap(map);
+	// Return the marker object for use with graph.
+	return marker;
+    }
+		
+
+    //
+    // Create the run graph using the Plotly API.
+    //
+    function createGraph(p, showPace, showElev, showCad, marker){
 	// Boilerplate for fluid layout.
 	var d3 = Plotly.d3;
 	var WIDTH_IN_PERCENT_OF_PARENT = 99,
@@ -130,12 +263,12 @@
 	  }
 	  };	
 	  Plotly.plot(gd, data, layout);
-	  
+	  // Handle resizing.
 	  window.onresize = function() {
 	    Plotly.Plots.resize(gd);
 	  };		
 	  
-	  // Move the map marker when over a point in the chart.
+	  // Move the map marker when over a point in the graph.
 	  var myPlot = document.getElementById('plotlyDiv');
 	  myPlot.on('plotly_hover', function(data){
 	      var pts = '';
@@ -149,172 +282,62 @@
 		      break;
 		  }
 		}
-//		console.log('index = ', j-1);
 		var moveLatlong = p.Latlongs[j-1];
 		marker.setPosition(moveLatlong);
 	      }
 	  });
     
     }
-    
-    $(window).load(function(){
-	// Set the checkbox based on the cookie when the window loads.
-	$("input.mdl-checkbox__input").each(function() {
-	    var mycookie = $.cookie($(this).attr('id'));
-	    if (mycookie && mycookie == "true") {
-		$(this).prop('checked', mycookie);
-	    }
-	});
-	// Store/update the cookie when the checkbox changes.
-	$("input.mdl-checkbox__input").change(function() {
-	    $.cookie($(this).attr("id"), $(this).prop('checked'), {
-		path: '/',
-		expires: 365
-	    });
-	});
-    });
-
 
     //
-    // Request data from the server, and populate the graph and chart.
+    // Create the lap table using the Google Charts API.
     //
-    function requestData() {
-	var useEnglish = !$("#usemetric").is(':checked')
-	var showPace = $("#pacechk").is(':checked')
-	var showElev = $("#elevchk").is(':checked')
-	var showCad = $("#cadchk").is(':checked')
-	$.ajax({
-	    url: '/getplot',
-	    data: {toEnglish: useEnglish},
-	    dataType: "json",
-	    success: function(data) {
-
-		// Save a global copy.
-		p = data
-		
-		// Write summary information.
-		$("#over_div").empty();
-		summary = document.getElementById('over_div')
-		summary.innerHTML += '</br>Congrats on your run!</br>';
-		summary.innerHTML += '</br><b>Distance: </b> ' + p.TotalDistance;
-		summary.innerHTML += '</br><b>Time: </b> ' + p.ElapsedTime;
-		summary.innerHTML += '</br><b>Pace: </b> ' + p.TotalPace;
-		summary.innerHTML += '</br><b>Start:</b> ' + p.StartDateStamp;
-		summary.innerHTML += '</br><b>End: </b> ' + p.EndDateStamp;
-		summary.innerHTML += '</br><b>Calories: </b>' + p.TotalCal;
-		summary.innerHTML += '</br><b>Device:</b>' + p.Device;
-		
-		// Create a new map.
-		map = new google.maps.Map(document.getElementById('map'), {
-		  zoom: 15,
-		  center: p.Latlongs[0],
-		  mapTypeId: google.maps.MapTypeId.TERRAIN
-		});               
-		
-		var runPath = new google.maps.Polyline({
-		  path: p.Latlongs,
-		  geodesic: true,
-		  strokeColor: '#ff0000',
-		});
-
-		runPath.setMap(map);
-
-		// Center map based on path.
-		var bound = new google.maps.LatLngBounds();
-		for (i = 0; i < p.Latlongs.length; i++) {
-		  bound.extend( new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng) );
-		}
-		map.setCenter(bound.getCenter());
-		map.fitBounds(bound);
-
-		marker = new google.maps.Marker({
-		    position: p.Latlongs[0],
-		    title:"Here we are!"
-		});
-		marker.setMap(map);
-
-		// Add lap values to the data table.	
-		var data = new google.visualization.DataTable();
-		data.addColumn('number', p.C0Str);
-		data.addColumn('number', p.C1Str);
-		data.addColumn('string', p.C2Str);
-		data.addColumn('string', p.C3Str);
-		data.addColumn('number', p.C4Str);
-		var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
-		for (i = 0; i < p.LapDist.length; i++) { 
-		  data.addRows([[i+1, p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],]);
-		  data.setProperties(i, 0, cellStyle);
-		  data.setProperties(i, 1, cellStyle);
-		  data.setProperties(i, 2, cellStyle);
-		  data.setProperties(i, 3, cellStyle);
-		  data.setProperties(i, 4, cellStyle);
-		}
-		var table = new google.visualization.Table(document.getElementById('table_div'));
-		table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
-
-		// Add predicted race values to the prediction table.
-		var preddata = new google.visualization.DataTable();
-		preddata.addColumn('string', 'Race');
-		preddata.addColumn('string', 'Time (hh:mm:ss)');
-		var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
-		var row = 0;
-		for (var k in p.PredictedTimes){
-		  if (p.PredictedTimes.hasOwnProperty(k)) {
-		    preddata.addRows([[k, p.PredictedTimes[k],]]);
-		  }
-		  preddata.setProperties(row, 0, cellStyle);
-		  preddata.setProperties(row, 1, cellStyle);
-		  row = row + 1
-		}
-		var predtable = new google.visualization.Table(document.getElementById('prediction_div'));
-		predtable.draw(preddata, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
-		$("#prediction_support").empty();
-		ps = document.getElementById('prediction_support')
-		ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
-		
-		// Create the run graph.
-		createPlotly(p, showPace, showElev, showCad);
-		
-	    },
-	    cache: false
-	});
-};
-
-    $(document).ready(function() {
-	
-	// Submit the file upload form.
-	document.getElementById("runfile").onchange = function() {
-	    var file = runfile.files[0]; // grab the first (and only) file in the list
-	    var fileExt = $("input#runfile").val();
-	    fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
-	    fileExt = fileExt.toLowerCase();
-
-	    // Check file extension.
-	    if (fileExt != "fit" && fileExt != "tcx") {
-		alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
-		return false;
-	    } // end if file not the right type
-	
-	    var file = $('#runfile').get(0).files[0];
-	    var formData = new FormData();
-	    formData.append('file', file)
-	    $.ajax({
-		url: "",
-		type: "post",
-		data: formData,
-		processData: false,
-		contentType: false,
-		success: function(){
-		  requestData();
-		},
-		error:function(){
-		  alert("Sorry! Error uploading file.");
-		}   
-	    }); 
+    function createLaps(p) {
+	// Add lap values to the data table.	
+	var data = new google.visualization.DataTable();
+	data.addColumn('number', p.C0Str);
+	data.addColumn('number', p.C1Str);
+	data.addColumn('string', p.C2Str);
+	data.addColumn('string', p.C3Str);
+	data.addColumn('number', p.C4Str);
+	var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
+	for (i = 0; i < p.LapDist.length; i++) { 
+	  data.addRows([[i+1, p.LapDist[i], p.LapPace[i], p.LapTime[i], p.LapCal[i]],]);
+	  data.setProperties(i, 0, cellStyle);
+	  data.setProperties(i, 1, cellStyle);
+	  data.setProperties(i, 2, cellStyle);
+	  data.setProperties(i, 3, cellStyle);
+	  data.setProperties(i, 4, cellStyle);
 	}
-
-    });
+	var table = new google.visualization.Table(document.getElementById('table_div'));
+	table.draw(data, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
+    }
     
+    //
+    // Create the race prediction table using the Google Charts API.
+    //
+    function createRace(p) {
+	// Add predicted race values to the prediction table.
+	var preddata = new google.visualization.DataTable();
+	preddata.addColumn('string', 'Race');
+	preddata.addColumn('string', 'Time (hh:mm:ss)');
+	var cellStyle = {style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'}
+	var row = 0;
+	for (var k in p.PredictedTimes){
+	  if (p.PredictedTimes.hasOwnProperty(k)) {
+	    preddata.addRows([[k, p.PredictedTimes[k],]]);
+	  }
+	  preddata.setProperties(row, 0, cellStyle);
+	  preddata.setProperties(row, 1, cellStyle);
+	  row = row + 1
+	}
+	var predtable = new google.visualization.Table(document.getElementById('prediction_div'));
+	predtable.draw(preddata, {showRowNumber: false, width: '100%', height: '100%', allowHtml: true});
+	$("#prediction_support").empty();
+	ps = document.getElementById('prediction_support')
+	ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
+    }
+
 </script>
 
 <!-- Styling -->
@@ -324,12 +347,10 @@
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
 </head>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <body>
   
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--12-col"></div>
-	      <!-- FAB button with ripple -->   
 	  <label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 	    <i class="material-icons">directions_run</i>
 	    <input type="file" name="runfile" id="runfile"> 
