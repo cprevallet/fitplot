@@ -201,7 +201,7 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
 // Create the summary statistics strings.
 func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 	LapCal []float64) (totalDistance string, totalPace string,
-	elapsedTime string, totalCal string, startDateStamp string,
+	elapsedTime string, totalCal string, avgPower string, startDateStamp string,
 	endDateStamp string) {
 
 	// Calculate run start and end times.
@@ -231,6 +231,10 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 		totcal += calorie
 	}
 	totalCal = strconv.Itoa(int((math.Floor(totcal)))) + " kcal"
+	
+	// Calculate power expended based on Garmin calculated calories
+	power := totcal * 4186.8 / (timeDiffinMinutes * 60.0)
+	avgPower = strconv.FormatFloat(power, 'f', 2, 64) + " Watts"
 	return
 }
 

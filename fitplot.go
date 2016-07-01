@@ -108,6 +108,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		TotalPace      string
 		ElapsedTime    string
 		TotalCal       string
+		AvgPower       string
 		StartDateStamp string
 		EndDateStamp   string
 		Device         string
@@ -217,6 +218,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		TotalPace:      "",
 		ElapsedTime:    "",
 		TotalCal:       "",
+		AvgPower:       "",
 		StartDateStamp: "",
 		EndDateStamp:   "",
 		Device:         "",
@@ -247,7 +249,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
-	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.StartDateStamp, 
+	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp, 
 		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
 	// Make race predictions.
