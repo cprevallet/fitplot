@@ -260,3 +260,19 @@ func createPredictions(toEnglish bool, DispDistance []float64,
 	}
 	return
 }
+
+// Calculate a normalized run score based on a recent best race.
+func createRunScore(toEnglish bool, DispDistance[]float64, TimeStamps []int64, 
+	dRefMeters float64, hh int64, mm int64, ss int64) (RunScore float64) {
+	// Need distance back in meters as correlation demands metric units.
+	d := DispDistance[len(DispDistance)-1]
+	var dist float64
+	if toEnglish {
+		dist = d / metersToMiles
+	} else {
+		dist = d / metersToKm
+	}
+	tRunMin := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0]) ) / 60.0
+	RunScore = predict.CalcRunScore(dist, tRunMin, dRefMeters, hh, mm, ss)
+	return
+}

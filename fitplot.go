@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	//"net/http/httputil"
+	"strconv"
 	"time"
 )
 
@@ -117,6 +118,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DeviceName     string
 		DeviceUnitID   string
 		DeviceProdID   string
+		RunScore       float64
 	}
 	var xStr string = "Distance "
 	var y0Str string = "Pace "
@@ -138,15 +140,31 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		if param1s[0] == "false" {
 			toEnglish = false
 		}
+
 	}
+	var racedist float64 = 64.0
+	var racehours int64 = 1
+	var racemins int64 = 0
+	var racesecs int64 = 0
+	racediststr, _ := r.Cookie("racedist")
+	racedist, _ = strconv.ParseFloat(racediststr.Value, 64)
+	racehoursstr, _ := r.Cookie("racehours")
+	racehours, _ = strconv.ParseInt(racehoursstr.Value, 10, 64)
+	raceminsstr, _ := r.Cookie("racemins")
+	racemins, _ = strconv.ParseInt(raceminsstr.Value, 10,  64)
+	racesecsstr, _ := r.Cookie("racesecs")
+	racesecs, _ = strconv.ParseInt(racesecsstr.Value, 10, 64)
+		
+	// fmt.Println(racedist, racehours, racemins, racesecs)
+	/*
+		dump, err := httputil.DumpRequest(r, true)
+			if err != nil {
+				http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+				return
+			}
 
-	//	dump, err := httputil.DumpRequest(r, true)
-	//		if err != nil {
-	//			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-	//			return
-	//		}
-
-	//		fmt.Printf("%s\n\n", dump)
+			fmt.Printf("%s\n\n", dump)
+	*/
 
 	// Read file. uploadFname gets set in uploadHandler.
 	b, _ := ioutil.ReadFile(uploadFname)
@@ -227,6 +245,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DeviceName:     "",
 		DeviceUnitID:   "",
 		DeviceProdID:   "",
+		RunScore:       0.0,
 	}
 	
 	if rslt == "application/octet-stream" {
@@ -255,6 +274,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Make race predictions.
 	p.PredictedTimes, p.VO2max = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
 
+	p.RunScore = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
+	
 	//Convert to json.
 	js, err := json.Marshal(p)
 

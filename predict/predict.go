@@ -35,7 +35,7 @@ func calcIntensity(t float64) float64 {
 	return Intensity
 }
 
-// Calculatate V02max using the Daniel's and Gilbert formula.
+// Calculate V02max using the Daniel's and Gilbert formula.
 // The velocity is expressed in meters per minute.
 // The time is expressed in minutes.
 //
@@ -142,4 +142,16 @@ func PredictRaces(providedVO2Max float64, runLengthMeters float64, tStart float6
 	PredictedTimes["30k"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 30000.0)
 	PredictedTimes["Marathon"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 42195.0)
 	return PredictedTimes, VO2max, err
+}
+
+func CalcRunScore(dRunMeters float64, tRunMin float64, dRefMeters float64, hh int64, 
+	mm int64, ss int64) (RunScore float64) {
+		// Calculate the normalized run score (percent VO2max).
+		trefRun := float64(hh) * 60 + float64(mm) + float64(ss)/60.0 //distance, meters
+		vrefRun := dRefMeters / trefRun // run velocity meters/min
+		VO2max := calcVO2max(vrefRun, trefRun)	
+		vrun := dRunMeters/tRunMin
+		VO2maxthisrun := calcVO2max(vrun, tRunMin)
+		RunScore = VO2maxthisrun / VO2max * 100.0
+		return RunScore
 }

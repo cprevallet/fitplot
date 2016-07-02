@@ -2,7 +2,7 @@
 <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.cookie/1.3/jquery.cookie.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript"> google.charts.load('current', {'packages':['table']}); </script>
+<script type="text/javascript"> google.charts.load('current', {'packages':['table', 'gauge']}); </script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <!-- JavaScript/jQuery code starts here. -->   
@@ -65,6 +65,15 @@
     			$(this).prop('checked', mycookie);
     		}
     	});
+
+    	// Set the textbox values based on the cookie when the window loads.
+    	$("input.mdl-textfield__input").each(function () {
+    		var mycookie = $.cookie($(this).attr('id'));
+    		if (mycookie != null) {
+    			$(this).prop('value', mycookie);
+    		}
+    	});
+
     	// Set the hook for storing/updating the cookie when the checkbox changes.
     	$("input.mdl-checkbox__input").change(function () {
     		$.cookie($(this).attr("id"), $(this).prop('checked'), {
@@ -72,6 +81,15 @@
     			expires: 365
     		});
     	});
+
+    	// Set the hook for storing/updating the cookie when the textbox value changes.
+    	$("input.mdl-textfield__input").change(function () {
+    		$.cookie($(this).attr("id"), $(this).prop('value'), {
+    			path: '/',
+    			expires: 365
+    		});
+    	});
+
     });
 
     //
@@ -85,7 +103,7 @@
     	$.ajax({
     		url: '/getplot',
     		data: {
-    			toEnglish: useEnglish
+    			toEnglish: useEnglish,
     		},
     		dataType: "json",
     		success: function (serverdata) {
@@ -95,6 +113,7 @@
     			createGraph(serverdata, showPace, showElev, showCad, marker);
     			createLaps(serverdata);
     			createRace(serverdata);
+				createScore(serverdata);
     		},
     		cache: false
     	});
@@ -394,9 +413,29 @@
     	$("#prediction_support").empty();
     	var ps = document.getElementById('prediction_support')
     	ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
-    	ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
 
     }
+
+	function createScore(p) {
+
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Run Intensity', p.RunScore],
+        ]);
+
+        var options = {
+          width: 400, height: 400,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          greenFrom: 0, greenTo: 75,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('run_score_div'));
+
+        chart.draw(data, options);
+	}
 </script>
 
 <!-- Styling -->
@@ -505,7 +544,61 @@
     <div id="prediction_support" class="mdl-card__supporting-text">
     </div>      
     </div>
+
+	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">Run Rating</h2>
+      </div>
+    <div class="mdl-card__supporting-text">
+	Enter values for a recent race:
+    </div>
+    <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--3-col"> 
+<!-- Numeric Textfield -->
+<form action="#">
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racedist">
+    <label class="mdl-textfield__label" for="racedist">Race distance...</label>
+    <span class="mdl-textfield__error">Input is not a number!</span>
+	Race distance in meters.
+  </div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col"> 
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racehours">
+    <label class="mdl-textfield__label" for="racehours">Finish time: Hours</label>
+    <span class="mdl-textfield__error">Input is not a number!</span>
+	Finish time: Hours
+  </div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col"> 
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racemins">
+    <label class="mdl-textfield__label" for="racemins">Finish time:Minutes</label>
+    <span class="mdl-textfield__error">Input is not a number!</span>
+	Finish time: Minutes 
+  </div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col"> 
+  <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racesecs">
+    <label class="mdl-textfield__label" for="racesecs">Finish time:Seconds</label>
+    <span class="mdl-textfield__error">Input is not a number!</span>
+	Finish time: Seconds
+  </div>
+  </div>
+</form>
+    <div class="mdl-cell mdl-cell--3-col">
+    </div>      
+    <div class="mdl-cell mdl-cell--6-col" id="run_score_div">
+    </div>      
+    <div class="mdl-cell mdl-cell--3-col" id="run_score_div">
+    </div>      
+	</div>
+    </div>      
+
   </div>  
+
 
 </div> <!-- Fader -->
 
