@@ -115,11 +115,12 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		EndDateStamp   string
 		Device         string
 		PredictedTimes map[string]string
-		VO2max         float64
+		VDOT           float64
 		DeviceName     string
 		DeviceUnitID   string
 		DeviceProdID   string
 		RunScore       float64
+		VO2max         float64
 	}
 	var xStr string = "Distance "
 	var y0Str string = "Pace "
@@ -253,11 +254,12 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		EndDateStamp:   "",
 		Device:         "",
 		PredictedTimes: nil,
-		VO2max:         0.0,
+		VDOT:           0.0,
 		DeviceName:     "",
 		DeviceUnitID:   "",
 		DeviceProdID:   "",
 		RunScore:       0.0,
+		VO2max:         0.0,
 	}
 	
 	if rslt == "application/octet-stream" {
@@ -284,9 +286,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
 	// Make race predictions.
-	p.PredictedTimes, p.VO2max = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
+	p.PredictedTimes, p.VDOT = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
 
-	p.RunScore = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
+	p.RunScore, p.VO2max = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
 	
 	//Convert to json.
 	js, err := json.Marshal(p)

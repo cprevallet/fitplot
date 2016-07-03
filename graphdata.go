@@ -240,7 +240,7 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 
 // Do a prediction based on this run.
 func createPredictions(toEnglish bool, DispDistance []float64,
-	TimeStamps []int64) (PredictedRaceTimes map[string]string, VO2max float64) {
+	TimeStamps []int64) (PredictedRaceTimes map[string]string, VDOT float64) {
 	// Need distance back in meters as PredictRaces demands metric units.
 	d := DispDistance[len(DispDistance)-1]
 	var dist float64
@@ -251,7 +251,7 @@ func createPredictions(toEnglish bool, DispDistance []float64,
 	}
 	PredictedTimes, v, _ := predict.PredictRaces(0.0, dist,
 		float64(TimeStamps[0]), float64(TimeStamps[len(TimeStamps)-1]))
-	VO2max = v
+	VDOT = v
 
 	// Convert the times from decimal minutes to hh:mm:ss for the user.
 	PredictedRaceTimes = make(map[string]string)
@@ -263,7 +263,7 @@ func createPredictions(toEnglish bool, DispDistance []float64,
 
 // Calculate a normalized run score based on a recent best race.
 func createRunScore(toEnglish bool, DispDistance[]float64, TimeStamps []int64, 
-	dRefMeters float64, hh int64, mm int64, ss int64) (RunScore float64) {
+	dRefMeters float64, hh int64, mm int64, ss int64) (RunScore float64, VO2max float64) {
 	// Need distance back in meters as correlation demands metric units.
 	d := DispDistance[len(DispDistance)-1]
 	var dist float64
@@ -273,6 +273,6 @@ func createRunScore(toEnglish bool, DispDistance[]float64, TimeStamps []int64,
 		dist = d / metersToKm
 	}
 	tRunMin := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0]) ) / 60.0
-	RunScore = predict.CalcRunScore(dist, tRunMin, dRefMeters, hh, mm, ss)
+	RunScore, VO2max = predict.CalcRunScore(dist, tRunMin, dRefMeters, hh, mm, ss)
 	return
 }

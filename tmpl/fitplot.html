@@ -418,14 +418,15 @@
     		height: '100%',
     		allowHtml: true
     	});
-    	$("#prediction_support").empty();
-    	var ps = document.getElementById('prediction_support')
-    	ps.innerHTML += '</br><b>VO2Max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
 
     }
 
 	function createScore(p) {
 
+    	$("#run_support").empty();
+    	var rs = document.getElementById('run_support')
+    	rs.innerHTML += '</br><b>VDOT (ml/kg/min): </b> ' + p.VDOT.toFixed(1);
+    	rs.innerHTML += '</br><b>VO2max (ml/kg/min): </b> ' + p.VO2max.toFixed(1);
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
@@ -549,8 +550,6 @@
       </div>
       <div id="prediction_div" style="height: 380px">
       </div>
-    <div id="prediction_support" class="mdl-card__supporting-text">
-    </div>      
     </div>
 
 	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
@@ -596,6 +595,8 @@
   </div>
   </div>
 </form>
+	<div id="run_support" class="mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet">
+	</div> 
     <div class="mdl-cell mdl-cell--3-col">
     </div>      
     <div class="mdl-cell mdl-cell--6-col" id="run_score_div">
