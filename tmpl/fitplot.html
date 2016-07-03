@@ -122,6 +122,7 @@
     			createLaps(serverdata);
     			createRace(serverdata);
 				createScore(serverdata);
+				createFitnessTables();
     		},
     		cache: false
     	});
@@ -434,7 +435,7 @@
         ]);
 
         var options = {
-          width: 400, height: 400,
+          width: 200, height: 200,
           redFrom: 90, redTo: 100,
           yellowFrom:75, yellowTo: 90,
           greenFrom: 0, greenTo: 75,
@@ -445,6 +446,88 @@
 
         chart.draw(data, options);
 	}
+
+    function createFitnessTables(p) {
+    	// Create a table for VO2 data.
+//    	var rs = document.getElementById('run_support')
+//    	rs.innerHTML += 'Female VO2max By Age.';
+    	var femaledata = new google.visualization.DataTable();
+    	femaledata.addColumn('string', 'Age');
+    	femaledata.addColumn('string', 'Very Poor');
+    	femaledata.addColumn('string', 'Poor');
+    	femaledata.addColumn('string', 'Fair');
+    	femaledata.addColumn('string', 'Good');
+    	femaledata.addColumn('string', 'Excellent');
+    	femaledata.addColumn('string', 'Superior');
+    	var cellStyle = {
+    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    	}
+		var fRowData = [
+			['13-19', '<25.0', '25.0 - 30.9', '31.0 - 34.9', '35.0 - 38.9', '39.0 - 41.9', '>41.9'],
+			['20-29', '<23.6', '23.6 - 28.9', '29.0 - 32.9', '33.0 - 36.9', '37.0 - 41.0', '>41.0'],
+			['30-39,','<22.8', '22.8 - 26.9', '27.0 - 31.4', '31.5 - 35.6', '35.7 - 40.0', '>40.0'],
+			['40-49,','<21.0', '21.0 - 24.4', '24.5 - 28.9', '29.0 - 32.8', '32.9 - 36.9', '>36.9'],
+			['50-59,','<20.2', '20.2 - 22.7', '22.8 - 26.9', '27.0 - 31.4', '31.5 - 35.7', '>35.7'],
+			['60+',   '<17.5', '17.5 - 20.1', '20.2 - 24.4', '24.5 - 30.2', '30.3 - 31.4', '>31.4'],
+		];
+    	for (var i=0; i < fRowData.length; i++) {
+    		femaledata.addRows([fRowData[i]]);
+    		femaledata.setProperties(i, 0, cellStyle);
+    		femaledata.setProperties(i, 1, cellStyle);
+    		femaledata.setProperties(i, 2, cellStyle);
+    		femaledata.setProperties(i, 3, cellStyle);
+    		femaledata.setProperties(i, 4, cellStyle);
+    		femaledata.setProperties(i, 5, cellStyle);
+    		femaledata.setProperties(i, 6, cellStyle);
+    	}
+    	var femaleTable = new google.visualization.Table(document.getElementById('fchart'));
+    	femaleTable.draw(femaledata, {
+    		showRowNumber: false,
+//    		width: '100%',
+//    		height: '100%',
+    		allowHtml: true
+    	});
+
+//    	rs.innerHTML += 'Male VO2max By Age .';
+    	var maledata = new google.visualization.DataTable();
+    	maledata.addColumn('string', 'Age');
+    	maledata.addColumn('string', 'Very Poor');
+    	maledata.addColumn('string', 'Poor');
+    	maledata.addColumn('string', 'Fair');
+    	maledata.addColumn('string', 'Good');
+    	maledata.addColumn('string', 'Excellent');
+    	maledata.addColumn('string', 'Superior');
+    	var cellStyle = {
+    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    	}
+		var mRowData = [
+			['13-19', '<35.0', '35.0 - 38.3', '38.4 - 45.1', '45.2 - 50.9', '51.0 - 55.9', '>55.9'],
+			['20-29', '<33.0', '33.0 - 36.4', '36.5 - 42.4', '42.5 - 46.4', '46.5 - 52.4', '>52.4'],
+			['30-39', '<31.5', '31.5 - 35.4', '35.5 - 40.9', '41.0 - 44.9', '45.0 - 49.4', '>49.4'],
+			['40-49', '<30.2', '30.2 - 33.5', '33.6 - 38.9', '39.0 - 43.7', '43.8 - 48.0', '>48.0'],
+			['50-59', '<26.1', '26.1 - 30.9', '31.0 - 35.7', '35.8 - 40.9', '41.0 - 45.3', '>45.3'],
+			['60+',   '<20.5', '20.5 - 26.0', '26.1 - 32.2', '32.3 - 36.4', '36.5 - 44.2', '>44.2'],
+		];
+    	for (var i=0; i < mRowData.length; i++) {
+    		maledata.addRows([mRowData[i]]);
+    		maledata.setProperties(i, 0, cellStyle);
+    		maledata.setProperties(i, 1, cellStyle);
+    		maledata.setProperties(i, 2, cellStyle);
+    		maledata.setProperties(i, 3, cellStyle);
+    		maledata.setProperties(i, 4, cellStyle);
+    		maledata.setProperties(i, 5, cellStyle);
+    		maledata.setProperties(i, 6, cellStyle);
+    	}
+    	var maleTable = new google.visualization.Table(document.getElementById('mchart'));
+    	maleTable.draw(maledata, {
+    		showRowNumber: false,
+//    		width: '100%',
+//    		height: '100%',
+    		allowHtml: true
+    	});
+
+    }
+
 </script>
 
 <!-- Styling -->
@@ -456,157 +539,163 @@
 </head>
   <body>
   
-    <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--12-col"></div>
-	  <label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
-	    <i class="material-icons">directions_run</i>
-	    <input type="file" name="runfile" id="runfile"> 
-	  </label>
-	  <span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
-      </div>
+<div class="mdl-grid">
+	<div class="mdl-cell mdl-cell--12-col"></div> <!-- Shouldn't this go after span for runbtn? -->
+		<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
+			<i class="material-icons">directions_run</i>
+			<input type="file" name="runfile" id="runfile"> 
+		</label>
+		<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+</div>
 
 <div id="fader"> <!-- Fader -->
 
-  <div class="mdl-grid">
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Summary</h2>
-      </div>
-    <div id="over_div" class="mdl-card__supporting-text">
-    </div>      
-    </div>
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Laps/Splits</h2>
-      </div>
-      <div id="table_div" style="height: 380px">
-      </div>
-    <div class="mdl-card__supporting-text">
-	  Click the headers to sort.
-    </div>      
-    </div>
-  </div>
-      
-  
-    <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--12-col"></div>    
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp" style="height: 650px">
-    <div class="mdl-card__title">
-      <h2 class="mdl-card__title-text">Graph</h2>
-    </div>
-    <div id="plotlyDiv">
-    </div>
-    <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-      <label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
-	  <input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
-	  <span class="mdl-checkbox__label"></span>
-      </label> Pace
-      <span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
-    </div>
-    <div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-    <label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
-	    <input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
-	    <span class="mdl-checkbox__label"></span>
-	  </label> Elevation
-      <span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
-    </div>
-    <div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-      <label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
-	<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
-	<span class="mdl-checkbox__label"></span>
-      </label>  Cadence
-      <span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
-    </div>
-    <div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-      <label id="metricsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="usemetric">
-	  <input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-checkbox__input" >
-	  <span class="mdl-checkbox__label"></span>
-      </label> Metric
-      <span for="metricsw" class="mdl-tooltip">Replot in metric or english unit system.</span>
-    </div>
-  </div>
-    <div class="mdl-card__supporting-text">
-	  Click and drag = zoom, Shift-drag = pan
-    </div>
-    </div>
-    
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Map</h2>
-      </div>
-	<div id="map" style="height: 480px;"></div>
-      <div class="mdl-card__actions">
-	<a href="https://support.google.com/maps/answer/144349?hl=e">Google Maps Help</a>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="mdl-grid">
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
-      </div>
-      <div id="prediction_div" style="height: 380px">
-      </div>
-    </div>
-
-	<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">Analysis</h2>
-      </div>
-    <div class="mdl-card__supporting-text">
-	Enter values for a recent race.  These values will be used to calculate this run's intensity relative to your race performance.
-    </div>
-    <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--3-col"> 
-<!-- Numeric Textfield -->
-<form action="#">
-	Distance: meters.
-  <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
-    <label class="mdl-textfield__label" for="racedist">Distance...</label>
-    <span class="mdl-textfield__error">Input is not a number!</span>
-  </div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col"> 
-	Finish time: Hours
-  <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racehours" value="0">
-    <label class="mdl-textfield__label" for="racehours">Finish time: Hours</label>
-    <span class="mdl-textfield__error">Input is not a number!</span>
-  </div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col"> 
-	Finish time: Minutes 
-  <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racemins" value="25">
-    <label class="mdl-textfield__label" for="racemins">Finish time:Minutes</label>
-    <span class="mdl-textfield__error">Input is not a number!</span>
-  </div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col"> 
-	Finish time: Seconds
-  <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racesecs" value="0">
-    <label class="mdl-textfield__label" for="racesecs">Finish time:Seconds</label>
-    <span class="mdl-textfield__error">Input is not a number!</span>
-  </div>
-  </div>
-</form>
-	<div id="run_support" class="mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet">
-	</div> 
-    <div class="mdl-cell mdl-cell--3-col">
-    </div>      
-    <div class="mdl-cell mdl-cell--6-col" id="run_score_div">
-    </div>      
-    <div class="mdl-cell mdl-cell--3-col">
-    </div>      
+	<div class="mdl-grid">
+		<!-- Summary -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Summary</h2>
+			</div>
+			<div id="over_div" class="mdl-card__supporting-text">
+			</div>      
+		</div>
+		<!-- Laps/splits -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Laps/Splits</h2>
+			</div>
+			<div id="table_div" style="height: 380px">
+			</div>
+			<div class="mdl-card__supporting-text">
+				Click the headers to sort.
+			</div>      
+		</div>
 	</div>
-    </div>      
+		
+	
+	<div class="mdl-grid">
+		<div class="mdl-cell mdl-cell--12-col"></div>    
+		<!-- Graph -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp" style="height: 650px">
+		<div class="mdl-card__title">
+			<h2 class="mdl-card__title-text">Graph</h2>
+		</div>
+		<div id="plotlyDiv">
+		</div>
+		<div class="mdl-grid">
+			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+				<label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
+				<input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
+				<span class="mdl-checkbox__label"></span>
+				</label> Pace
+				<span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
+			</div>
+			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+				<label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
+				<input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
+				<span class="mdl-checkbox__label"></span>
+				</label> Elevation
+				<span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
+			</div>
+			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+				<label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
+				<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
+				<span class="mdl-checkbox__label"></span>
+				</label>  Cadence
+				<span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
+			</div>
+			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+				<label id="metricsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="usemetric">
+				<input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-checkbox__input" >
+				<span class="mdl-checkbox__label"></span>
+				</label> Metric
+				<span for="metricsw" class="mdl-tooltip">Replot in metric or english unit system.</span>
+			</div>
+		</div>
+		<div class="mdl-card__supporting-text">
+		Click and drag = zoom, Shift-drag = pan
+		</div>
+		</div>
+		
+		<!-- Map -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Map</h2>
+			</div>
+			<div id="map" style="height: 480px;">
+			</div>
+			<div class="mdl-card__actions">
+			<a href="https://support.google.com/maps/answer/144349?hl=e">Google Maps Help</a>
+			</div>
+		</div>
+	</div>
 
-  </div>  
+
+	<div class="mdl-grid">
+		<!-- Race performance -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
+			</div>
+			<div id="prediction_div" style="height: 380px">
+			</div>
+		</div>
+
+		<!-- Analysis -->
+		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Analysis</h2>
+			</div>
+			<div class="mdl-card__supporting-text">
+			Enter values for a recent race.  These values will be used to calculate this run's intensity relative to your race performance.
+			</div>
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--3-col"> 
+					<form action="#">
+					Distance: meters.
+					<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
+					<label class="mdl-textfield__label" for="racedist">Distance...</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col"> 
+					Finish time: Hours
+					<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racehours" value="0">
+					<label class="mdl-textfield__label" for="racehours">Finish time: Hours</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col"> 
+					Finish time: Minutes 
+					<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racemins" value="25">
+					<label class="mdl-textfield__label" for="racemins">Finish time:Minutes</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col"> 
+					Finish time: Seconds
+					<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racesecs" value="0">
+					<label class="mdl-textfield__label" for="racesecs">Finish time:Seconds</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+				</div>
+			</form>
+				<div id="run_support" class="mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet">
+				</div> 
+			
+				<div class="mdl-cell mdl-cell--8-col" id="run_score_div">
+				</div>      
+				<div class="mdl-cell mdl-cell--8-col" id="fchart">
+				</div>      
+				<div class="mdl-cell mdl-cell--8-col" id="mchart">
+				</div>      
+			</div>
+		</div>      
+	</div>  
 
 
 </div> <!-- Fader -->
