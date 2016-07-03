@@ -140,32 +140,43 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		if param1s[0] == "false" {
 			toEnglish = false
 		}
-
 	}
-	var racedist float64 = 64.0
-	var racehours int64 = 1
-	var racemins int64 = 0
-	var racesecs int64 = 0
-	racediststr, _ := r.Cookie("racedist")
-	racedist, _ = strconv.ParseFloat(racediststr.Value, 64)
-	racehoursstr, _ := r.Cookie("racehours")
-	racehours, _ = strconv.ParseInt(racehoursstr.Value, 10, 64)
-	raceminsstr, _ := r.Cookie("racemins")
-	racemins, _ = strconv.ParseInt(raceminsstr.Value, 10,  64)
-	racesecsstr, _ := r.Cookie("racesecs")
-	racesecs, _ = strconv.ParseInt(racesecsstr.Value, 10, 64)
-		
-	// fmt.Println(racedist, racehours, racemins, racesecs)
+	// What race time/distance has the user entered?
+	var racedist float64
+	var racehours, racemins, racesecs int64
+	param2s := r.URL.Query()["racedist"]
+	if param2s != nil {
+		racedist, _ = strconv.ParseFloat(param2s[0], 64)
+	} else {
+		racedist = 5000.0
+	}
+	param3s := r.URL.Query()["racehours"]
+	if param3s != nil {
+		racehours, _ = strconv.ParseInt(param3s[0], 10, 64)
+	} else {
+		racehours = 0
+	}
+	param4s := r.URL.Query()["racemins"]
+	if param4s != nil {
+		racemins, _ = strconv.ParseInt(param4s[0], 10, 64)
+	} else {
+		racemins = 25
+	}
+	param5s := r.URL.Query()["racesecs"]
+	if param5s != nil {
+		racesecs, _ = strconv.ParseInt(param5s[0], 10, 64)
+	} else {
+		racemins = 0
+	}
 	/*
-		dump, err := httputil.DumpRequest(r, true)
-			if err != nil {
-				http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-				return
-			}
-
-			fmt.Printf("%s\n\n", dump)
+	dump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
+	}
+	
+	fmt.Printf("%s\n\n", dump)
 	*/
-
 	// Read file. uploadFname gets set in uploadHandler.
 	b, _ := ioutil.ReadFile(uploadFname)
 	rslt := http.DetectContentType(b)
