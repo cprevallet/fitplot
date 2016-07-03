@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cprevallet/fitplot/tcx"
+	"github.com/cprevallet/fitplot/desktop"
 	"github.com/jezard/fit"
 	"html/template"
 	"io"
@@ -303,6 +304,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
