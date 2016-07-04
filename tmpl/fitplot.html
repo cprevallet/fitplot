@@ -640,51 +640,46 @@
 				<h2 class="mdl-card__title-text">Analysis</h2>
 			</div>
 			<div class="mdl-card__subtitle-text">
-			Enter values for a recent race.  These values will be used to calculate this run's intensity relative to your race performance.
+			Calculate this run's intensity relative to your race performance.
 			</div>
 			<div class="mdl-grid">
-				<div class="mdl-cell mdl-cell--3-col"> 
+				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+					<div class="mdl-card__subtitle-text">
+					Enter values for a recent race.
+					</div>
 					<form action="#">
-					Distance: meters.
-					<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
-					<label class="mdl-textfield__label" for="racedist">Distance...</label>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
+						<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
+						<span class="mdl-textfield__error">Input is not a number!</span>
+						</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racehours" value="0">
+					<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racemins" value="25">
+					<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
+					<span class="mdl-textfield__error">Input is not a number!</span>
+					</div>
+					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racesecs" value="0">
+					<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
 					<span class="mdl-textfield__error">Input is not a number!</span>
 					</div>
 				</div>
-				<div class="mdl-cell mdl-cell--3-col"> 
-					Finish time: Hours
-					<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racehours" value="0">
-					<label class="mdl-textfield__label" for="racehours">Finish time: Hours</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
+				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+					<div class="mdl-card__subtitle-text">
+					What are my results for this run?
 					</div>
-				</div>
-				<div class="mdl-cell mdl-cell--3-col"> 
-					Finish time: Minutes 
-					<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racemins" value="25">
-					<label class="mdl-textfield__label" for="racemins">Finish time:Minutes</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
+						<div id="run_support">
+						</div> 
+						<div id="run_score_div">
+						</div>
+						</div>
+					</form>
 					</div>
-				</div>
-				<div class="mdl-cell mdl-cell--3-col"> 
-					Finish time: Seconds
-					<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racesecs" value="0">
-					<label class="mdl-textfield__label" for="racesecs">Finish time:Seconds</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
-					</div>
-				</div>
-			</form>
-			</div>
-			<div class="mdl-card__subtitle-text">
-			What are my results for this run?
-			</div>
-				<div id="run_support">
-				</div> 
-				<div id="run_score_div">
-				</div>
 			<div class="mdl-card__subtitle-text">
 			How does my VO2max compare?
 			</div>
@@ -699,6 +694,8 @@
 					<div id="mchart">
 					</div>
 				</div>
+			</div>
+			<div class="mdl-card__subtitle-text">
 				Table Reference: The Physical Fitness Specialist Certification Manual, The Cooper Institute for Aerobics Research, Dallas TX, revised 1997 printed in Advance Fitness Assessment & Exercise Prescription, 3rd Edition, Vivian H. Heyward, 1998. p48
 			</div>
 			</div>
