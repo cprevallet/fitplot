@@ -122,7 +122,6 @@
     			createLaps(serverdata);
     			createRace(serverdata);
 				createScore(serverdata);
-				createFitnessTables();
     		},
     		cache: false
     	});
@@ -431,7 +430,7 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['Run %VO2max', p.RunScore],
+          ['%VO2max', p.RunScore],
         ]);
 
         var options = {
@@ -445,12 +444,11 @@
         var chart = new google.visualization.Gauge(document.getElementById('run_score_div'));
 
         chart.draw(data, options);
+		createFitnessTables(p);
 	}
 
     function createFitnessTables(p) {
     	// Create a table for VO2 data.
-//    	var rs = document.getElementById('run_support')
-//    	rs.innerHTML += 'Female VO2max By Age.';
     	var femaledata = new google.visualization.DataTable();
     	femaledata.addColumn('string', 'Age');
     	femaledata.addColumn('string', 'Very Poor');
@@ -483,12 +481,9 @@
     	var femaleTable = new google.visualization.Table(document.getElementById('fchart'));
     	femaleTable.draw(femaledata, {
     		showRowNumber: false,
-//    		width: '100%',
-//    		height: '100%',
     		allowHtml: true
     	});
 
-//    	rs.innerHTML += 'Male VO2max By Age .';
     	var maledata = new google.visualization.DataTable();
     	maledata.addColumn('string', 'Age');
     	maledata.addColumn('string', 'Very Poor');
@@ -521,8 +516,6 @@
     	var maleTable = new google.visualization.Table(document.getElementById('mchart'));
     	maleTable.draw(maledata, {
     		showRowNumber: false,
-//    		width: '100%',
-//    		height: '100%',
     		allowHtml: true
     	});
 
@@ -646,7 +639,7 @@
 			<div class="mdl-card__title">
 				<h2 class="mdl-card__title-text">Analysis</h2>
 			</div>
-			<div class="mdl-card__supporting-text">
+			<div class="mdl-card__subtitle-text">
 			Enter values for a recent race.  These values will be used to calculate this run's intensity relative to your race performance.
 			</div>
 			<div class="mdl-grid">
@@ -684,15 +677,31 @@
 					</div>
 				</div>
 			</form>
-				<div id="run_support" class="mdl-cell mdl-cell--12-col-desktop mdl-cell--8-col-tablet">
+			</div>
+			<div class="mdl-card__subtitle-text">
+			What are my results for this run?
+			</div>
+				<div id="run_support">
 				</div> 
-			
-				<div class="mdl-cell mdl-cell--8-col" id="run_score_div">
-				</div>      
-				<div class="mdl-cell mdl-cell--8-col" id="fchart">
-				</div>      
-				<div class="mdl-cell mdl-cell--8-col" id="mchart">
-				</div>      
+				<div id="run_score_div">
+				</div>
+			<div class="mdl-card__subtitle-text">
+			How does my VO2max compare?
+			</div>
+			<div class="mdl-card__supporting-text">
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+					Female VO2max By Age.
+					<div id="fchart">
+					</div>      
+				</div>
+				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+					Male VO2max By Age.
+					<div id="mchart">
+					</div>
+				</div>
+			</div>
+			Table Reference: The Physical Fitness Specialist Certification Manual, The Cooper Institute for Aerobics Research, Dallas TX, revised 1997 printed in Advance Fitness Assessment & Exercise Prescription, 3rd Edition, Vivian H. Heyward, 1998. p48
 			</div>
 		</div>      
 	</div>  
