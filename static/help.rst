@@ -24,15 +24,13 @@ Fitplot requires access to the internet and a web browser.
 
 Browser version
 ~~~~~~~~~~~~~~~
-In theory, any browser capable of supporting a combination of Plot.ly, Material Design Lite components, and Google Charts should be capable of using the application.
+In theory, any browser capable of supporting a combination of Plot.ly, Material Design Lite components, and Google Maps Javascript API and Google Charts should be capable of using the application.
 
 In general browsers with the following version numbers or later should be compatible (but see the tested configurations section below):
 
-+ Microsoft Internet Explorer 9
++ Microsoft Internet Explorer 10 or above
 + Mozilla Firefox version 31 or above
 + Google Chrome version 31 or above
-
-Microsoft Internet Explorer 8 may exhibit results in a degraded mode (.css only vs. SVG for example) and is *not* officially supported.
 
 Browser settings
 ~~~~~~~~~~~~~~~~
@@ -73,7 +71,7 @@ Usage
 Getting the files
 -----------------
 
-Making a Garmin file available to the PC depends on the individual device:
+Instructions for making a Garmin file available on the PC is specific to the individual device:
 
 - Devices using Ant Agent to download files: Forerunner 50, 60, 70, 310XT, 405, 405CX, 410, 610, 910, 910XT, and Garmin Swim
 
@@ -81,9 +79,26 @@ Making a Garmin file available to the PC depends on the individual device:
 
 - Devices using a USB cable to download files: Forerunner/Edge 10, 110, 210, 220, 620, 500, 510, 705, 800, 810, 1000, and 920XT 
 
-A description of the process of moving the file from the watch to the PC is beyond the scope of this document but there are a number of descriptions of the process available on the Internet.  That said, the newer Garmin devices support the USB option which tends to be less problematic than older Ant Agent transfers.
+Detailed instructions describing the process of moving the file from the watch to the PC for the numerous models Garmin manufactures is beyond the scope of this document but there are a number of descriptions of the process available on the Internet (see the next section for helpful links).  That said, the newer Garmin devices support the USB option which tends to be less problematic than older Ant Agent transfers.
 
-Once the files have been transferred to the PC continue to the next step.
+In addition, there are sample FIT and TCX files provided in the distribution under the directory/folder named "samples" that may be loaded to use the application.
+
+Once the files have been transferred to the PC continue to the next step "Start the application".
+
+Download instructions for your device
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+At the time of this writing, owner's manuals for many Garmin devices may be downloaded from here:
+
+	+ https://support.garmin.com/support/manuals/searchManuals.faces?refresh=true
+	+ Select Sports & Recreation from the dropdown list
+	+ Select Running from the second dropdown list
+	+ Select <Your Model> from the third dropdown list
+
+The Garmin learning center has detailed videos as well:
+
+	+ http://www8.garmin.com/learningcenter/
+
 
 File locations
 ~~~~~~~~~~~~~~
@@ -144,15 +159,16 @@ After the user-specific settings have been entered, the user may interact with s
 	+ Dragging and dropping the yellow figure on the map will bring up a street view of the position.
 	+ Satellite and map views may be toggled by the targets in the upper left.
 	+ Click and drag pans across the map independently of the current marker position.
+	+ https://support.google.com/maps/answer/144349?hl=e
 - Analysis
 	+ The user's personal race times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.
 	
 Interpreting Results
 ~~~~~~~~~~~~~~~~~~~~
-Most of the returned results are labeled to aid in easy interpretation.  However the values for VO2max and VDOT may be unfamiliar to the user.  Wikipedia has a good description for both:
+Most of the returned results are labeled to aid in easy interpretation.  However the values for VO2max and VDOT may be unfamiliar to the user.  Wikipedia has a good description for 
 
-- https://en.wikipedia.org/wiki/VO2_max
-- https://en.wikipedia.org/wiki/Jack_Daniels_(coach)#VDOT
++ https://en.wikipedia.org/wiki/VO2_max
++ https://en.wikipedia.org/wiki/Jack_Daniels_(coach)#VDOT
 
 Fitplot uses the user's race result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).
 
@@ -172,3 +188,74 @@ Ending the application is performed in two steps.  Close the browser window and 
 Known Issues
 ============
 The run graph does not support zooming or panning via a touchscreen only.
+
+License
+=======
+
+Portions of the software embedded in this software are governed by the following software licenses:
+
+Plotly
+
+::
+
+	The MIT License (MIT)
+
+	Copyright (c) 2016 Plotly, Inc
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+Google Maps Javascript API Standard Plan
+
+::
+
+	https://developers.google.com/maps/pricing-and-plans/#details
+
+Google Charts API
+
+::
+
+	https://developers.google.com/terms/
+
+Material Design Lite
+
+::
+
+	Copyright 2015 Google Inc
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+
+	All code in any directories or sub-directories that end with \*.html or
+	\*.css is licensed under the Creative Commons Attribution International
+	4.0 License, which full text can be found here:
+	https://creativecommons.org/licenses/by/4.0/legalcode.
+
+	As an exception to this license, all html or css that is generated by
+	the software at the direction of the user is copyright the user. The
+	user has full ownership and control over such content, including
+	whether and how they wish to license it.
