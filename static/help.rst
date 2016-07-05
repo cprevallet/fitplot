@@ -69,7 +69,7 @@ Installation is a performed simply by copying the files from the delivery medium
 (CD/flash/web download) into a directory/folder on the user's hard drive.  
 
 The program needs write access to a temporary directory (typically 
-C:\Users\User Name\AppData\Local\Temp on MS Windows) or (/tmp on Linux). 
+C:\\Users\\User Name\\AppData\\Local\\Temp on MS Windows) or (/tmp on Linux). 
 Nothing else is required.
 
 Chapter 3 Usage
@@ -97,7 +97,7 @@ Section 3.1.1 File locations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - ANT+ protocol
-	+ Windows 2000 and Windows XP: C:\\Documents and Settings\\<USERNAME>\\Application Data\\GARMIN\Devices\\<DEVICE-ID>
+	+ Windows 2000 and Windows XP: C:\\Documents and Settings\\<USERNAME>\\Application Data\\GARMIN\\Devices\\<DEVICE-ID>
 	+ Windows Vista, Windows 7 and Windows 8: C:\\Users\\<USERNAME>\\AppData\\Roaming\\GARMIN\\Devices\\<DEVICE-ID>
 	+ Mac OS X: Macintosh HD/Users/<USERNAME>/Library/Application Support/Garmin/Devices/<DEVICE-ID>
 
