@@ -2,7 +2,7 @@
 package desktop
 
 import (
-	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 )
@@ -15,13 +15,30 @@ var commands = map[string]string{
 
 var Version = "0.1.0"
 
-// Open calls the OS default program for uri
-func Open(uri string) error {
-	run, ok := commands[runtime.GOOS]
-	if !ok {
-		return fmt.Errorf("don't know how to open things on %s platform", runtime.GOOS)
+func run(cmd *exec.Cmd) {
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	err := cmd.Start()
+	if err != nil {
+		panic(err)
 	}
+	err = cmd.Wait()
+	if err != nil {
+		panic(err)
+	}
+}
 
-	cmd := exec.Command(run, uri)
-	return cmd.Start()
+// Open calls the OS default program for uri
+func Open(uri string) (err error) {
+	if runtime.GOOS == "windows" {
+		run(exec.Command("cmd", "/c", "start", uri))
+	}
+	if runtime.GOOS == "darwin" {
+		run(exec.Command("open", uri))
+	}
+	if runtime.GOOS == "linux" {
+		run(exec.Command("xdg-open", uri))
+	}
+	return
 }
