@@ -314,6 +314,6 @@ func main() {
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
 	//Listen on port 8080
-	fmt.Println("Server starting on port 8080.")
+	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)
 }
