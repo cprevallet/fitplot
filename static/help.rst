@@ -5,8 +5,6 @@
 .. sectnum::
 .. contents:: Table of Contents
 
-!!!!
-
 Requirements
 ============
 
@@ -55,16 +53,12 @@ Input file formats
 ------------------
 Fitplot will display files generated in either Garmin's FIT or TCX formats.
 
-!!!!
-    
 Installation
 ============
 
 Installation is a performed simply by copying the files from the delivery medium (CD/flash/web download) into a directory/folder on the user's hard drive.  
 
 The program needs write access to a temporary directory (typically C:\\Users\\User Name\\AppData\\Local\\Temp on MS Windows) or (/tmp on Linux). Nothing else is required.
-
-!!!!
 
 Usage
 =====
@@ -185,13 +179,9 @@ Ending the application
 ----------------------
 Ending the application is performed in two steps.  Close the browser window and hit control-C in the window containing the server.  This may be performed in either order.
 
-!!!!
-
 Known Issues
 ============
 The run graph does not support zooming or panning via a touchscreen only.
-
-!!!!
 
 License
 =======
