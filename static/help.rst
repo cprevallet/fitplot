@@ -111,6 +111,7 @@ File locations
 
 Starting the application
 ------------------------
+
 Fitplot has both a web server and web client.  Both must be loaded in order to use the application.  
 
 Type fitplot from the command line or clicking on the executable file (fitplot.exe - Windows, fitplot - Linux) will start both the client and the server.
@@ -122,12 +123,14 @@ Using the application
 
 Load a file
 ~~~~~~~~~~~
+
 Once the steps described in "Starting the application" have been performed the user is presented with a circular green target with the figure of a runner.  The application is ready to process and display the user's running data.
 
 Pressing the target will present a file input dialog box. Navigate to one of the folders containing either a .FIT or .TCX format file and confirm.  
 
 Enter user-specific settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Next the file will be processed and most of the results displayed.  However the first time the application runs it has no knowledge of three items:
 
 - which trends the user wishes to display (pace/elevation/cadence)
@@ -140,6 +143,7 @@ After the inital run, these preferences and information will be retained as defa
 
 Interactive features
 ~~~~~~~~~~~~~~~~~~~~
+
 After the user-specific settings have been entered, the user may interact with several of the tools contained with the results.  The application has been designed with tooltips to describe most of the tools but there are several features worthy of further description:
 
 - Laps/Splits
@@ -169,7 +173,6 @@ Fitplot uses the user's race result as a surrogate for the tests described in th
 
 The user's VO2max can also be compared to the general population (by age) using the provided tables as a means to estimate cardiovascular fitness.
 
-
 Troubleshooting
 ---------------
 
@@ -177,7 +180,8 @@ This section is not complete yet.
 
 Ending the application
 ----------------------
-Ending the application is performed in two steps.  Close the browser window and hit control-C in the window containing the server.  This may be performed in either order.
+
+Ending the application is performed by clicking on the exit target on the far right.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.
 
 Known Issues
 ============
