@@ -33,12 +33,12 @@ func display(w http.ResponseWriter, tmpl string, data interface{}) {
 func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// Load page.
-		fmt.Println("pageloadHandler Received Request")
+		//fmt.Println("pageloadHandler Received Request")
 		display(w, "fitplot", nil)
 	}
 	if r.Method == "POST" {
 		// File load request
-		fmt.Println("pageloadHandler POST Received Request")
+		//fmt.Println("pageloadHandler POST Received Request")
 		uploadHandler(w, r)
 		//display(w, "fitplot", nil)
 	}
@@ -78,7 +78,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println("uploadHandler Received Request")
+	//fmt.Println("uploadHandler Received Request")
 
 }
 
@@ -298,7 +298,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("plotHandler Received Request")
+	//fmt.Println("plotHandler Received Request")
 	w.Header().Set("Content-Type", "text/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//Send
@@ -314,5 +314,6 @@ func main() {
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
 	//Listen on port 8080
+	fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)
 }

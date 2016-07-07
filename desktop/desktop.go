@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"fmt"
 )
 
 var commands = map[string]string{
@@ -40,5 +41,6 @@ func Open(uri string) (err error) {
 	if runtime.GOOS == "linux" {
 		run(exec.Command("xdg-open", uri))
 	}
+	fmt.Println("Client started.")
 	return
 }
