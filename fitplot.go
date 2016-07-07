@@ -14,7 +14,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	//"net/http/httputil"
+	"os"
 	"strconv"
 	"time"
 )
@@ -305,6 +305,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// Allow the user to shutdown the server from a target in the user interface client.
+func stopHandler(w http.ResponseWriter, r *http.Request) {
+	// Nothing graceful about this exit.  Just bail out.
+	os.Exit(0)
+	return
+}
+
 func main() {
 	desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
@@ -313,6 +320,7 @@ func main() {
     // Handle normal requests.
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
+	http.HandleFunc("/stop", stopHandler)
 	//Listen on port 8080
 	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)

@@ -521,6 +521,19 @@
 
     }
 
+    //
+    // Request data from the server.
+    //
+    function requestExit() {
+		if (confirm("Close Window?")) {
+			$.ajax({
+				url: '/stop',
+				cache: false
+			});
+			// Give the server 3 seconds - a reasonable amount of time to see the message before leaving.
+			setTimeout( function() {close(); }, 3000)
+		}
+    };
 </script>
 
 <!-- Styling -->
@@ -543,6 +556,10 @@
 			<i class="material-icons">help</i>
 		</a>
 		<span for="helpbtn" class="mdl-tooltip">Open a new tab with help.</span>
+		<button type="button" id="killserverbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">
+			<i class="material-icons">exit_to_app</i>
+		</a>
+		<span for="killserverbtn" class="mdl-tooltip">Exit</span>
 </div>
 
 <div id="fader"> <!-- Fader -->
