@@ -36,10 +36,10 @@ func Open(uri string) (err error) {
 		run(exec.Command("cmd", "/c", "start", uri))
 	}
 	if runtime.GOOS == "darwin" {
-		run(exec.Command("open", uri))
+		err = exec.Command("open", uri).Start()
 	}
 	if runtime.GOOS == "linux" {
-		run(exec.Command("xdg-open", uri))
+		err = exec.Command("xdg-open", uri).Start()
 	}
 //	fmt.Println("Client started.")
 	return
