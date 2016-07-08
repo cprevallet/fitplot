@@ -171,7 +171,40 @@ Most of the returned results are labeled to aid in easy interpretation.  However
 
 Fitplot uses the user's race result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).
 
-The user's VO2max can also be compared to the general population (by age) using the provided tables as a means to estimate cardiovascular fitness.
+The user's VO2max can also be compared to the general population (by age) using the provided table as a means to estimate cardiovascular fitness.
+
+Normative data for VO2max
+
+Female (values in ml/kg/min)
+
+=====   =========   ===========     ===========    ============     ===========     ========
+Age     Very Poor       Poor           Fair            Good         Excellent       Superior
+-----   ---------   -----------     -----------    ------------     -----------     --------
+13-19    <25.0      25.0 - 30.9     31.0 - 34.9     35.0 - 38.9     39.0 - 41.9     >41.9
+20-29    <23.6      23.6 - 28.9     29.0 - 32.9     33.0 - 36.9     37.0 - 41.0     >41.0
+30-39    <22.8      22.8 - 26.9     27.0 - 31.4     31.5 - 35.6     35.7 - 40.0     >40.0
+40-49    <21.0      21.0 - 24.4     24.5 - 28.9     29.0 - 32.8     32.9 - 36.9     >36.9
+50-59    <20.2      20.2 - 22.7     22.8 - 26.9     27.0 - 31.4     31.5 - 35.7     >35.7
+60+      <17.5      17.5 - 20.1     20.2 - 24.4     24.5 - 30.2     30.3 - 31.4     >31.4
+
+=====   =========   ===========     ===========    ============     ===========     ========
+
+
+Male (values in ml/kg/min)
+
+=====   =========   ===========     ===========    ============     ===========     ========
+Age     Very Poor       Poor           Fair            Good         Excellent       Superior
+-----   ---------   -----------     -----------    ------------     -----------     --------
+13-19    <35.0      35.0 - 38.3     38.4 - 45.1     45.2 - 50.9     51.0 - 55.9     >55.9
+20-29    <33.0      33.0 - 36.4     36.5 - 42.4     42.5 - 46.4     46.5 - 52.4     >52.4
+30-39    <31.5      31.5 - 35.4     35.5 - 40.9     41.0 - 44.9     45.0 - 49.4     >49.4
+40-49    <30.2      30.2 - 33.5     33.6 - 38.9     39.0 - 43.7     43.8 - 48.0     >48.0
+50-59    <26.1      26.1 - 30.9     31.0 - 35.7     35.8 - 40.9     41.0 - 45.3     >45.3
+60+      <20.5      20.5 - 26.0     26.1 - 32.2     32.3 - 36.4     36.5 - 44.2     >44.2
+
+=====   =========   ===========     ===========    ============     ===========     ========
+
+Table Reference: The Physical Fitness Specialist Certification Manual, The Cooper Institute for Aerobics Research, Dallas TX, revised 1997 printed in Advance Fitness Assessment & Exercise Prescription, 3rd Edition, Vivian H. Heyward, 1998.p48
 
 Troubleshooting
 ---------------

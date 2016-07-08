@@ -16,7 +16,7 @@ This stylesheet combines some ideas from the two stylesheets
 distributed with docutils and enhances them for Zope 3 documentation.
 */
 
-@import url(default.css);
+
 
 div.document {
   margin: 0px 1em 1em 4em;
@@ -29,9 +29,6 @@ div.document a[href] {
   text-decoration: underline; }
 
 div.document h1.title {
-  background-image: url("zope3logo.gif");
-  background-position: -6px -4px;
-  background-repeat: no-repeat;
   font-size: 150%;
   min-height: 50px; }
 
@@ -354,7 +351,149 @@ div.document .option-list kbd {
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/Jack_Daniels_(coach">https://en.wikipedia.org/wiki/Jack_Daniels_(coach</a>)#VDOT</li>
 </ul>
 <p>Fitplot uses the user's race result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).</p>
-<p>The user's VO2max can also be compared to the general population (by age) using the provided tables as a means to estimate cardiovascular fitness.</p>
+<p>The user's VO2max can also be compared to the general population (by age) using the provided table as a means to estimate cardiovascular fitness.</p>
+<p>Normative data for VO2max</p>
+<p>Female (values in ml/kg/min)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="13%" />
+<col width="16%" />
+<col width="16%" />
+<col width="18%" />
+<col width="16%" />
+<col width="12%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Age</td>
+<td>Very Poor</td>
+<td>Poor</td>
+<td>Fair</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Superior</td>
+</tr>
+<tr><td>13-19</td>
+<td>&lt;25.0</td>
+<td>25.0 - 30.9</td>
+<td>31.0 - 34.9</td>
+<td>35.0 - 38.9</td>
+<td>39.0 - 41.9</td>
+<td>&gt;41.9</td>
+</tr>
+<tr><td>20-29</td>
+<td>&lt;23.6</td>
+<td>23.6 - 28.9</td>
+<td>29.0 - 32.9</td>
+<td>33.0 - 36.9</td>
+<td>37.0 - 41.0</td>
+<td>&gt;41.0</td>
+</tr>
+<tr><td>30-39</td>
+<td>&lt;22.8</td>
+<td>22.8 - 26.9</td>
+<td>27.0 - 31.4</td>
+<td>31.5 - 35.6</td>
+<td>35.7 - 40.0</td>
+<td>&gt;40.0</td>
+</tr>
+<tr><td>40-49</td>
+<td>&lt;21.0</td>
+<td>21.0 - 24.4</td>
+<td>24.5 - 28.9</td>
+<td>29.0 - 32.8</td>
+<td>32.9 - 36.9</td>
+<td>&gt;36.9</td>
+</tr>
+<tr><td>50-59</td>
+<td>&lt;20.2</td>
+<td>20.2 - 22.7</td>
+<td>22.8 - 26.9</td>
+<td>27.0 - 31.4</td>
+<td>31.5 - 35.7</td>
+<td>&gt;35.7</td>
+</tr>
+<tr><td>60+</td>
+<td>&lt;17.5</td>
+<td>17.5 - 20.1</td>
+<td>20.2 - 24.4</td>
+<td>24.5 - 30.2</td>
+<td>30.3 - 31.4</td>
+<td>&gt;31.4</td>
+</tr>
+</tbody>
+</table>
+<p>Male (values in ml/kg/min)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="13%" />
+<col width="16%" />
+<col width="16%" />
+<col width="18%" />
+<col width="16%" />
+<col width="12%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>Age</td>
+<td>Very Poor</td>
+<td>Poor</td>
+<td>Fair</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Superior</td>
+</tr>
+<tr><td>13-19</td>
+<td>&lt;35.0</td>
+<td>35.0 - 38.3</td>
+<td>38.4 - 45.1</td>
+<td>45.2 - 50.9</td>
+<td>51.0 - 55.9</td>
+<td>&gt;55.9</td>
+</tr>
+<tr><td>20-29</td>
+<td>&lt;33.0</td>
+<td>33.0 - 36.4</td>
+<td>36.5 - 42.4</td>
+<td>42.5 - 46.4</td>
+<td>46.5 - 52.4</td>
+<td>&gt;52.4</td>
+</tr>
+<tr><td>30-39</td>
+<td>&lt;31.5</td>
+<td>31.5 - 35.4</td>
+<td>35.5 - 40.9</td>
+<td>41.0 - 44.9</td>
+<td>45.0 - 49.4</td>
+<td>&gt;49.4</td>
+</tr>
+<tr><td>40-49</td>
+<td>&lt;30.2</td>
+<td>30.2 - 33.5</td>
+<td>33.6 - 38.9</td>
+<td>39.0 - 43.7</td>
+<td>43.8 - 48.0</td>
+<td>&gt;48.0</td>
+</tr>
+<tr><td>50-59</td>
+<td>&lt;26.1</td>
+<td>26.1 - 30.9</td>
+<td>31.0 - 35.7</td>
+<td>35.8 - 40.9</td>
+<td>41.0 - 45.3</td>
+<td>&gt;45.3</td>
+</tr>
+<tr><td>60+</td>
+<td>&lt;20.5</td>
+<td>20.5 - 26.0</td>
+<td>26.1 - 32.2</td>
+<td>32.3 - 36.4</td>
+<td>36.5 - 44.2</td>
+<td>&gt;44.2</td>
+</tr>
+</tbody>
+</table>
+<p>Table Reference: The Physical Fitness Specialist Certification Manual, The Cooper Institute for Aerobics Research, Dallas TX, revised 1997 printed in Advance Fitness Assessment &amp; Exercise Prescription, 3rd Edition, Vivian H. Heyward, 1998.p48</p>
 </div>
 </div>
 <div class="section" id="troubleshooting">

@@ -7,7 +7,7 @@ This stylesheet combines some ideas from the two stylesheets
 distributed with docutils and enhances them for Zope 3 documentation.
 */
 
-@import url(default.css);
+
 
 div.document {
   margin: 0px 1em 1em 4em;
@@ -20,9 +20,6 @@ div.document a[href] {
   text-decoration: underline; }
 
 div.document h1.title {
-  background-image: url("zope3logo.gif");
-  background-position: -6px -4px;
-  background-repeat: no-repeat;
   font-size: 150%;
   min-height: 50px; }
 
