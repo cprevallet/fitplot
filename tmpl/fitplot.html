@@ -327,7 +327,15 @@
     		font: {
     			family: "Roboto, sans-serif",
     			size: 0,
-    		}
+    		},
+			annotations: [{
+				xref: 'paper',
+				yref: 'paper',
+				x: 0.5,
+				y: -0.2,
+				text: '',
+				showarrow: false
+				}]
     	};
     	Plotly.plot(gd, data, layout);
     	// Handle resizing.
@@ -358,9 +366,10 @@
 				if ((eventdata.hasOwnProperty('xaxis.range[0]')) && (eventdata.hasOwnProperty('xaxis.range[1]'))) {
 					var xmin = eventdata['xaxis.range[0]'];
 					var xmax = eventdata['xaxis.range[1]'];
-					var pace = document.getElementById('plotlyDiv').data[0];
-					var elevation = document.getElementById('plotlyDiv').data[1];
-					var cadence = document.getElementById('plotlyDiv').data[2];
+					var plot = document.getElementById('plotlyDiv')
+					var pace = plot.data[0];
+					var elevation = plot.data[1];
+					var cadence = plot.data[2];
 					var sum = 0.0;
 					var count = 0;
 					for (var i = 0; i < pace.x.length; i++) {
@@ -388,11 +397,15 @@
 						}
 					}
 					var avgCadence = sum/count;
-					alert('Zoom!' +  '\n' +
-					'Avg pace = ' + avgPace + '\n' +
-					'Avg elevation = ' + avgElevation + '\n' +
-					'Avg cadence = ' + avgCadence + '\n'
+					var myAnnotation = ('Averages for this segment:' +  '\n' +
+					'Avg pace = ' + avgPace.toPrecision(4) + '\n' +
+					'Avg elevation = ' + avgElevation.toPrecision(4) + '\n' +
+					'Avg cadence = ' + avgCadence.toPrecision(4) + '\n'
 					);
+					// Is this the best way to get the annotation???
+					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
+					annotation.text = myAnnotation
+					Plotly.redraw(plot)
 /*
 					alert( 'ZOOM!' + '\n\n' +
 					'Event data:' + '\n' + 
