@@ -356,8 +356,8 @@
 		// Calculate 'local' averages on zoom.
 		myPlot.on('plotly_relayout', function(eventdata){
 				if ((eventdata.hasOwnProperty('xaxis.range[0]')) && (eventdata.hasOwnProperty('xaxis.range[1]'))) {
-					var xmin = xaxis.range[0];
-					var xmax = xaxis.range[1];
+					var xmin = eventdata['xaxis.range[0]'];
+					var xmax = eventdata['xaxis.range[1]'];
 					var pace = document.getElementById('plotlyDiv').data[0];
 					var elevation = document.getElementById('plotlyDiv').data[1];
 					var cadence = document.getElementById('plotlyDiv').data[2];
