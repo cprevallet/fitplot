@@ -332,9 +332,16 @@
 				xref: 'paper',
 				yref: 'paper',
 				x: 0.5,
-				y: -0.2,
+				y: -0.225,
 				text: '',
-				showarrow: false
+				showarrow: false,
+				font: {
+				family: 'Roboto, sans-serif',
+				size: 14,
+				color: '#ffffff'
+				},
+				bgcolor: '#1f77b4',
+				opacity: 0.8
 				}]
     	};
     	Plotly.plot(gd, data, layout);
@@ -397,22 +404,21 @@
 						}
 					}
 					var avgCadence = sum/count;
-					var myAnnotation = ('Averages for this segment:' +  '\n' +
-					'Avg pace = ' + avgPace.toPrecision(4) + '\n' +
-					'Avg elevation = ' + avgElevation.toPrecision(4) + '\n' +
-					'Avg cadence = ' + avgCadence.toPrecision(4) + '\n'
-					);
+					var myAnnotation = 'Segment average: ' +  '\n';
+					if (showPace) { myAnnotation += p.Y0Name + '=' + avgPace.toPrecision(4) + '\n' }
+					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toPrecision(4) + '\n' }
+					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toPrecision(4) + '\n' }
 					// Is this the best way to get the annotation???
 					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
 					annotation.text = myAnnotation
 					Plotly.redraw(plot)
-/*
-					alert( 'ZOOM!' + '\n\n' +
-					'Event data:' + '\n' + 
-					JSON.stringify(eventdata) + '\n\n' +
-					'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
-					'x-axis end:' + eventdata['xaxis.range[1]'] );			
-*/
+				}
+				// Clear it out if unzooming
+				if (eventdata.hasOwnProperty('xaxis.autorange')) {
+					var plot = document.getElementById('plotlyDiv')
+					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
+					annotation.text = ''
+					Plotly.redraw(plot)
 				}
 			});
 
