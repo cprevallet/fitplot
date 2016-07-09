@@ -353,6 +353,55 @@
     			marker.setPosition(moveLatlong);
     		}
     	});
+		// Calculate 'local' averages on zoom.
+		myPlot.on('plotly_relayout', function(eventdata){
+				if ((eventdata.hasOwnProperty('xaxis.range[0]')) && (eventdata.hasOwnProperty('xaxis.range[1]'))) {
+					var xmin = xaxis.range[0];
+					var xmax = xaxis.range[1];
+					var pace = document.getElementById('plotlyDiv').data[0];
+					var elevation = document.getElementById('plotlyDiv').data[1];
+					var cadence = document.getElementById('plotlyDiv').data[2];
+					var sum = 0.0;
+					var count = 0;
+					for (var i = 0; i < pace.x.length; i++) {
+						if (pace.x[i] >= xmin && pace.x[i] <= xmax) {
+							sum += pace.y[i]
+							count += 1
+						}
+					}
+					var avgPace = sum/count;
+					sum = 0.0;
+					count = 0;
+					for (var i = 0; i < elevation.x.length; i++) {
+						if (elevation.x[i] >= xmin && elevation.x[i] <= xmax) {
+							sum += elevation.y[i]
+							count += 1
+						}
+					}
+					var avgElevation = sum/count;
+					sum = 0.0;
+					count = 0;
+					for (var i = 0; i < cadence.x.length; i++) {
+						if (cadence.x[i] >= xmin && cadence.x[i] <= xmax) {
+							sum += cadence.y[i]
+							count += 1
+						}
+					}
+					var avgCadence = sum/count;
+					alert('Zoom!' +  '\n' +
+					'Avg pace = ' + avgPace + '\n' +
+					'Avg elevation = ' + avgElevation + '\n' +
+					'Avg cadence = ' + avgCadence + '\n'
+					);
+/*
+					alert( 'ZOOM!' + '\n\n' +
+					'Event data:' + '\n' + 
+					JSON.stringify(eventdata) + '\n\n' +
+					'x-axis start:' + eventdata['xaxis.range[0]'] + '\n' +
+					'x-axis end:' + eventdata['xaxis.range[1]'] );			
+*/
+				}
+			});
 
     }
 
