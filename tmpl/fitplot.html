@@ -404,10 +404,10 @@
 						}
 					}
 					var avgCadence = sum/count;
-					var myAnnotation = 'Segment average: ' +  '\n';
-					if (showPace) { myAnnotation += p.Y0Name + '=' + avgPace.toPrecision(4) + '\n' }
-					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toPrecision(4) + '\n' }
-					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toPrecision(4) + '\n' }
+					var myAnnotation = 'Segment average: ' +  ' ';
+					if (showPace) { myAnnotation += p.Y0Name + '=' + avgPace.toPrecision(4) + ' ' }
+					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toPrecision(4) + ' ' }
+					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toPrecision(4) + ' ' }
 					// Is this the best way to get the annotation???
 					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
 					annotation.text = myAnnotation
