@@ -345,6 +345,8 @@
 				}]
     	};
     	Plotly.plot(gd, data, layout);
+		Plotly.redraw(plotlyDiv)
+
     	// Handle resizing.
     	window.onresize = function () {
     		Plotly.Plots.resize(gd);
@@ -537,7 +539,9 @@
 
 </head>
   <body>
-  
+
+
+
 <div class="mdl-grid">
 	<div class="mdl-cell mdl-cell--12-col"></div> <!-- Shouldn't this go after span for runbtn? -->
 		<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
@@ -555,141 +559,159 @@
 		<span for="killserverbtn" class="mdl-tooltip">Exit</span>
 </div>
 
+
 <div id="fader"> <!-- Fader -->
 
-	<div class="mdl-grid">
-		<!-- Summary -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Summary</h2>
-			</div>
-			<div id="over_div" class="mdl-card__supporting-text">
-			</div>      
+	<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+		<div class="mdl-tabs__tab-bar">
+		<a href="#tab1" class="mdl-tabs__tab">Summarize</a>
+		<a href="#tab2" class="mdl-tabs__tab">Visualize</a>
+		<a href="#tab3" class="mdl-tabs__tab">Analyze</a>
 		</div>
-		<!-- Laps/splits -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Laps/Splits</h2>
+		<div class="mdl-tabs__panel is-active" id="tab1">
+			<!-- Summary -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Summary</h2>
+				</div>
+				<div id="over_div" class="mdl-card__supporting-text">
+				</div>      
 			</div>
-			<div id="table_div" style="height: 380px">
+			<!-- Laps/splits -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Laps/Splits</h2>
+				</div>
+				<div id="table_div" style="height: 380px">
+				</div>
 			</div>
 		</div>
+		<div class="mdl-tabs__panel" id="tab2">
+			<div class="mdl-grid">
+			<div class="mdl-cell mdl-cell--12-col"></div>    
+			<!-- Graph -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp" >
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Graph</h2>
+			</div>
+			<div id="plotlyDiv" style="height:400px">
+			</div>
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+					<label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
+					<input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
+					<span class="mdl-checkbox__label"></span>
+					</label> Pace
+					<span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+					<label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
+					<input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
+					<span class="mdl-checkbox__label"></span>
+					</label> Elevation
+					<span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+					<label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
+					<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
+					<span class="mdl-checkbox__label"></span>
+					</label>  Cadence
+					<span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
+				</div>
+				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
+					<label id="metricsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="usemetric">
+					<input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-checkbox__input" >
+					<span class="mdl-checkbox__label"></span>
+					</label> Metric
+					<span for="metricsw" class="mdl-tooltip">Replot in metric or english unit system.</span>
+				</div>
+			</div>
+			</div>
+			
+			<!-- Map -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Map</h2>
+				</div>
+				<div id="map" style="height: 400px;">
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<div class="mdl-tabs__panel" id="tab3">
+			<div class="mdl-grid">
+			<!-- Race performance -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
+				</div>
+				<div id="prediction_div" style="height: 380px">
+				</div>
+			</div>
+
+			<!-- Analysis -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Analysis</h2>
+				</div>
+				<div class="mdl-card__subtitle-text">
+				Calculate this run's intensity relative to your race performance.
+				</div>
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+						<div class="mdl-card__subtitle-text">
+						Enter values for a recent race.
+						</div>
+						<form action="#">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+							<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
+							<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
+							<span class="mdl-textfield__error">Input is not a number!</span>
+							</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racehours" value="0">
+						<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
+						<span class="mdl-textfield__error">Input is not a number!</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racemins" value="25">
+						<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
+						<span class="mdl-textfield__error">Input is not a number!</span>
+						</div>
+						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racesecs" value="0">
+						<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
+						<span class="mdl-textfield__error">Input is not a number!</span>
+						</div>
+					</div>
+					<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
+						<div class="mdl-card__subtitle-text">
+						What are my results for this run?
+						</div>
+							<div id="run_support">
+							</div> 
+							<div id="run_score_div">
+							</div>
+							</div>
+						</form>
+						</div>
+				<div class="mdl-card__subtitle-text">
+				<a target="_blank" href="/static/help.html#interpreting-results">How do I interpet these results?</a>
+				</div>
+				</div>
+		</div>  
+		</div>
+	</div>
+
+
+
 	</div>
 		
 	
-	<div class="mdl-grid">
-		<div class="mdl-cell mdl-cell--12-col"></div>    
-		<!-- Graph -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp" style="height: 650px">
-		<div class="mdl-card__title">
-			<h2 class="mdl-card__title-text">Graph</h2>
-		</div>
-		<div id="plotlyDiv">
-		</div>
-		<div class="mdl-grid">
-			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-				<label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
-				<input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
-				<span class="mdl-checkbox__label"></span>
-				</label> Pace
-				<span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
-			</div>
-			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-				<label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
-				<input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
-				<span class="mdl-checkbox__label"></span>
-				</label> Elevation
-				<span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
-			</div>
-			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-				<label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
-				<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
-				<span class="mdl-checkbox__label"></span>
-				</label>  Cadence
-				<span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
-			</div>
-			<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
-				<label id="metricsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="usemetric">
-				<input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-checkbox__input" >
-				<span class="mdl-checkbox__label"></span>
-				</label> Metric
-				<span for="metricsw" class="mdl-tooltip">Replot in metric or english unit system.</span>
-			</div>
-		</div>
-		</div>
-		
-		<!-- Map -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Map</h2>
-			</div>
-			<div id="map" style="height: 480px;">
-			</div>
-		</div>
-	</div>
 
 
-	<div class="mdl-grid">
-		<!-- Race performance -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
-			</div>
-			<div id="prediction_div" style="height: 380px">
-			</div>
-		</div>
 
-		<!-- Analysis -->
-		<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
-			<div class="mdl-card__title">
-				<h2 class="mdl-card__title-text">Analysis</h2>
-			</div>
-			<div class="mdl-card__subtitle-text">
-			Calculate this run's intensity relative to your race performance.
-			</div>
-			<div class="mdl-grid">
-				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
-					<div class="mdl-card__subtitle-text">
-					Enter values for a recent race.
-					</div>
-					<form action="#">
-						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
-						<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
-						<span class="mdl-textfield__error">Input is not a number!</span>
-						</div>
-					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racehours" value="0">
-					<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
-					</div>
-					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racemins" value="25">
-					<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
-					</div>
-					<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-					<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racesecs" value="0">
-					<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
-					<span class="mdl-textfield__error">Input is not a number!</span>
-					</div>
-				</div>
-				<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
-					<div class="mdl-card__subtitle-text">
-					What are my results for this run?
-					</div>
-						<div id="run_support">
-						</div> 
-						<div id="run_score_div">
-						</div>
-						</div>
-					</form>
-					</div>
-			<div class="mdl-card__subtitle-text">
-			<a target="_blank" href="/static/help.html#interpreting-results">How do I interpet these results?</a>
-			</div>
-			</div>
-	</div>  
 
 
 </div> <!-- Fader -->
