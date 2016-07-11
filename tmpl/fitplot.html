@@ -586,6 +586,8 @@
 			setTimeout( function() {close(); }, 3000)
 		}
     };
+
+
 </script>
 
 <!-- Styling -->
@@ -609,28 +611,21 @@
 		<div class="mdl-layout-spacer"></div>
 		<!-- Navigation. We hide it in small screens. -->
 		<nav class="mdl-navigation mdl-layout--large-screen-only">
-
 				<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 					<i class="material-icons">directions_run</i>
 					<input type="file" name="runfile" id="runfile"> 
 				</label>
 				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
-
 				<a id="helpbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html">
 					<i class="material-icons">help</i>
 				</a>
 				<span for="helpbtn" class="mdl-tooltip">Open a new tab with help.</span>
-
 				<button type="button" id="killserverbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">
 					<i class="material-icons">exit_to_app</i>
 				</a>
 				<span for="killserverbtn" class="mdl-tooltip">Exit</span>
-
 		</nav>
 		</div>
-
-
-
 
     <!-- Tabs -->
     <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
@@ -642,9 +637,9 @@
     <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">FITPLOT</span>
     <nav class="mdl-navigation">
-      <a class="mdl-navigation__link" target="_blank" href="/static/help.html" >Help</a>
-      <a class="mdl-navigation__link" target="_blank" href="/static/help.html#license">License</a>
-      <a class="mdl-navigation__link" target="_blank" href="/stop" >Exit</a>
+      <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html" >Help</a>
+      <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html#license">License</a>
+	  <button type="button" id="drawer-exit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">Exit</button>
     </nav>
   </div>
   <main class="mdl-layout__content">
