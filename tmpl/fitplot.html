@@ -57,10 +57,9 @@
     });
 
     //
-    // This event fires after the tab loads.
+    // This event fires after the window loads.
     //
-	//$(window).load(function () {
-    $('.map-tab').load(function () {
+	$(window).load(function () {
     	// Set the checkboxes based on the cookie when the window loads.
     	$("input.mdl-checkbox__input").each(function () {
     		var mycookie = $.cookie($(this).attr('id'));
@@ -92,7 +91,6 @@
     			expires: 365
     		});
     	});
-
     });
 
     //
@@ -137,7 +135,7 @@
 	//
 	$(function () {
 		$('.vis-tab').click(function () {
-			visualize()
+			visualize();
 		})
 	});
 
@@ -148,7 +146,6 @@
 		var showPace = $("#pacechk").is(':checked')
 		var showElev = $("#elevchk").is(':checked')
 		var showCad = $("#cadchk").is(':checked')
-		showPace = true
    		var marker = createMap(serverdata);
    		createGraph(serverdata, showPace, showElev, showCad, marker);
 	}
@@ -158,10 +155,22 @@
 	//
 	$(function () {
 		$('.ana-tab').click(function () {
-    	createRace(serverdata);
-		createScore(serverdata);
+			analyze();
 		})
 	});
+
+	//
+	// Rerun the analysis and display.
+	//
+	function analyze() {
+		requestData();
+		// Since asynchronous must give the server time to recalculate before
+		// plotting.
+		setTimeout(function(){ 
+			createRace(serverdata);
+			createScore(serverdata);
+		}, 3000);
+	}
 
     //
     // Create the summary using the DOM.
@@ -714,17 +723,17 @@
 							<span class="mdl-textfield__error">Input is not a number!</span>
 							</div>
 						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racehours" value="0">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racehours" value="0">
 						<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
 						<span class="mdl-textfield__error">Input is not a number!</span>
 						</div>
 						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racemins" value="25">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racemins" value="25">
 						<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
 						<span class="mdl-textfield__error">Input is not a number!</span>
 						</div>
 						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="requestData()" id="racesecs" value="0">
+						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racesecs" value="0">
 						<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
 						<span class="mdl-textfield__error">Input is not a number!</span>
 						</div>
