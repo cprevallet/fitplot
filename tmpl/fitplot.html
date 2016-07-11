@@ -9,6 +9,8 @@
 
 <script>
     "use strict";
+
+	var serverdata
     //
     // This event fires when the document's DOM is loaded (which may be some 
     // time before the images, etc. are loaded).
@@ -38,7 +40,7 @@
     		var formData = new FormData();
     		formData.append('file', file)
     		$.ajax({
-    			url: "",
+    			url: "/",
     			type: "post",
     			data: formData,
     			processData: false,
@@ -55,9 +57,10 @@
     });
 
     //
-    // This event fires after entire page loads.
+    // This event fires after the tab loads.
     //
-    $(window).load(function () {
+	//$(window).load(function () {
+    $('.map-tab').load(function () {
     	// Set the checkboxes based on the cookie when the window loads.
     	$("input.mdl-checkbox__input").each(function () {
     		var mycookie = $.cookie($(this).attr('id'));
@@ -96,10 +99,7 @@
     // Request data from the server.
     //
     function requestData() {
-    	var useEnglish = !$("#usemetric").is(':checked')
-    	var showPace = $("#pacechk").is(':checked')
-    	var showElev = $("#elevchk").is(':checked')
-    	var showCad = $("#cadchk").is(':checked')
+		var useEnglish = !$("#usemetric").is(':checked')
 		var racedist = $("#racedist")[0].value
 		var racehours = $("#racehours")[0].value
 		var racemins = $("#racemins")[0].value
@@ -114,18 +114,54 @@
 				racesecs: racesecs,
     		},
     		dataType: "json",
-    		success: function (serverdata) {
+    		success: function (returneddata) {
     			// Save a global copy.
-    			createSummary(serverdata);
-    			var marker = createMap(serverdata);
-    			createGraph(serverdata, showPace, showElev, showCad, marker);
-    			createLaps(serverdata);
-    			createRace(serverdata);
-				createScore(serverdata);
+				serverdata = returneddata;
     		},
     		cache: false
     	});
     };
+
+	//
+	// Summarize tab has been selected.
+	//
+	$(function () {
+		$('.sum-tab').click(function () {
+			createSummary(serverdata);
+   			createLaps(serverdata);
+		})
+	});
+
+	//
+	// Visualize tab has been selected.
+	//
+	$(function () {
+		$('.vis-tab').click(function () {
+			visualize()
+		})
+	});
+
+	//
+	// Plot the graph and map using the current data.
+	//
+	function visualize() {
+		var showPace = $("#pacechk").is(':checked')
+		var showElev = $("#elevchk").is(':checked')
+		var showCad = $("#cadchk").is(':checked')
+		showPace = true
+   		var marker = createMap(serverdata);
+   		createGraph(serverdata, showPace, showElev, showCad, marker);
+	}
+
+	//
+	// Analyze tab has been selected.
+	//
+	$(function () {
+		$('.ana-tab').click(function () {
+    	createRace(serverdata);
+		createScore(serverdata);
+		})
+	});
 
     //
     // Create the summary using the DOM.
@@ -152,7 +188,7 @@
     //
     function createMap(p) {
     	// Create a new map.
-    	var map = new google.maps.Map(document.getElementById('map'), {
+    	var map = new google.maps.Map(document.getElementById('mapDiv'), {
     		zoom: 15,
     		center: p.Latlongs[0],
     		mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -169,14 +205,21 @@
     	for (var i = 0; i < p.Latlongs.length; i++) {
     		bound.extend(new google.maps.LatLng(p.Latlongs[i].lat, p.Latlongs[i].lng));
     	}
-    	map.setCenter(bound.getCenter());
-    	map.fitBounds(bound);
     	// Add a marker.
     	var marker = new google.maps.Marker({
     		position: p.Latlongs[0],
     		title: "Here we are!"
     	});
     	marker.setMap(map);
+
+		// Force a refresh!
+		setTimeout(function () {
+			google.maps.event.trigger(map, 'resize');
+			map.setCenter(bound.getCenter());
+			map.fitBounds(bound);
+			//map.setCenter(mapOptions.center);
+		}, 500);
+
     	// Return the marker object for use with graph.
     	return marker;
     }
@@ -346,6 +389,7 @@
 				}]
     	};
     	Plotly.plot(gd, data, layout);
+		Plotly.Plots.resize(gd);
 
     	// Handle resizing.
     	window.onresize = function () {
@@ -542,10 +586,10 @@
 
 	<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 		<div class="mdl-tabs__tab-bar">
-		<a href="#tab0" class="mdl-tabs__tab">Load</a>
-		<a href="#tab1" class="mdl-tabs__tab">Summarize</a>
-		<a href="#tab2" class="mdl-tabs__tab">Visualize</a>
-		<a href="#tab3" class="mdl-tabs__tab">Analyze</a>
+		<a href="#tab0" class="mdl-tabs__tab ex-tab">Exercise</a>
+		<a href="#tab1" class="mdl-tabs__tab sum-tab">Summarize</a>
+		<a href="#tab2" class="mdl-tabs__tab vis-tab">Visualize</a>
+		<a href="#tab3" class="mdl-tabs__tab ana-tab">Analyze</a>
 		</div>
 		<div class="mdl-tabs__panel is-active" id="tab0">
 		<div class="mdl-grid">
@@ -565,7 +609,7 @@
 				<span for="killserverbtn" class="mdl-tooltip">Exit</span>
 		</div>
 		</div>
-<div id="fader"> <!-- Fader -->
+ <!-- <div id="fader"> Fader -->
 		<div class="mdl-tabs__panel" id="tab1">
 		<div class="mdl-grid">
 			<!-- Summary -->
@@ -586,6 +630,7 @@
 			</div>
 		</div>
 		</div>
+
 		<div class="mdl-tabs__panel" id="tab2">
 			<div class="mdl-grid">
 			<!-- Graph -->
@@ -598,21 +643,21 @@
 			<div class="mdl-grid">
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
 					<label id="pacesw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pacechk">
-					<input type="checkbox" id="pacechk" onclick="requestData()" class="mdl-checkbox__input">
+					<input type="checkbox" id="pacechk" onclick="visualize()" class="mdl-checkbox__input">
 					<span class="mdl-checkbox__label"></span>
 					</label> Pace
 					<span for="pacesw" class="mdl-tooltip">Display/hide pace trend.</span>
 				</div>
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
 					<label id="elevsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="elevchk">
-					<input type="checkbox" id="elevchk" onclick="requestData()" class="mdl-checkbox__input">
+					<input type="checkbox" id="elevchk" onclick="visualize()" class="mdl-checkbox__input">
 					<span class="mdl-checkbox__label"></span>
 					</label> Elevation
 					<span for="elevsw" class="mdl-tooltip">Display/hide elevation trend.</span>
 				</div>
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
 					<label id="cadsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="cadchk">
-					<input type="checkbox" id="cadchk" onclick="requestData()" class="mdl-checkbox__input">
+					<input type="checkbox" id="cadchk" onclick="visualize()" class="mdl-checkbox__input">
 					<span class="mdl-checkbox__label"></span>
 					</label>  Cadence
 					<span for="cadsw" class="mdl-tooltip">Display/hide cadence trend.</span>
@@ -632,7 +677,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Map</h2>
 				</div>
-				<div id="map" style="height: 600px;">
+				<div id="mapDiv" style="height: 600px;">
 				</div>
 			</div>
 		</div>
@@ -713,7 +758,7 @@
 
 
 
-</div> <!-- Fader -->
+ <!-- </div> Fader -->
 
   </body>
 </html>
