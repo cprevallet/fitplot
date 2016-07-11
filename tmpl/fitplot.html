@@ -146,8 +146,11 @@
 		var showPace = $("#pacechk").is(':checked')
 		var showElev = $("#elevchk").is(':checked')
 		var showCad = $("#cadchk").is(':checked')
-   		var marker = createMap(serverdata);
-   		createGraph(serverdata, showPace, showElev, showCad, marker);
+		requestData();
+		setTimeout(function(){ 
+			var marker = createMap(serverdata);
+			createGraph(serverdata, showPace, showElev, showCad, marker);
+		}, 1000);
 	}
 
 	//
@@ -169,7 +172,7 @@
 		setTimeout(function(){ 
 			createRace(serverdata);
 			createScore(serverdata);
-		}, 3000);
+		}, 1000);
 	}
 
     //
@@ -673,7 +676,7 @@
 				</div>
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
 					<label id="metricsw" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="usemetric">
-					<input type="checkbox" id="usemetric" onclick="requestData()" class="mdl-checkbox__input" >
+					<input type="checkbox" id="usemetric" onclick="visualize()" class="mdl-checkbox__input" >
 					<span class="mdl-checkbox__label"></span>
 					</label> Metric
 					<span for="metricsw" class="mdl-tooltip">Replot in metric or english unit system.</span>
