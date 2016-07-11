@@ -245,7 +245,7 @@
     	// Boilerplate for fluid layout.
     	var d3 = Plotly.d3;
     	var WIDTH_IN_PERCENT_OF_PARENT = 99,
-    		HEIGHT_IN_PERCENT_OF_PARENT = 75;
+    		HEIGHT_IN_PERCENT_OF_PARENT = 35;
     	var gd3 = d3.select("#plotlyDiv")
     		.style({
     			width: WIDTH_IN_PERCENT_OF_PARENT + '%',
@@ -612,10 +612,14 @@
 		<!-- Navigation. We hide it in small screens. -->
 		<nav class="mdl-navigation mdl-layout--large-screen-only">
 				<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
+					<!--
 					<i class="material-icons">directions_run</i>
+				-->
+					<i class="material-icons">add</i>
 					<input type="file" name="runfile" id="runfile"> 
 				</label>
 				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+				<!--
 				<a id="helpbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html">
 					<i class="material-icons">help</i>
 				</a>
@@ -624,6 +628,7 @@
 					<i class="material-icons">exit_to_app</i>
 				</a>
 				<span for="killserverbtn" class="mdl-tooltip">Exit</span>
+				-->
 		</nav>
 		</div>
 
@@ -634,6 +639,7 @@
       <a href="#fixed-tab-3" class="mdl-layout__tab ana-tab">Analyze</a>
     </div>
   </header>
+
     <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">FITPLOT</span>
     <nav class="mdl-navigation">
@@ -642,9 +648,10 @@
 	  <button type="button" id="drawer-exit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">Exit</button>
     </nav>
   </div>
+
   <main class="mdl-layout__content">
     <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
-      <div class="page-content"><!-- Your content goes here -->
+      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
 
 		<div class="mdl-grid">
 			<!-- Summary -->
@@ -660,15 +667,35 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Laps/Splits</h2>
 				</div>
-				<div id="table_div" style="height: 380px">
+				<div id="table_div" style="height: 400px">
 				</div>
 			</div>
 		</div>
 
       </div>
+
+<footer class="mdl-mini-footer">
+  <div class="mdl-mini-footer__left-section">
+    <div class="mdl-logo">
+      More Information
+    </div>
+    <ul class="mdl-mini-footer__link-list">
+      <li><a target="_blank" href="/static/help.html">Help</a></li>
+      <li><a target="_blank" href="/static/help.html#license">License</a></li>
+    </ul>
+  </div>
+  <div class="mdl-mini-footer__right-section">
+<!--
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+-->
+  </div>
+</footer>
+
     </section>
     <section class="mdl-layout__tab-panel" id="fixed-tab-2">
-      <div class="page-content"><!-- Your content goes here -->
+      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
 
 			<div class="mdl-grid">
 			<!-- Graph -->
@@ -676,7 +703,7 @@
 			<div class="mdl-card__title">
 				<h2 class="mdl-card__title-text">Graph</h2>
 			</div>
-			<div id="plotlyDiv" style="height:500px" >
+			<div id="plotlyDiv" style="height:400px" >
 			</div>
 			<div class="mdl-grid">
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
@@ -715,15 +742,34 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Map</h2>
 				</div>
-				<div id="mapDiv" style="height: 600px;">
+				<div id="mapDiv" style="height: 400px;">
 				</div>
 			</div>
 		</div>
 
       </div>
+
+<footer class="mdl-mini-footer">
+  <div class="mdl-mini-footer__left-section">
+    <div class="mdl-logo">
+      More Information
+    </div>
+    <ul class="mdl-mini-footer__link-list">
+      <li><a target="_blank" href="/static/help.html">Help</a></li>
+      <li><a target="_blank" href="/static/help.html#license">License</a></li>
+    </ul>
+  </div>
+  <div class="mdl-mini-footer__right-section">
+<!--
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+-->
+  </div>
+</footer>
     </section>
     <section class="mdl-layout__tab-panel" id="fixed-tab-3">
-      <div class="page-content"><!-- Your content goes here -->
+      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
 
 
 			<div class="mdl-grid">
@@ -732,7 +778,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
-				<div id="prediction_div" style="height: 380px">
+				<div id="prediction_div" style="height: 400px">
 				</div>
 			</div>
 
@@ -789,10 +835,6 @@
 		</div> 
 
       </div>
-    </section>
-  </main>
-</div>
-
 
 <footer class="mdl-mini-footer">
   <div class="mdl-mini-footer__left-section">
@@ -800,17 +842,25 @@
       More Information
     </div>
     <ul class="mdl-mini-footer__link-list">
-      <li><a href="#">Help</a></li>
-      <li><a href="#">Privacy and Terms</a></li>
-      <li><a href="#">User Agreement</a></li>
+      <li><a target="_blank" href="/static/help.html">Help</a></li>
+      <li><a target="_blank" href="/static/help.html#license">License</a></li>
     </ul>
   </div>
   <div class="mdl-mini-footer__right-section">
+<!--
     <button class="mdl-mini-footer__social-btn"></button>
     <button class="mdl-mini-footer__social-btn"></button>
     <button class="mdl-mini-footer__social-btn"></button>
+-->
   </div>
 </footer>
+
+    </section>
+  </main>
+</div>
+
+
+
 
 
   </body>
