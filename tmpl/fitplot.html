@@ -189,17 +189,16 @@
     	// Boilerplate for fluid layout.
     	var d3 = Plotly.d3;
     	var WIDTH_IN_PERCENT_OF_PARENT = 99,
-    		HEIGHT_IN_PERCENT_OF_PARENT = 99;
+    		HEIGHT_IN_PERCENT_OF_PARENT = 75;
     	var gd3 = d3.select("#plotlyDiv")
     		.style({
     			width: WIDTH_IN_PERCENT_OF_PARENT + '%',
     			'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
 
     			height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
-    			'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+//    			'margin-bottom': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
     		});
-    	gd = gd3.node();
-    	var gd;
+    	var gd = gd3.node();
 
     	// Clean out the drawing surface.
     	Plotly.purge(plotlyDiv);
@@ -332,7 +331,7 @@
 				xref: 'paper',
 				yref: 'paper',
 				x: 0.5,
-				y: -0.225,
+				y: -0.2,
 				text: '',
 				showarrow: false,
 				font: {
@@ -345,7 +344,6 @@
 				}]
     	};
     	Plotly.plot(gd, data, layout);
-		Plotly.redraw(plotlyDiv)
 
     	// Handle resizing.
     	window.onresize = function () {
@@ -568,9 +566,10 @@
 		<a href="#tab2" class="mdl-tabs__tab">Visualize</a>
 		<a href="#tab3" class="mdl-tabs__tab">Analyze</a>
 		</div>
-		<div class="mdl-tabs__panel is-active" id="tab1">
+		<div class="mdl-tabs__panel" id="tab1">
+		<div class="mdl-grid">
 			<!-- Summary -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Summary</h2>
 				</div>
@@ -578,7 +577,7 @@
 				</div>      
 			</div>
 			<!-- Laps/splits -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Laps/Splits</h2>
 				</div>
@@ -586,15 +585,16 @@
 				</div>
 			</div>
 		</div>
-		<div class="mdl-tabs__panel" id="tab2">
+		</div>
+		<div class="mdl-tabs__panel is-active" id="tab2">
 			<div class="mdl-grid">
 			<div class="mdl-cell mdl-cell--12-col"></div>    
 			<!-- Graph -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp" >
+			<div class="mdl-card mdl-cell--8-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp"  >
 			<div class="mdl-card__title">
 				<h2 class="mdl-card__title-text">Graph</h2>
 			</div>
-			<div id="plotlyDiv" style="height:400px">
+			<div id="plotlyDiv" style="height:500px" >
 			</div>
 			<div class="mdl-grid">
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
@@ -629,11 +629,11 @@
 			</div>
 			
 			<!-- Map -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--4-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Map</h2>
 				</div>
-				<div id="map" style="height: 400px;">
+				<div id="map" style="height: 600px;">
 				</div>
 			</div>
 		</div>
@@ -642,7 +642,7 @@
 		<div class="mdl-tabs__panel" id="tab3">
 			<div class="mdl-grid">
 			<!-- Race performance -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
@@ -651,7 +651,7 @@
 			</div>
 
 			<!-- Analysis -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Analysis</h2>
 				</div>
