@@ -244,15 +244,15 @@
     function createGraph(p, showPace, showElev, showCad, marker) {
     	// Boilerplate for fluid layout.
     	var d3 = Plotly.d3;
-    	var WIDTH_IN_PERCENT_OF_PARENT = 99,
-    		HEIGHT_IN_PERCENT_OF_PARENT = 35;
+    	var WIDTH_IN_PERCENT_OF_PARENT = 99; 
+		// This should be set based on style settings for the "card".
+		var PARENT_HEIGHT = 480;  //px
+    	var HEIGHT_IN_PERCENT_OF_PARENT = Math.floor(PARENT_HEIGHT/screen.height * 100);
     	var gd3 = d3.select("#plotlyDiv")
     		.style({
     			width: WIDTH_IN_PERCENT_OF_PARENT + '%',
     			'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
-
     			height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
-//    			'margin-bottom': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
     		});
     	var gd = gd3.node();
 
@@ -667,7 +667,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Laps/Splits</h2>
 				</div>
-				<div id="table_div" style="height: 400px">
+				<div id="table_div" style="height: 480px">
 				</div>
 			</div>
 		</div>
@@ -703,7 +703,7 @@
 			<div class="mdl-card__title">
 				<h2 class="mdl-card__title-text">Graph</h2>
 			</div>
-			<div id="plotlyDiv" style="height:400px" >
+			<div id="plotlyDiv" style="height:480px" >
 			</div>
 			<div class="mdl-grid">
 				<div class="mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet">    
@@ -742,7 +742,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Map</h2>
 				</div>
-				<div id="mapDiv" style="height: 400px;">
+				<div id="mapDiv" style="height: 480px;">
 				</div>
 			</div>
 		</div>
@@ -778,7 +778,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
-				<div id="prediction_div" style="height: 400px">
+				<div id="prediction_div" style="height: 480px">
 				</div>
 			</div>
 
