@@ -597,33 +597,78 @@
 </head>
   <body>
 
-	<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-		<div class="mdl-tabs__tab-bar">
-		<a href="#tab0" class="mdl-tabs__tab ex-tab">Exercise</a>
-		<a href="#tab1" class="mdl-tabs__tab sum-tab">Summarize</a>
-		<a href="#tab2" class="mdl-tabs__tab vis-tab">Visualize</a>
-		<a href="#tab3" class="mdl-tabs__tab ana-tab">Analyze</a>
-		</div>
-		<div class="mdl-tabs__panel is-active" id="tab0">
-		<div class="mdl-grid">
-			<div class="mdl-cell mdl-cell--12-col"></div> <!-- Shouldn't this go after span for runbtn? -->
+<!-- Simple header with fixed tabs. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
+            mdl-layout--fixed-tabs">
+  <header class="mdl-layout__header">
+
+	<div class="mdl-layout__header-row">
+		<!-- Title -->
+		<span class="mdl-layout-title">FitPlot</span>
+		<!-- Add spacer, to align navigation to the right -->
+		<div class="mdl-layout-spacer"></div>
+		<!-- Navigation. We hide it in small screens. -->
+		<nav class="mdl-navigation mdl-layout--large-screen-only">
+			<a class="mdl-navigation__link" href="">Link</a>
+
 				<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
 					<i class="material-icons">directions_run</i>
 					<input type="file" name="runfile" id="runfile"> 
 				</label>
 				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+
 				<a id="helpbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html">
 					<i class="material-icons">help</i>
 				</a>
 				<span for="helpbtn" class="mdl-tooltip">Open a new tab with help.</span>
+
 				<button type="button" id="killserverbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">
 					<i class="material-icons">exit_to_app</i>
 				</a>
 				<span for="killserverbtn" class="mdl-tooltip">Exit</span>
+
+		</nav>
 		</div>
-		</div>
- <!-- <div id="fader"> Fader -->
-		<div class="mdl-tabs__panel" id="tab1">
+
+
+
+
+    <!-- Tabs -->
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+      <a href="#fixed-tab-1" class="mdl-layout__tab sum-tab">Summarize</a>
+      <a href="#fixed-tab-2" class="mdl-layout__tab vis-tab">Visualize</a>
+      <a href="#fixed-tab-3" class="mdl-layout__tab ana-tab">Analyze</a>
+    </div>
+  </header>
+    <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">FITPLOT</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" target="_blank" href="/static/help.html" >Help</a>
+      <a class="mdl-navigation__link" target="_blank" href="/static/help.html#license">License</a>
+      <a class="mdl-navigation__link" target="_blank" href="/stop" >Exit</a>
+
+<!--
+				<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent ">
+					<i class="material-icons">directions_run</i>
+					<input type="file" name="runfile" id="runfile"> 
+				</label>
+				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+-->
+				<a id="helpbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html">
+					<i class="material-icons">help</i>
+				</a>
+				<span for="helpbtn" class="mdl-tooltip">Open a new tab with help.</span>
+
+				<button type="button" id="killserverbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">
+					<i class="material-icons">exit_to_app</i>
+				</a>
+				<span for="killserverbtn" class="mdl-tooltip">Exit</span>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+      <div class="page-content"><!-- Your content goes here -->
+
 		<div class="mdl-grid">
 			<!-- Summary -->
 			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
@@ -642,9 +687,12 @@
 				</div>
 			</div>
 		</div>
-		</div>
 
-		<div class="mdl-tabs__panel" id="tab2">
+      </div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+      <div class="page-content"><!-- Your content goes here -->
+
 			<div class="mdl-grid">
 			<!-- Graph -->
 			<div class="mdl-card mdl-cell--8-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp"  >
@@ -695,11 +743,15 @@
 			</div>
 		</div>
 
-		</div>
-		<div class="mdl-tabs__panel" id="tab3">
+      </div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+      <div class="page-content"><!-- Your content goes here -->
+
+
 			<div class="mdl-grid">
 			<!-- Race performance -->
-			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
@@ -708,7 +760,7 @@
 			</div>
 
 			<!-- Analysis -->
-			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Analysis</h2>
 				</div>
@@ -757,21 +809,32 @@
 				<a target="_blank" href="/static/help.html#interpreting-results">How do I interpet these results?</a>
 				</div>
 				</div>
-		</div>  
-		</div>
-	</div>
+		</div> 
+
+      </div>
+    </section>
+  </main>
+</div>
 
 
+<footer class="mdl-mini-footer">
+  <div class="mdl-mini-footer__left-section">
+    <div class="mdl-logo">
+      More Information
+    </div>
+    <ul class="mdl-mini-footer__link-list">
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Privacy and Terms</a></li>
+      <li><a href="#">User Agreement</a></li>
+    </ul>
+  </div>
+  <div class="mdl-mini-footer__right-section">
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+    <button class="mdl-mini-footer__social-btn"></button>
+  </div>
+</footer>
 
-	</div>
-		
-	
-
-
-
-
-
- <!-- </div> Fader -->
 
   </body>
 </html>
