@@ -47,7 +47,12 @@
 	function sendFile (file, fileExt) {
 	  		// Check file extension.
     		if (fileExt != "fit" && fileExt != "tcx") {
-    			alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
+				var notification = document.querySelector('.mdl-js-snackbar');
+				notification.MaterialSnackbar.showSnackbar(
+				{
+					message: 'Error: filetype is:' + fileExt + '. FitPlot only supports .fit and .tcx files at this time.'
+				}
+				);
     			return false;
     		} // end if file not the right type
 
@@ -60,12 +65,25 @@
     			processData: false,
     			contentType: false,
     			success: function () {
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar(
+					{
+						message: 'File load completed!.'
+					}
+					);
     				requestData();
     			},
     			error: function () {
-    				alert("Sorry! Error uploading file.");	
-    			}
-    		});
+					var notification = document.querySelector('.mdl-js-snackbar');
+					var data = {
+					message: 'Sorry! Error uploading file.',
+					actionHandler: function(event) {sendFile(file, fileExt);},
+					actionText: 'Retry',
+					timeout: 10000
+					};
+					notification.MaterialSnackbar.showSnackbar(data);
+									}
+								});
 	}
 
     //
@@ -695,6 +713,11 @@
 		<button type="button" id="drawer-exit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">Exit</button>
 	</nav>
 </div>
+
+	<div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+		<div class="mdl-snackbar__text"></div>
+		<button type="button" class="mdl-snackbar__action"></button>
+	</div>
 
   <main class="mdl-layout__content">
 	<section class="mdl-layout__tab-panel" id="fixed-tab-1">
