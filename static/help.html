@@ -14,29 +14,45 @@
 
 This stylesheet combines some ideas from the two stylesheets
 distributed with docutils and enhances them for Zope 3 documentation.
+
+Modified by Craig S. Prevallet for Fitplot
 */
 
+html, body {
+	font-family: 'Roboto', sans-serif;
+	background-color: rgb(33,150,243);
+	color: rgba(255,255,255,.9);
+	margin: 30px;
+}
 
+}
 
 div.document {
   margin: 0px 1em 1em 4em;
   padding: 0px; }
 
 div.document a {
-  text-decoration: none; }
+  text-decoration: none;
+  color: rgb(255,255,255);
+}
 
 div.document a[href] {
-  text-decoration: underline; }
+  text-decoration: none; 
+  color: rgb(105,240,174);
+}
 
 div.document h1.title {
   font-size: 150%;
-  min-height: 50px; }
+  min-height: 50px; 
+  color: rgb(255,255,255);
+  
+}
 
 div.document div.section {
   margin: 0px 0px 1.5em 0px; }
 
 div.document div.section h1 {
-  background-color: rgb(230,230,230);
+  background-color: rgba(0,0,0, .3);
   margin-left: -2em;
   padding: 0.2em;
   padding-left: 0.35em;
@@ -55,7 +71,8 @@ div.document h1 {
 
 div.document h2 {
   font-family: sans-serif;
-  font-size: 120%; }
+  font-size: 120%; 
+}
 
 div.document h3 {
   font-family: sans-serif;
