@@ -611,6 +611,33 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+<style>
+
+.mdl-layout__header-row {
+  height: 10vh;
+  width: 100vw;
+}
+
+.mdl-layout__tab-bar {
+  height: 10vh;
+  width: 100vw;
+}
+
+.mdl-mini-footer {
+  height: 5vh;
+  width: 100vw;
+}
+
+.mdl-card {
+  height: 75vh;
+  width: 100vw;
+}
+
+.google-table {
+  height: 65vh;
+}
+
+</style>
 
 </head>
   <body>
@@ -659,7 +686,7 @@
 
   <main class="mdl-layout__content">
     <section class="mdl-layout__tab-panel" id="fixed-tab-1">
-      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
+      <div class="page-content"><!-- Your content goes here -->
 
 		<div class="mdl-grid">
 			<!-- Summary -->
@@ -675,7 +702,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Laps/Splits</h2>
 				</div>
-				<div id="table_div" style="height: 480px">
+				<div class="google-table" id="table_div">
 				</div>
 			</div>
 		</div>
@@ -703,7 +730,7 @@
 
     </section>
     <section class="mdl-layout__tab-panel is-active" id="fixed-tab-2">
-      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
+      <div class="page-content"><!-- Your content goes here -->
 
 			<div class="mdl-grid">
 			<!-- Graph -->
@@ -777,7 +804,7 @@
 </footer>
     </section>
     <section class="mdl-layout__tab-panel" id="fixed-tab-3">
-      <div class="page-content" style="height: 560px;"><!-- Your content goes here -->
+      <div class="page-content"><!-- Your content goes here -->
 
 
 			<div class="mdl-grid">
@@ -786,7 +813,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
-				<div id="prediction_div" style="height: 480px">
+				<div class="google-table" id="prediction_div">
 				</div>
 			</div>
 
