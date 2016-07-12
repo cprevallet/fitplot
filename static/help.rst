@@ -124,14 +124,14 @@ Using the application
 Load a file
 ~~~~~~~~~~~
 
-Once the steps described in "Starting the application" have been performed the user is presented with a circular green target with the figure of a runner.  The application is ready to process and display the user's running data.
+Once the steps described in "Starting the application" have been performed the user is presented with a circular green target with the figure of a "+".  (On screens with smaller resolutions this may not be visible but the same functionality is available from the "hamburger" menu in the upper left. The application is ready to process and display the user's running data.
 
 Pressing the target will present a file input dialog box. Navigate to one of the folders containing either a .FIT or .TCX format file and confirm.  
 
 Enter user-specific settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next the file will be processed and most of the results displayed.  However the first time the application runs it has no knowledge of three items:
+Next the file will be processed and the results displayed upon selecting one of the tabs (Visualize, Summarize, etc.).  However the first time the application runs it has no knowledge of three items:
 
 - which trends the user wishes to display (pace/elevation/cadence)
 - a typical race time/distance for user
@@ -161,7 +161,9 @@ After the user-specific settings have been entered, the user may interact with s
 	+ https://support.google.com/maps/answer/144349?hl=e
 - Analysis
 	+ The user's personal race times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.
-	
+
+In addition, transient popup notifications will be displayed at the bottom of the screen when new files are loaded or error messages occur.
+
 Interpreting Results
 ~~~~~~~~~~~~~~~~~~~~
 Most of the returned results are labeled to aid in easy interpretation.  However the values for VO2max and VDOT may be unfamiliar to the user.  Wikipedia has a good description for 
@@ -214,24 +216,30 @@ This section is not complete yet.
 Ending the application
 ----------------------
 
-Ending the application is performed by clicking on the exit target on the far right.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.
+Ending the application is performed by clicking on the exit target in the drop down (hamburger) menu.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.
 
 Known Issues
 ============
-The run graph does not support zooming or panning via a touchscreen only.
+The run graph does not support panning via a touchscreen only.  Zooming gestures vary by browser and often take several iterations to accomplish.
+
++ Google Chrome: Zoom by a single tap with two fingers followed by a single tap with one finger.  No feedback will be given after the inital two finger tap.
+
++ Mozilla Firefox: Zoom by a single finger tap, hold and drag.
+
 
 License
 =======
 
 Portions of the software embedded in this software are governed by the following software licenses:
 
-Plotly
+Plotly, fit
 
 ::
 
 	The MIT License (MIT)
 
 	Copyright (c) 2016 Plotly, Inc
+	Copyright (c) 2015 Jeremy Summers
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal

@@ -301,12 +301,12 @@ div.document .option-list kbd {
 <h2><a class="toc-backref" href="#id15">3.3&nbsp;&nbsp;&nbsp;Using the application</a></h2>
 <div class="section" id="load-a-file">
 <h3><a class="toc-backref" href="#id16">3.3.1&nbsp;&nbsp;&nbsp;Load a file</a></h3>
-<p>Once the steps described in &quot;Starting the application&quot; have been performed the user is presented with a circular green target with the figure of a runner.  The application is ready to process and display the user's running data.</p>
+<p>Once the steps described in &quot;Starting the application&quot; have been performed the user is presented with a circular green target with the figure of a &quot;+&quot;.  (On screens with smaller resolutions this may not be visible but the same functionality is available from the &quot;hamburger&quot; menu in the upper left. The application is ready to process and display the user's running data.</p>
 <p>Pressing the target will present a file input dialog box. Navigate to one of the folders containing either a .FIT or .TCX format file and confirm.</p>
 </div>
 <div class="section" id="enter-user-specific-settings">
 <h3><a class="toc-backref" href="#id17">3.3.2&nbsp;&nbsp;&nbsp;Enter user-specific settings</a></h3>
-<p>Next the file will be processed and most of the results displayed.  However the first time the application runs it has no knowledge of three items:</p>
+<p>Next the file will be processed and the results displayed upon selecting one of the tabs (Visualize, Summarize, etc.).  However the first time the application runs it has no knowledge of three items:</p>
 <ul class="simple">
 <li>which trends the user wishes to display (pace/elevation/cadence)</li>
 <li>a typical race time/distance for user</li>
@@ -359,6 +359,7 @@ div.document .option-list kbd {
 </dl>
 </li>
 </ul>
+<p>In addition, transient popup notifications will be displayed at the bottom of the screen when new files are loaded or error messages occur.</p>
 </div>
 <div class="section" id="interpreting-results">
 <h3><a class="toc-backref" href="#id19">3.3.4&nbsp;&nbsp;&nbsp;Interpreting Results</a></h3>
@@ -519,21 +520,26 @@ div.document .option-list kbd {
 </div>
 <div class="section" id="ending-the-application">
 <h2><a class="toc-backref" href="#id21">3.5&nbsp;&nbsp;&nbsp;Ending the application</a></h2>
-<p>Ending the application is performed by clicking on the exit target on the far right.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.</p>
+<p>Ending the application is performed by clicking on the exit target in the drop down (hamburger) menu.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.</p>
 </div>
 </div>
 <div class="section" id="known-issues">
 <h1><a class="toc-backref" href="#id22">4&nbsp;&nbsp;&nbsp;Known Issues</a></h1>
-<p>The run graph does not support zooming or panning via a touchscreen only.</p>
+<p>The run graph does not support panning via a touchscreen only.  Zooming gestures vary by browser and often take several iterations to accomplish.</p>
+<ul class="simple">
+<li>Google Chrome: Zoom by a single tap with two fingers followed by a single tap with one finger.  No feedback will be given after the inital two finger tap.</li>
+<li>Mozilla Firefox: Zoom by a single finger tap, hold and drag.</li>
+</ul>
 </div>
 <div class="section" id="license">
 <h1><a class="toc-backref" href="#id23">5&nbsp;&nbsp;&nbsp;License</a></h1>
 <p>Portions of the software embedded in this software are governed by the following software licenses:</p>
-<p>Plotly</p>
+<p>Plotly, fit</p>
 <pre class="literal-block">
 The MIT License (MIT)
 
 Copyright (c) 2016 Plotly, Inc
+Copyright (c) 2015 Jeremy Summers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
