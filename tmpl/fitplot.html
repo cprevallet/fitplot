@@ -16,27 +16,41 @@
     // time before the images, etc. are loaded).
     //
     $(document).ready(function () {
-		//Hide all the elements that aren't yet useful.
-		$('#fader').hide();
 
-		document.getElementById("runfile").onclick = function() {
-			$('#fader').slideUp(500);
-	}
     	// Set the hook for submitting the file upload form.
     	document.getElementById("runfile").onchange = function () {
-			//$('#fader').fadeOut(500);
-    		var file = runfile.files[0]; // grab the first (and only) file in the list
+    		var file = $('#runfile').get(0).files[0];
+    		//var file = runfile.files[0]; // grab the first (and only) file in the list
     		var fileExt = $("input#runfile").val();
     		fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
     		fileExt = fileExt.toLowerCase();
+			sendFile(file, fileExt);
+    	}
 
-    		// Check file extension.
+    	// Set the hook for submitting the file upload form.
+    	document.getElementById("runfilemenu").onchange = function () {
+    		var file = $('#runfilemenu').get(0).files[0];
+    		//var file = runfile.files[0]; // grab the first (and only) file in the list
+    		var fileExt = $("input#runfilemenu").val();
+    		fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
+    		fileExt = fileExt.toLowerCase();
+			sendFile(file, fileExt);
+    	}
+
+
+    });
+
+
+	//
+	//
+	//
+	function sendFile (file, fileExt) {
+	  		// Check file extension.
     		if (fileExt != "fit" && fileExt != "tcx") {
     			alert(fileExt + ' error. Only supports .fit and .tcx files are supported at this time.');
     			return false;
     		} // end if file not the right type
 
-    		var file = $('#runfile').get(0).files[0];
     		var formData = new FormData();
     		formData.append('file', file)
     		$.ajax({
@@ -49,12 +63,10 @@
     				requestData();
     			},
     			error: function () {
-    				alert("Sorry! Error uploading file.");
+    				alert("Sorry! Error uploading file.");	
     			}
     		});
-			$('#fader').fadeIn(500);
-    	}
-    });
+	}
 
     //
     // This event fires after the window loads.
@@ -643,6 +655,10 @@
     <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">FITPLOT</span>
     <nav class="mdl-navigation">
+	<label id="runbtnmenu" for="runfilemenu" class="mdl-button mdl-js-button mdl-button--accent">
+		<input type="file" name="runfilemenu" id="runfilemenu"> 
+	</label>
+	<span for="runbtnmenu" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
       <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html" >Help</a>
       <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html#license">License</a>
 	  <button type="button" id="drawer-exit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">Exit</button>
