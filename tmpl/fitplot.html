@@ -42,7 +42,7 @@
 
 
 	//
-	//
+	//  Send the file!
 	//
 	function sendFile (file, fileExt) {
 	  		// Check file extension.
@@ -145,6 +145,33 @@
     		success: function (returneddata) {
     			// Save a global copy.
 				serverdata = returneddata;
+    		},
+    		cache: false
+    	});
+    };
+
+    //
+    // Request data from the server.
+    //
+    function showEnvironment() {
+    	$.ajax({
+    		url: '/env',
+    		data: {},
+    		dataType: "json",
+    		success: function (returneddata) {
+				var notification = document.querySelector('.mdl-js-snackbar');
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Build time stamp: ' + returneddata.Buildstamp
+				} );			
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Git hash: ' + returneddata.Githash
+				} );
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'CPU architecture: ' + returneddata.CPUArchitecture
+				} );
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Operating system: ' + returneddata.OperatingSystem 
+				} );
     		},
     		cache: false
     	});
@@ -624,11 +651,13 @@
 </script>
 
 <!-- Styling -->
-<style>#runfile { display: none }</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+<style>#runfile { display: none }</style>
+<style>#runfilemenu { display: none }</style>
 <style>
+
 
 .mdl-layout__header-row {
   height: 10vh;
@@ -704,10 +733,11 @@
 	<div class="mdl-layout__drawer">
 	<span class="mdl-layout-title">FITPLOT</span>
 	<nav class="mdl-navigation">
-	<label id="runbtnmenu" for="runfilemenu" class="mdl-button mdl-js-button mdl-button--accent">
+		<label id="runbtnmenu" for="runfilemenu" class="mdl-button mdl-js-button mdl-button--colored">
 		<input type="file" name="runfilemenu" id="runfilemenu"> 
-	</label>
-	<span for="runbtnmenu" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+		<span>Load</span>
+		</label>
+		<button type="button" id="drawer-env" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="showEnvironment()">Environment</button>
 		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html" >Help</a>
 		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html#license">License</a>
 		<button type="button" id="drawer-exit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="requestExit()">Exit</button>

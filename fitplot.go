@@ -15,10 +15,20 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 	"time"
 )
 
+
+//
+// Create a build timestamp to use for versioning.
+// Using the linker option -X we can set a value for a symbol that can be accessed from within the binary.
+// go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
+//
+
+var Buildstamp string = "No build timestamp provided"
+var Githash string = "No git hash provided"
 var uploadFname string = ""
 
 // Compile templates on start for better performance.
@@ -82,6 +92,40 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//
+// Return information about the runtime environment.
+//
+func envHandler(w http.ResponseWriter, r *http.Request) {
+
+	type Environ struct {
+		Buildstamp      string
+		Githash         string
+		CPUArchitecture string
+		OperatingSystem string
+	}
+	
+	e := Environ {
+		Buildstamp:      Buildstamp,
+		Githash:         Githash,
+		CPUArchitecture: runtime.GOARCH,
+		OperatingSystem: runtime.GOOS,
+	}
+	
+	//Convert to json.
+	js, err := json.Marshal(e)
+	
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	
+	//fmt.Println("plotHandler Received Request")
+	w.Header().Set("Content-Type", "text/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//Send
+	w.Write(js)
+}
+
 // Parse the uploaded file, parse it and return run information suitable
 // to construct the user interface.
 func plotHandler(w http.ResponseWriter, r *http.Request) {
@@ -121,6 +165,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DeviceProdID   string
 		RunScore       float64
 		VO2max         float64
+		Buildstamp     string
+		Githash        string
 	}
 	var xStr string = "Distance "
 	var y0Str string = "Pace "
@@ -260,6 +306,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DeviceProdID:   "",
 		RunScore:       0.0,
 		VO2max:         0.0,
+		
 	}
 	
 	if rslt == "application/octet-stream" {
@@ -321,6 +368,7 @@ func main() {
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
 	http.HandleFunc("/stop", stopHandler)
+	http.HandleFunc("/env", envHandler)
 	//Listen on port 8080
 	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)
