@@ -161,19 +161,19 @@
     		success: function (returneddata) {
 				var notification = document.querySelector('.mdl-js-snackbar');
 				notification.MaterialSnackbar.showSnackbar( {
-				message: 'Build time stamp: ' + returneddata.Buildstamp
-				} );			
-				notification.MaterialSnackbar.showSnackbar( {
-				message: 'Git hash: ' + returneddata.Githash
-				} );
-				notification.MaterialSnackbar.showSnackbar( {
-				message: 'CPU architecture: ' + returneddata.CPUArchitecture
+				message: 'Browser: ' + navigator.userAgent
 				} );
 				notification.MaterialSnackbar.showSnackbar( {
 				message: 'Operating system: ' + returneddata.OperatingSystem 
 				} );
 				notification.MaterialSnackbar.showSnackbar( {
-				message: 'Browser: ' + navigator.userAgent
+				message: 'CPU architecture: ' + returneddata.CPUArchitecture
+				} );
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Build time stamp: ' + returneddata.Buildstamp
+				} );			
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Git hash: ' + returneddata.Githash
 				} );
 
     		},
@@ -647,7 +647,7 @@
 				cache: false
 			});
 			// Give the server 3 seconds - a reasonable amount of time to see the message before leaving.
-			setTimeout( function() {close(); }, 3000)
+			setTimeout( function() {window.close(); }, 3000)
 		}
     };
 
