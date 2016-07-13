@@ -172,6 +172,10 @@
 				notification.MaterialSnackbar.showSnackbar( {
 				message: 'Operating system: ' + returneddata.OperatingSystem 
 				} );
+				notification.MaterialSnackbar.showSnackbar( {
+				message: 'Browser: ' + navigator.userAgent
+				} );
+
     		},
     		cache: false
     	});
