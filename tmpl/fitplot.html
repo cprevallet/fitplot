@@ -602,13 +602,12 @@
 					// Is this the best way to get the annotation???
 					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
 					annotation.text = myAnnotation
-
 					// Get slice of p.DispPace on zoomed in data and recalculate the 
 					//axis tick values and text.
 					var startidx, endidx = 0;
 					for (var i = 0; i < pace.x.length; i++) {
-						if (pace.x < xmin) { startidx = i; }
-						if (pace.x < xmax) { endidx = i; }
+						if (pace.x[i] < xmin) { startidx = i; }
+						if (pace.x[i] < xmax) { endidx = i; }
 					}
 					var paceSlice = p.DispPace.slice(startidx, endidx);
 					// calculate paceTicks for this slice
@@ -618,8 +617,6 @@
 					var yaxis = plot.attributes[1].ownerElement.layout.yaxis;
 					yaxis.tickvals = pTicks.tickvals;
 					yaxis.ticktext = pTicks.ticktext;
-
-
 					Plotly.redraw(plot)
 				}
 				// Clear it out if unzooming
