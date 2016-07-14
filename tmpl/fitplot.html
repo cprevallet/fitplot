@@ -298,7 +298,23 @@
     	return marker;
     }
 
-
+	// Utility function to convert time in decimal minutes to mm:ss.
+	// Does not handle input values > one hour.
+	function decimalTimetoMinSec(dectime) {
+		var in_min = Math.floor(dectime);
+		var in_min_str = in_min.toString();
+		if (in_min < 10) {
+			var in_min_str = "0" + in_min_str;
+		}
+		var in_sec = (dectime - in_min) * 60;
+		var in_sec_str = in_sec.toPrecision(2).toString();
+		if (in_sec < 10) {
+			in_sec_str = "0" + in_sec_str;
+		}
+		var out = in_min_str + ":" + in_sec_str;
+		return out
+	}
+	
     //
     // Create the run graph using the Plotly API.
     //
@@ -402,7 +418,6 @@
     			showgrid: showPace,
     			showticklabels: showPace,
     			zeroline: false,
-				hoverformat: '.2f',
     		},
 
     		yaxis2: {
@@ -528,7 +543,7 @@
 					}
 					var avgCadence = sum/count;
 					var myAnnotation = 'Segment average: ' +  ' ';
-					if (showPace) { myAnnotation += p.Y0Name + '=' + avgPace.toPrecision(4) + ' ' }
+					if (showPace) { myAnnotation += p.Y0Name + '=' + decimalTimetoMinSec(avgPace) + ' ' }
 					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toPrecision(4) + ' ' }
 					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toPrecision(4) + ' ' }
 					// Is this the best way to get the annotation???
