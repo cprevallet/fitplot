@@ -306,8 +306,8 @@
 		if (in_min < 10) {
 			var in_min_str = "0" + in_min_str;
 		}
-		var in_sec = (dectime - in_min) * 60;
-		var in_sec_str = in_sec.toPrecision(2).toString();
+		var in_sec = Math.floor((dectime - in_min) * 60);
+		var in_sec_str = in_sec.toFixed(0).toString();
 		if (in_sec < 10) {
 			in_sec_str = "0" + in_sec_str;
 		}
@@ -335,10 +335,29 @@
     	// Clean out the drawing surface.
     	Plotly.purge(plotlyDiv);
 
+		// Custom hover text strings (e.g. convert decimal times to mm:ss for plotting).
+		var x = [];
+		var y = [];
+		var y1 = [];
+		var y2 = [];
+		var paceForHumans = [];
+		var altitudeForHumans = [];
+		var cadenceForHumans = [];
+		p.DispDistance.forEach(function(item, index)
+		{
+			x.push(item);
+			y.push(p.DispPace[index]);
+			y1.push(p.DispAltitude[index]);
+			y2.push(p.DispCadence[index]);
+			paceForHumans.push(p.Y0Name + ' = ' + decimalTimetoMinSec(p.DispPace[index]));
+			altitudeForHumans.push(p.Y1Name +  ' = ' + p.DispAltitude[index].toFixed(0) );
+			cadenceForHumans.push(p.Y2Name + ' = ' + p.DispCadence[index].toFixed(0) );
+		});
+
     	//Create a Plotly chart.
     	var trace1 = {
-    		x: p.DispDistance,
-    		y: p.DispPace,
+    		x: x,
+    		y: y,
     		name: p.Y0Name,
     		type: 'scatter',
     		yaxis: 'y',
@@ -346,11 +365,13 @@
     			color: "#1f77b4"
     		},
     		visible: showPace,
+			text: paceForHumans,
+			hoverinfo: "text",
     	};
 
     	var trace2 = {
-    		x: p.DispDistance,
-    		y: p.DispAltitude,
+    		x: x,
+    		y: y1,
     		name: p.Y1Name,
     		yaxis: 'y2',
     		type: 'scatter',
@@ -358,11 +379,13 @@
     			color: "#ff7f0e"
     		},
     		visible: showElev,
+			text: altitudeForHumans,
+			hoverinfo: "text",
     	};
 
     	var trace3 = {
-    		x: p.DispDistance,
-    		y: p.DispCadence,
+    		x: x,
+    		y: y2,
     		name: p.Y2Name,
     		yaxis: 'y3',
     		type: 'scatter',
@@ -370,6 +393,8 @@
     			color: "#4DAF4A"
     		},
     		visible: showCad,
+			text: cadenceForHumans,
+			hoverinfo: "text",
     	};
 
 
@@ -544,8 +569,8 @@
 					var avgCadence = sum/count;
 					var myAnnotation = 'Segment average: ' +  ' ';
 					if (showPace) { myAnnotation += p.Y0Name + '=' + decimalTimetoMinSec(avgPace) + ' ' }
-					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toPrecision(4) + ' ' }
-					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toPrecision(4) + ' ' }
+					if (showElev) { myAnnotation += p.Y1Name + '=' + avgElevation.toFixed(0) + ' ' }
+					if (showCad) { myAnnotation += p.Y2Name + '=' + avgCadence.toFixed(0) + ' ' }
 					// Is this the best way to get the annotation???
 					var annotation = plot.attributes[1].ownerElement.layout.annotations[0]
 					annotation.text = myAnnotation
