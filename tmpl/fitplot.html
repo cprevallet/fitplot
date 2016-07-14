@@ -306,7 +306,7 @@
 		if (in_min < 10) {
 			var in_min_str = "0" + in_min_str;
 		}
-		var in_sec = Math.floor((dectime - in_min) * 60);
+		var in_sec = Math.round((dectime - in_min) * 60);
 		var in_sec_str = in_sec.toFixed(0).toString();
 		if (in_sec < 10) {
 			in_sec_str = "0" + in_sec_str;
