@@ -170,7 +170,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var xStr string = "Distance "
 	var y0Str string = "Pace "
-	var y1Str string = "Elevation"
+	var y1Str string = "Elevation "
 	var y2Str string = "Cadence "
 	var runRecs []fit.Record
 	var runLaps []fit.Lap
