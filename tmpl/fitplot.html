@@ -314,6 +314,30 @@
 		var out = in_min_str + ":" + in_sec_str;
 		return out
 	}
+
+	//
+	//	Create an array of tick values and associated text to display in mins/unit.
+	//
+	function paceTicks(pace_array) {
+			var tickvals = [];
+			var ticktext = [];
+			var max_of_array = Math.max.apply(Math, pace_array);
+			var min_of_array = Math.min.apply(Math, pace_array);
+			var range = max_of_array - min_of_array; //minutes
+			// We want 5 - 10 ticks on display.
+			var step_interval;
+			if (10.0 < range) { step_interval = 120.0 } //seconds
+			if ((5.0 < range) && (range <= 10.0)) { step_interval = 60.0 } //seconds
+			if ((2.5 < range) && (range <= 5.0)) { step_interval = 30.0 } //seconds
+			if ((1.25 < range) && (range <= 2.5)) { step_interval = 15.0 } //seconds
+			if ((50.0/60.0 < range) && (range <= 1.25)) { step_interval = 10.0 } //seconds
+			if (range <= 50/60.0) { step_interval = 5.0 } //seconds
+			for (var i = 0.0; i < 1800.0; i = i + step_interval ) {
+				tickvals.push(i/60.0)
+				ticktext.push(decimalTimetoMinSec(i/60.0))
+			}
+			return {tickvals : tickvals, ticktext : ticktext};
+		}
 	
     //
     // Create the run graph using the Plotly API.
@@ -404,6 +428,8 @@
     	var yaxis2Title = showElev ? p.Y1Name : '';
     	var yaxis3Title = showCad ? p.Y2Name : '';
 
+		var pTicks = paceTicks(p.DispPace);
+
     	var layout = {
     		showlegend: false,
     		//	  hovermode: 'closest',
@@ -436,6 +462,8 @@
     				color: '#1f77b4',
     				size: 14
     			},
+				tickvals: pTicks.tickvals,
+                ticktext : pTicks.ticktext,
     			autorange: 'reversed',
     			anchor: 'x',
     			side: 'left',
