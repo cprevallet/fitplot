@@ -152,6 +152,11 @@
 		var racehours = $("#racehours")[0].value
 		var racemins = $("#racemins")[0].value
 		var racesecs = $("#racesecs")[0].value
+		var useSegment = $("#calc-2").is(':checked')
+		var splitdist = $("#splitdist")[0].value
+		var splithours = $("#splithours")[0].value
+		var splitmins = $("#splitmins")[0].value
+		var splitsecs = $("#splitsecs")[0].value
     	$.ajax({
     		url: '/getplot',
     		data: {
@@ -160,6 +165,11 @@
 				racehours: racehours,
 				racemins: racemins,
 				racesecs: racesecs,
+				useSegment: useSegment,
+				splitdist: splitdist,
+				splithours: splithours,
+				splitmins: splitmins,
+				splitsecs: splitsecs,
     		},
     		dataType: "json",
     		success: function (returneddata) {

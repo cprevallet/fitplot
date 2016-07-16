@@ -216,6 +216,45 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		racemins = 0
 	}
+	
+	// Calculate analysis results based on segment or whole run?
+	useSegment := false
+	param6s := r.URL.Query()["useSegment"]
+	if param6s != nil {
+		if param6s[0] == "true" {
+			useSegment = true
+		}
+		if param6s[0] == "false" {
+			useSegment = false
+		}
+	}
+	// What split time/distance has the user entered?
+	var splitdist float64
+	var splithours, splitmins, splitsecs int64
+	param7s := r.URL.Query()["splitdist"]
+	if param7s != nil {
+		splitdist, _ = strconv.ParseFloat(param7s[0], 64)
+	} else {
+		splitdist = 5000.0
+	}
+	param8s := r.URL.Query()["splithours"]
+	if param8s != nil {
+		splithours, _ = strconv.ParseInt(param8s[0], 10, 64)
+	} else {
+		splithours = 0
+	}
+	param9s := r.URL.Query()["splitmins"]
+	if param9s != nil {
+		splitmins, _ = strconv.ParseInt(param9s[0], 10, 64)
+	} else {
+		splitmins = 25
+	}
+	param10s := r.URL.Query()["splitsecs"]
+	if param10s != nil {
+		splitsecs, _ = strconv.ParseInt(param10s[0], 10, 64)
+	} else {
+		splitmins = 0
+	}	
 	/*
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
