@@ -78,30 +78,20 @@ func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64
 }
 
 // Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
-func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tEnd float64,
+func Daniels(runLengthMeters float64, elapsedTime float64, 
 	raceLengthMeters float64) (tOut float64, VO2max float64, err error) {
-	// Inputs are either:
-	// a. A measured VO2max -or-
-	// b. a run length in meters and the start and end timestamps expressed
-	//    as Unix-style timestamp in secs since a given reference time/date.
+	// Inputs are:
+	// a run length in meters and the elapsed time in minutes
 	//
 	// Outputs are:
 	// tOut represents the number of minutes predicted for raceLengthMeters
 	// VO2max is expressed in milliliters of oxygen per kilogram of the runner's
 	// weight per minute (ml/kg/min).
 	// err will be set if the solver failed to converge.
-	if providedVO2Max == 0.0 {
-		if tStart > tEnd {
-			return math.NaN(), math.NaN(), errors.New("start time after end time")
-		}
 
-		// Calculate the runner's VO2max based on a current run/race.
-		tRun := (tEnd - tStart) / 60.0 // run elapsed in mins
-		vRun := runLengthMeters / tRun // run velocity meters/min
-		VO2max = calcVO2max(vRun, tRun)
-	} else {
-		VO2max = providedVO2Max
-	}
+	// Calculate the runner's VO2max based on a current run/race.
+	vRun := runLengthMeters / elapsedTime // run velocity meters/min
+	VO2max = calcVO2max(vRun, elapsedTime)
 	// For a race prediction, we need to solve the VO2max equation for time,
 	// given a VO2max either measured or from a training run or race (above) and a
 	// distance for the race.
@@ -124,14 +114,10 @@ func Daniels(providedVO2Max float64, runLengthMeters float64, tStart float64, tE
 }
 
 // Predicted race times using the Daniel's Gilbert VO2max criteria.
-func PredictRaces(providedVO2Max float64, runLengthMeters float64, tStart float64,
-	tEnd float64) (PredictedTimes map[string]float64, VDOT float64, err error) {
+func PredictRaces(runLengthMeters float64, elapsedTime float64) (PredictedTimes map[string]float64, VDOT float64, err error) {
 	// Make predictions.  Tell the future.  :)
 	//
-	// Inputs are either:
-	// a. A measured VO2max -or-
-	// b. a run length in meters and the start and end timestamps expressed
-	//    as Unix-style timestamp in secs since a given reference time/date.
+	// Inputs are: a run length in meters and elapsed time in minutes.
 	//
 	// Outputs are:
 	// tOut represents an array of the number of minutes predicted for common race lengths
@@ -139,16 +125,16 @@ func PredictRaces(providedVO2Max float64, runLengthMeters float64, tStart float6
 	// weight per minute (ml/kg/min).
 	// err will be set if the solver failed to converge.
 	PredictedTimes = make(map[string]float64)
-	PredictedTimes["400"], VDOT, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 400.0)
-	PredictedTimes["800"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 800.0)
-	PredictedTimes["1 mi"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 1609.34)
-	PredictedTimes["5k"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 5000.0)
-	PredictedTimes["10k"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 10000.0)
-	PredictedTimes["10mi"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 16093.4)
-	PredictedTimes["Half Marathon"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 21097.4)
-	PredictedTimes["25k"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 25000.0)
-	PredictedTimes["30k"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 30000.0)
-	PredictedTimes["Marathon"], _, _ = Daniels(providedVO2Max, runLengthMeters, tStart, tEnd, 42195.0)
+	PredictedTimes["400"], VDOT, _ = Daniels(runLengthMeters, elapsedTime, 400.0)
+	PredictedTimes["800"], _, _ = Daniels(runLengthMeters, elapsedTime, 800.0)
+	PredictedTimes["1 mi"], _, _ = Daniels(runLengthMeters, elapsedTime, 1609.34)
+	PredictedTimes["5k"], _, _ = Daniels(runLengthMeters, elapsedTime, 5000.0)
+	PredictedTimes["10k"], _, _ = Daniels(runLengthMeters, elapsedTime, 10000.0)
+	PredictedTimes["10mi"], _, _ = Daniels(runLengthMeters, elapsedTime, 16093.4)
+	PredictedTimes["Half Marathon"], _, _ = Daniels(runLengthMeters, elapsedTime, 21097.4)
+	PredictedTimes["25k"], _, _ = Daniels(runLengthMeters, elapsedTime, 25000.0)
+	PredictedTimes["30k"], _, _ = Daniels(runLengthMeters, elapsedTime, 30000.0)
+	PredictedTimes["Marathon"], _, _ = Daniels(runLengthMeters, elapsedTime, 42195.0)
 	return PredictedTimes, VDOT, err
 }
 

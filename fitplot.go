@@ -214,7 +214,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	if param5s != nil {
 		racesecs, _ = strconv.ParseInt(param5s[0], 10, 64)
 	} else {
-		racemins = 0
+		racesecs = 0
 	}
 	
 	// Calculate analysis results based on segment or whole run?
@@ -253,7 +253,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	if param10s != nil {
 		splitsecs, _ = strconv.ParseInt(param10s[0], 10, 64)
 	} else {
-		splitmins = 0
+		splitsecs = 0
 	}	
 	/*
 	dump, err := httputil.DumpRequest(r, true)
@@ -372,7 +372,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
 	// Make race predictions.
-	p.PredictedTimes, p.VDOT = createPredictions(toEnglish, p.DispDistance, p.TimeStamps)
+	p.PredictedTimes, p.VDOT = createPredictions(toEnglish, useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins, splitsecs)
 
 	p.RunScore, p.VO2max = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
 	
