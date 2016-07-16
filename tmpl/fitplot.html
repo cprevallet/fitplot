@@ -123,6 +123,26 @@
     	});
     });
 
+	//
+	// Enable/disable UI input fields
+	//
+//		$('.mdl-radio').click(function () {
+//		$('input[type="radio"]').click(function() {
+	function disableInputs () {
+		//document.getElementById("splitdist").disabled = true;
+		document.getElementById("splitdisttf").MaterialTextfield.disable(); 
+		document.getElementById("splithourstf").MaterialTextfield.disable(); 
+		document.getElementById("splitminstf").MaterialTextfield.disable(); 
+		document.getElementById("splitsecstf").MaterialTextfield.disable(); 
+		};
+	function enableInputs () {
+		//document.getElementById("splitdist").disabled = false;
+		document.getElementById("splitdisttf").MaterialTextfield.enable();
+		document.getElementById("splithourstf").MaterialTextfield.enable();
+		document.getElementById("splitminstf").MaterialTextfield.enable();
+		document.getElementById("splitsecstf").MaterialTextfield.enable();
+		};
+
     //
     // Request data from the server.
     //
@@ -957,8 +977,114 @@
 
 
 			<div class="mdl-grid">
+
+
+			<!-- Analysis -->
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Inputs</h2>
+				</div>
+
+				<div class="mdl-grid">
+
+						<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+						<div class="mdl-tabs__tab-bar">
+							<a href="#race-panel" class="mdl-tabs__tab is-active">Race</a>
+							<a href="#run-panel" class="mdl-tabs__tab">Run</a>
+						</div>
+
+						<div class="mdl-tabs__panel is-active" id="race-panel">
+							<form action="#">
+								Enter values for a recent race (required):
+							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label ">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racedist" value="5000.0">
+								<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racehours" value="0">
+								<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racemins" value="25">
+								<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racesecs" value="0">
+								<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+							</div>
+						</div>
+						<div class="mdl-tabs__panel" id="run-panel">
+								Calculate race performance based on the entire run or just a segment:
+							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-1" onclick="disableInputs()" >
+							<input type="radio" id="calc-1" class="mdl-radio__button" name="options" value="Entire" checked>
+							<span class="mdl-radio__label">Entire</span>
+							</label>
+							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-2" onclick="enableInputs()" >
+							<input type="radio" id="calc-2" class="mdl-radio__button" name="options" value="Segment" >
+							<span class="mdl-radio__label">Segment</span>
+							</label>
+							</div> 
+							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitdisttf">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="splitdist" value="5000.0" disabled>
+								<label class="mdl-textfield__label" for="splitdist">Distance(m)</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splithourstf">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splithours" value="0" disabled>
+								<label class="mdl-textfield__label" for="splithours">Split time(hr):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitminstf">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitmins" value="25" disabled >
+								<label class="mdl-textfield__label" for="splitmins">Split time(min):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitsecstf">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitsecs" value="0" disabled>
+								<label class="mdl-textfield__label" for="splitsecs">Split time(secs):</label>
+								<span class="mdl-textfield__error">Input is not a number!</span>
+								</div>
+							</div>
+							</form>
+						</div>
+						</div>
+				</div>
+			</div>
+
+
+			<!-- VO2 Results -->
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
+
+				<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">VO2 Results</h2>
+				</div>
+				<div class="mdl-card__subtitle-text">
+				What are my results for this run?
+				</div>
+					<div id="run_support">
+					</div> 
+					<div id="run_score_div">
+					</div>
+				<div class="mdl-card__subtitle-text">
+					<a target="_blank" href="/static/help.html#interpreting-results">How do I interpet these results?</a>
+				</div>
+				</div>
+			</div>
+
+
+
+
 			<!-- Race performance -->
-			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
@@ -966,56 +1092,16 @@
 				</div>
 			</div>
 
-			<!-- Analysis -->
-			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<!-- Training paces -->
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">Analysis</h2>
+					<h2 class="mdl-card__title-text">Training Paces</h2>
 				</div>
-				<div class="mdl-card__subtitle-text">
-				Calculate this run's intensity relative to your race performance.
+				<div class="google-table" id="prediction_div">
 				</div>
-				<div class="mdl-grid">
-					<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
-						<div class="mdl-card__subtitle-text">
-						Enter values for a recent race.
-						</div>
-						<form action="#">
-							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-							<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" onchange="requestData()" id="racedist" value="5000.0">
-							<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
-							<span class="mdl-textfield__error">Input is not a number!</span>
-							</div>
-						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racehours" value="0">
-						<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
-						<span class="mdl-textfield__error">Input is not a number!</span>
-						</div>
-						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racemins" value="25">
-						<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
-						<span class="mdl-textfield__error">Input is not a number!</span>
-						</div>
-						<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" onchange="analyze()" id="racesecs" value="0">
-						<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
-						<span class="mdl-textfield__error">Input is not a number!</span>
-						</div>
-					</div>
-					<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--4-col-tablet"> 
-						<div class="mdl-card__subtitle-text">
-						What are my results for this run?
-						</div>
-							<div id="run_support">
-							</div> 
-							<div id="run_score_div">
-							</div>
-							</div>
-						</form>
-						</div>
-				<div class="mdl-card__subtitle-text">
-				<a target="_blank" href="/static/help.html#interpreting-results">How do I interpet these results?</a>
-				</div>
-				</div>
+			</div>
+
+
 		</div> 
 
 		</div>
