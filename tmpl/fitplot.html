@@ -253,6 +253,7 @@
 		setTimeout(function(){ 
 			createRace(serverdata);
 			createScore(serverdata);
+			createTraining(serverdata);
 		}, 1000);
 	}
 
@@ -719,6 +720,40 @@
 
     }
 
+    //
+    // Create the race prediction table using the Google Charts API.
+    //
+    function createTraining(p) {
+    	// Add training pace values to the training pace table.
+    	var traindata = new google.visualization.DataTable();
+    	traindata.addColumn('string', 'Workout');
+    	traindata.addColumn('string', 'Time (hh:mm:ss)');
+    	var cellStyle = {
+    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    	}
+    	var row = 0;
+		/*
+    	for (var k in p.PredictedTimes) {
+    		if (p.PredictedTimes.hasOwnProperty(k)) {
+    			traindata.addRows([
+    				[k, p.PredictedTimes[k], ]
+    			]);
+    		}
+    		traindata.setProperties(row, 0, cellStyle);
+    		traindata.setProperties(row, 1, cellStyle);
+    		row = row + 1
+    	}
+		*/
+    	var traintable = new google.visualization.Table(document.getElementById('training_div'));
+    	traintable.draw(traindata, {
+    		showRowNumber: false,
+    		width: '100%',
+    		height: '100%',
+    		allowHtml: true
+    	});
+
+    }
+
 	function createScore(p) {
 
     	$("#run_support").empty();
@@ -1097,7 +1132,7 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Training Paces</h2>
 				</div>
-				<div class="google-table" id="prediction_div">
+				<div class="google-table" id="training_div">
 				</div>
 			</div>
 
