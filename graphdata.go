@@ -276,3 +276,9 @@ func createRunScore(toEnglish bool, DispDistance[]float64, TimeStamps []int64,
 	RunScore, VO2max = predict.CalcRunScore(dist, tRunMin, dRefMeters, hh, mm, ss)
 	return
 }
+
+//  Calculate training paces.
+func calcTrainingPaces() {
+	predict.TrainingPaces(50.0)
+	return
+}

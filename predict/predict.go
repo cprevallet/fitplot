@@ -5,7 +5,7 @@ package predict
 //
 
 import (
-	//  "fmt"
+	"fmt"
 	"errors"
 	"math"
 )
@@ -45,6 +45,14 @@ func calcVO2max(v, t float64) float64 {
 	VO2max := O2Cost / Intensity
 	return VO2max
 }
+
+//
+// Takes a VO2 measurement and converts it to a velocity in m/min.
+//
+func vo2ToPace(vo2Val float64) float64 {
+	return 29.54 + 5.000663 * vo2Val - 0.007546 * (vo2Val * vo2Val)
+}
+
 
 // Find the root of the function (in this case, calcVO2max) by bisecting
 // https://en.wikipedia.org/wiki/Bisection_method
@@ -154,4 +162,20 @@ func CalcRunScore(dRunMeters float64, tRunMin float64, dRefMeters float64, hh in
 		VO2maxthisrun := calcVO2max(vrun, tRunMin)
 		RunScore = VO2maxthisrun / VO2max * 100.0
 		return RunScore, VO2max
+}
+
+func TrainingPaces(VO2max float64) {
+	// Calculate training paces in meters/min
+	easyPace := vo2ToPace (VO2max * 0.7)         // 70% vo2max
+	maraPace := vo2ToPace(VO2max * 0.82)         // 82% vo2max
+	thresholdPace := vo2ToPace (VO2max * 0.88)   // 88% vo2max
+	intervalPace := vo2ToPace (VO2max * 0.98)    // 98% vo2max
+	repPace := vo2ToPace (VO2max * 1.05)         // 105% vo2max
+	fmt.Println("easy: ", 1609.34/easyPace)
+	fmt.Println("mara: ", 1609.34/maraPace)
+	fmt.Println("thresh: ", 1609.34/thresholdPace)
+	fmt.Println("interval: ", 1609.34/intervalPace)
+	fmt.Println("rep: ", 1609.34/repPace)
+	return
+	
 }

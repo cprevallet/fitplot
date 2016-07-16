@@ -337,6 +337,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	p.RunScore, p.VO2max = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
 	
+	calcTrainingPaces()
+	
 	//Convert to json.
 	js, err := json.Marshal(p)
 
