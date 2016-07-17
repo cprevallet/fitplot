@@ -1041,68 +1041,74 @@
 						</div>
 
 						<div class="mdl-tabs__panel is-active" id="race-panel">
+							<div id="race-txt" class="mdl-card__subtitle-text">
+							Enter values for a recent race (required):
+							</div>
+							<span for="race-txt" class="mdl-tooltip">VO<sub>2</sub>race/max and training paces are calculated from a recent race.</span>
 							<form action="#">
-								Enter values for a recent race (required):
+
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label ">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racedist" value="5000.0">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racedist" onchange="analyze()" value="5000.0">
 								<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racehours" value="0">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racehours" onchange="analyze()" value="0">
 								<label class="mdl-textfield__label" for="racehours">Finish time(hr):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racemins" value="25">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racemins" onchange="analyze()" value="25">
 								<label class="mdl-textfield__label" for="racemins">Finish time(min):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racesecs" value="0">
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="racesecs" onchange="analyze()" value="0">
 								<label class="mdl-textfield__label" for="racesecs">Finish time(secs):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 							</div>
 						</div>
 						<div class="mdl-tabs__panel" id="run-panel">
-								Calculate results based on the entire run or just a segment:
+							<div id="run-txt" class="mdl-card__subtitle-text">
+							Calculate results based on the entire run or just a segment:
+							</div>
+							<span for="run-txt" class="mdl-tooltip">VO<sub>2</sub>run and equivalent performances paces are calculated from this run.</span>
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-1" onclick="disableInputs()" >
-							<input type="radio" id="calc-1" class="mdl-radio__button" name="options" value="Entire" checked>
+							<input type="radio" id="calc-1" class="mdl-radio__button" name="options" value="Entire" onchange="analyze()" checked>
 							<span class="mdl-radio__label">Entire</span>
 							</label>
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-2" onclick="enableInputs()" >
-							<input type="radio" id="calc-2" class="mdl-radio__button" name="options" value="Segment" >
+							<input type="radio" id="calc-2" class="mdl-radio__button" name="options" value="Segment" onchange="analyze()" >
 							<span class="mdl-radio__label">Segment</span>
 							</label>
 							</div> 
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitdisttf">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="splitdist" value="5000.0" disabled>
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="splitdist" onchange="analyze()" value="5000.0" disabled>
 								<label class="mdl-textfield__label" for="splitdist">Distance(m)</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splithourstf">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splithours" value="0" disabled>
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splithours" onchange="analyze()" value="0" disabled>
 								<label class="mdl-textfield__label" for="splithours">Split time(hr):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitminstf">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitmins" value="25" disabled >
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitmins" onchange="analyze()" value="25" disabled >
 								<label class="mdl-textfield__label" for="splitmins">Split time(min):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="splitsecstf">
-								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitsecs" value="0" disabled>
+								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*([0-9]+)?" id="splitsecs" onchange="analyze()" value="0" disabled>
 								<label class="mdl-textfield__label" for="splitsecs">Split time(secs):</label>
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 							</div>
 							</form>
 						</div>
-						<button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="analyze()">Calculate</button>
 						</div>
 				</div>
 			</div>
