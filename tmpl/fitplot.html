@@ -1023,20 +1023,14 @@
 
 
 			<!-- Analysis -->
-			<div class="mdl-card mdl-cell--6-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Inputs</h2>
 				</div>
 
 				<div class="mdl-grid">
 
-						<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-						<div class="mdl-tabs__tab-bar">
-							<a href="#race-panel" class="mdl-tabs__tab is-active">Baseline Performance</a>
-							<a href="#run-panel" class="mdl-tabs__tab">This Run</a>
-						</div>
 
-						<div class="mdl-tabs__panel is-active" id="race-panel">
 							<form action="#">
 								Enter values for a recent race (required):
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
@@ -1061,8 +1055,6 @@
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 							</div>
-						</div>
-						<div class="mdl-tabs__panel" id="run-panel">
 								Calculate results based on the entire run or just a segment:
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-1" onclick="disableInputs()" >
@@ -1097,9 +1089,9 @@
 								</div>
 							</div>
 							</form>
-						</div>
-						<button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="analyze()">Calculate</button>
-						</div>
+							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+							<button type="button" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="analyze()">Calculate</button>
+							</div>
 				</div>
 			</div>
 
@@ -1128,7 +1120,7 @@
 
 
 			<!-- Race performance -->
-			<div class="mdl-card mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
 				</div>
@@ -1137,7 +1129,7 @@
 			</div>
 
 			<!-- Training paces -->
-			<div class="mdl-card mdl-cell--2-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Training Paces</h2>
 				</div>
