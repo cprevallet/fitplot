@@ -720,6 +720,8 @@
     		preddata.setProperties(row, 1, cellStyle);
     		row = row + 1
     	}
+    	preddata.sort({column: 1, desc: false});
+
     	var predtable = new google.visualization.Table(document.getElementById('prediction_div'));
     	predtable.draw(preddata, {
     		showRowNumber: false,
@@ -752,6 +754,7 @@
     		traindata.setProperties(row, 1, cellStyle);
     		row = row + 1
     	}
+    	traindata.sort({column: 1, desc: false});
     	var traintable = new google.visualization.Table(document.getElementById('training_div'));
     	traintable.draw(traindata, {
     		showRowNumber: false,
