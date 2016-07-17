@@ -766,8 +766,8 @@
 
     	$("#run_support").empty();
     	var rs = document.getElementById('run_support')
-    	rs.innerHTML += '</br><b>VDOT: </b> ' + p.VDOT.toFixed(1) + ' ml/kg/min';
-    	rs.innerHTML += '</br><b>VO2max: </b> ' + p.VO2max.toFixed(1) + ' ml/kg/min';
+    	rs.innerHTML += '</br><b>VO<sub>2</sub>run: </b> ' + p.VDOT.toFixed(1) + ' ml/kg/min';
+    	rs.innerHTML += '</br><b>VO<sub>2</sub>race/max: </b> ' + p.VO2max.toFixed(1) + ' ml/kg/min';
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
@@ -852,6 +852,10 @@
    right: 28px;
    transform: translate(0px, 28px);
    z-index: 4;
+}
+
+.mdl-textfield__input {
+   width: 75px;
 }
 
 </style>
@@ -1032,8 +1036,8 @@
 
 
 							<form action="#">
-								Enter values for a recent race (required):
-							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+							<div mdl-cell--2-col-desktop mdl-cell--4-col-tablet> 
+<!--								Enter values for a recent race (required): -->
 								<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label ">
 								<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="racedist" value="5000.0">
 								<label class="mdl-textfield__label" for="racedist">Distance(m)</label>
@@ -1055,8 +1059,8 @@
 								<span class="mdl-textfield__error">Input is not a number!</span>
 								</div>
 							</div>
-								Calculate results based on the entire run or just a segment:
-							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
+							<div mdl-cell--2-col-desktop mdl-cell--4-col-tablet> 
+<!--								Calculate results based on the entire run or just a segment: -->
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-1" onclick="disableInputs()" >
 							<input type="radio" id="calc-1" class="mdl-radio__button" name="options" value="Entire" checked>
 							<span class="mdl-radio__label">Entire</span>
@@ -1101,7 +1105,7 @@
 
 				<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">VO2 Results</h2>
+					<h2 class="mdl-card__title-text">Results</h2>
 				</div>
 				<div class="mdl-card__subtitle-text">
 				What are my results for this run?
@@ -1122,7 +1126,7 @@
 			<!-- Race performance -->
 			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--4-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">Equivalent Race Performances</h2>
+					<h2 class="mdl-card__title-text">Equivalent Performances</h2>
 				</div>
 				<div class="google-table" id="prediction_div">
 				</div>
