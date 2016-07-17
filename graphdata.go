@@ -239,8 +239,19 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 }
 
 // Do a prediction based on this run.
-func createPredictions(toEnglish bool, useSegment bool, DispDistance []float64,
-	TimeStamps []int64, splitdist float64, splithours int64, splitmins int64, splitsecs int64) (PredictedRaceTimes map[string]string, VDOT float64) {
+func createAnalysis(toEnglish bool, 
+					   useSegment bool, 
+					   DispDistance []float64,
+					   TimeStamps []int64, 
+					   splitdist float64, 
+					   splithours, splitmins, splitsecs int64,
+					   racedist float64, 
+					   racehours, racemins,racesecs int64,				   
+  					) (PredictedRaceTimes map[string]string, 
+					   VDOT float64,
+					   VO2Max float64,
+					   RunScore float64,
+					   TrainingPaces map[string]string ) {
 	// Need to assign variables based on whether the user has selected the entire
 	// run or just a run segment (e.g. a split time and distance) to basis the 
 	// prediction on.
@@ -261,35 +272,43 @@ func createPredictions(toEnglish bool, useSegment bool, DispDistance []float64,
 		dist = splitdist
 		elapsedTime = (float64(splithours) * 60.0) + float64(splitmins) + (float64(splitsecs) / 60.0)
 	}
+	
+	// Calculate the equivalent race times for this run (segment or complete).
 	PredictedTimes, v, _ := predict.PredictRaces(dist, elapsedTime)
 	VDOT = v
 
+	// Calculate the % of VO2max for this run relative to the provided race information.
+	elapsedTimeRace := (float64(racehours) * 60.0) + float64(racemins) + (float64(racesecs) / 60.0)
+	velocityRace := racedist / elapsedTimeRace
+	VO2Max = predict.CalcVO2max(velocityRace, elapsedTimeRace)	
+	RunScore = VDOT / VO2Max * 100.0
+	
+	// Calculate the training paces.
+	easyPace, maraPace, thresholdPace, intervalPace, repPace := predict.TrainingPaces(VO2Max)
+	TrainingPaces = make(map[string]string)
+	if toEnglish {
+		easyPace = 1609.34 / easyPace
+		maraPace = 1609.34 / maraPace
+		thresholdPace = 1609.34 / thresholdPace
+		intervalPace = 1609.34 / intervalPace
+		repPace = 1609.34 / repPace
+	} else {
+		easyPace = 1000.0 / easyPace
+		maraPace = 1000.0 / maraPace
+		thresholdPace = 1000.0 / thresholdPace
+		intervalPace = 1000.0 / intervalPace
+		repPace = 1000.0 / repPace
+	}
+	TrainingPaces["Easy"] = strutil.DecimalTimetoMinSec(easyPace)
+	TrainingPaces["Marathon"] = strutil.DecimalTimetoMinSec(maraPace)
+	TrainingPaces["Threshold"] = strutil.DecimalTimetoMinSec(thresholdPace)
+	TrainingPaces["Interval"] = strutil.DecimalTimetoMinSec(intervalPace)
+	TrainingPaces["Repeats"] = strutil.DecimalTimetoMinSec(repPace)
+	
 	// Convert the times from decimal minutes to hh:mm:ss for the user.
 	PredictedRaceTimes = make(map[string]string)
 	for key, val := range PredictedTimes {
 		PredictedRaceTimes[key] = strutil.DecimalTimetoHourMinSec(val)
 	}
-	return
-}
-
-// Calculate a normalized run score based on a recent best race.
-func createRunScore(toEnglish bool, DispDistance[]float64, TimeStamps []int64, 
-	dRefMeters float64, hh int64, mm int64, ss int64) (RunScore float64, VO2max float64) {
-	// Need distance back in meters as correlation demands metric units.
-	d := DispDistance[len(DispDistance)-1]
-	var dist float64
-	if toEnglish {
-		dist = d / metersToMiles
-	} else {
-		dist = d / metersToKm
-	}
-	tRunMin := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0]) ) / 60.0
-	RunScore, VO2max = predict.CalcRunScore(dist, tRunMin, dRefMeters, hh, mm, ss)
-	return
-}
-
-//  Calculate training paces.
-func calcTrainingPaces() {
-	predict.TrainingPaces(50.0)
 	return
 }

@@ -742,18 +742,16 @@
     		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	var row = 0;
-		/*
-    	for (var k in p.PredictedTimes) {
-    		if (p.PredictedTimes.hasOwnProperty(k)) {
+    	for (var k in p.TrainingPaces) {
+    		if (p.TrainingPaces.hasOwnProperty(k)) {
     			traindata.addRows([
-    				[k, p.PredictedTimes[k], ]
+    				[k, p.TrainingPaces[k], ]
     			]);
     		}
     		traindata.setProperties(row, 0, cellStyle);
     		traindata.setProperties(row, 1, cellStyle);
     		row = row + 1
     	}
-		*/
     	var traintable = new google.visualization.Table(document.getElementById('training_div'));
     	traintable.draw(traindata, {
     		showRowNumber: false,

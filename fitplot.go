@@ -159,6 +159,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		EndDateStamp   string
 		Device         string
 		PredictedTimes map[string]string
+		TrainingPaces  map[string]string
 		VDOT           float64
 		DeviceName     string
 		DeviceUnitID   string
@@ -339,6 +340,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		EndDateStamp:   "",
 		Device:         "",
 		PredictedTimes: nil,
+		TrainingPaces:  nil,
 		VDOT:           0.0,
 		DeviceName:     "",
 		DeviceUnitID:   "",
@@ -371,13 +373,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp, 
 		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
-	// Make race predictions.
-	p.PredictedTimes, p.VDOT = createPredictions(toEnglish, useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins, splitsecs)
+	// Calculate the analysis page.
+		p.PredictedTimes, p.VDOT, p.VO2max, p.RunScore, p.TrainingPaces = createAnalysis(toEnglish, 
+			useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins, 
+			splitsecs, racedist, racehours, racemins, racesecs )
 
-	p.RunScore, p.VO2max = createRunScore(toEnglish, p.DispDistance, p.TimeStamps, racedist, racehours, racemins, racesecs)
-	
-	calcTrainingPaces()
-	
 	//Convert to json.
 	js, err := json.Marshal(p)
 

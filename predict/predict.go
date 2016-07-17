@@ -5,7 +5,7 @@ package predict
 //
 
 import (
-	"fmt"
+	//"fmt"
 	"errors"
 	"math"
 )
@@ -39,7 +39,7 @@ func calcIntensity(t float64) float64 {
 // The velocity is expressed in meters per minute.
 // The time is expressed in minutes.
 //
-func calcVO2max(v, t float64) float64 {
+func CalcVO2max(v, t float64) float64 {
 	O2Cost := calcO2cost(v)
 	Intensity := calcIntensity(t)
 	VO2max := O2Cost / Intensity
@@ -54,9 +54,9 @@ func vo2ToPace(vo2Val float64) float64 {
 }
 
 
-// Find the root of the function (in this case, calcVO2max) by bisecting
+// Find the root of the function (in this case, CalcVO2max) by bisecting
 // https://en.wikipedia.org/wiki/Bisection_method
-// The function argument (fn) signature is specific to calcVO2max.
+// The function argument (fn) signature is specific to CalcVO2max.
 func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64,
 	maxIter int, raceLengthMeters float64) (c float64, err error) {
 
@@ -91,7 +91,7 @@ func Daniels(runLengthMeters float64, elapsedTime float64,
 
 	// Calculate the runner's VO2max based on a current run/race.
 	vRun := runLengthMeters / elapsedTime // run velocity meters/min
-	VO2max = calcVO2max(vRun, elapsedTime)
+	VO2max = CalcVO2max(vRun, elapsedTime)
 	// For a race prediction, we need to solve the VO2max equation for time,
 	// given a VO2max either measured or from a training run or race (above) and a
 	// distance for the race.
@@ -101,7 +101,7 @@ func Daniels(runLengthMeters float64, elapsedTime float64,
 	// Ref: https://tour.golang.org/moretypes/24
 	fn := func(raceTimeinMinutes, raceLengthMeters float64) float64 {
 		v := raceLengthMeters / raceTimeinMinutes
-		return calcVO2max(v, raceTimeinMinutes) - VO2max
+		return CalcVO2max(v, raceTimeinMinutes) - VO2max
 	}
 	a := 1.0       // Initial low guess for solution e.g. 1 minute 400 m
 	b := 300.0     // Initial high guess for solution e.g. 5 hour marathon in minutes.
@@ -138,30 +138,14 @@ func PredictRaces(runLengthMeters float64, elapsedTime float64) (PredictedTimes 
 	return PredictedTimes, VDOT, err
 }
 
-func CalcRunScore(dRunMeters float64, tRunMin float64, dRefMeters float64, hh int64, 
-	mm int64, ss int64) (RunScore float64, VO2max float64) {
-		// Calculate the normalized run score (percent VO2max).
-		trefRun := float64(hh) * 60 + float64(mm) + float64(ss)/60.0 //distance, meters
-		vrefRun := dRefMeters / trefRun // run velocity meters/min
-		VO2max = calcVO2max(vrefRun, trefRun)	
-		vrun := dRunMeters/tRunMin
-		VO2maxthisrun := calcVO2max(vrun, tRunMin)
-		RunScore = VO2maxthisrun / VO2max * 100.0
-		return RunScore, VO2max
-}
 
-func TrainingPaces(VO2max float64) {
+func TrainingPaces(VO2max float64) (easyPace, maraPace, thresholdPace, intervalPace, repPace float64) {
 	// Calculate training paces in meters/min
-	easyPace := vo2ToPace (VO2max * 0.7)         // 70% vo2max
-	maraPace := vo2ToPace(VO2max * 0.82)         // 82% vo2max
-	thresholdPace := vo2ToPace (VO2max * 0.88)   // 88% vo2max
-	intervalPace := vo2ToPace (VO2max * 0.98)    // 98% vo2max
-	repPace := vo2ToPace (VO2max * 1.05)         // 105% vo2max
-	fmt.Println("easy: ", 1609.34/easyPace)
-	fmt.Println("mara: ", 1609.34/maraPace)
-	fmt.Println("thresh: ", 1609.34/thresholdPace)
-	fmt.Println("interval: ", 1609.34/intervalPace)
-	fmt.Println("rep: ", 1609.34/repPace)
+	easyPace = vo2ToPace (VO2max * 0.7)         // 70% vo2max
+	maraPace = vo2ToPace(VO2max * 0.82)         // 82% vo2max
+	thresholdPace = vo2ToPace (VO2max * 0.88)   // 88% vo2max
+	intervalPace = vo2ToPace (VO2max * 0.98)    // 98% vo2max
+	repPace = vo2ToPace (VO2max * 1.05)         // 105% vo2max
 	return
 	
 }
