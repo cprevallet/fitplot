@@ -134,10 +134,10 @@ Enter user-specific settings
 Next the file will be processed and the results displayed upon selecting one of the tabs (Visualize, Summarize, etc.).  However the first time the application runs it has no knowledge of three items:
 
 - which trends the user wishes to display (pace/elevation/cadence)
-- a typical race time/distance for user
+- a typical split time/distance for user
 - the choice of unit system (metric or imperial)
 
-The user should select the appropriate checkboxes (under Graph) and enter a race time and distance (under Analysis) to complete the process.
+The user should select the appropriate checkboxes (under Graph) and enter a split time and distance (under Analysis) to complete the process.
 
 After the inital run, these preferences and information will be retained as defaults but can be changed as necessary.
 
@@ -160,7 +160,7 @@ After the user-specific settings have been entered, the user may interact with s
 	+ Click and drag pans across the map independently of the current marker position.
 	+ https://support.google.com/maps/answer/144349?hl=e
 - Analysis
-	+ The user's personal race times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.
+	+ The user's personal split times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.
 
 In addition, transient popup notifications will be displayed at the bottom of the screen when new files are loaded or error messages occur.
 
@@ -171,7 +171,7 @@ Most of the returned results are labeled to aid in easy interpretation.  However
 + https://en.wikipedia.org/wiki/VO2_max
 + https://en.wikipedia.org/wiki/Jack_Daniels_(coach)#VDOT
 
-Fitplot uses the user's race result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).
+Fitplot uses the user's split result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).
 
 The user's VO2max can also be compared to the general population (by age) using the provided table as a means to estimate cardiovascular fitness.
 
