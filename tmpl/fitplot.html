@@ -1081,11 +1081,13 @@
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-1" onclick="disableInputs()" >
 							<input type="radio" id="calc-1" class="mdl-radio__button" name="options" value="Entire" onchange="analyze()" checked>
-							<span class="mdl-radio__label">Entire</span>
+							<span id="calc-1-lbl" class="mdl-radio__label">Entire</span>
+							<span for="calc-1-lbl" class="mdl-tooltip">Choose this for workouts where your pace doesn't change much, such as tempo or long runs.</span>
 							</label>
 							<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="calc-2" onclick="enableInputs()" >
 							<input type="radio" id="calc-2" class="mdl-radio__button" name="options" value="Segment" onchange="analyze()" >
-							<span class="mdl-radio__label">Segment</span>
+							<span id="calc-2-lbl" class="mdl-radio__label">Segment</span>
+							<span for="calc-2-lbl" class="mdl-tooltip">Choose this for workouts where the pace changes, such as interval workouts.</span>
 							</label>
 							</div> 
 							<div mdl-cell--3-col-desktop mdl-cell--4-col-tablet> 
