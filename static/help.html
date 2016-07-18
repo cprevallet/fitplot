@@ -309,10 +309,10 @@ div.document .option-list kbd {
 <p>Next the file will be processed and the results displayed upon selecting one of the tabs (Visualize, Summarize, etc.).  However the first time the application runs it has no knowledge of three items:</p>
 <ul class="simple">
 <li>which trends the user wishes to display (pace/elevation/cadence)</li>
-<li>a typical race time/distance for user</li>
+<li>a typical split time/distance for user</li>
 <li>the choice of unit system (metric or imperial)</li>
 </ul>
-<p>The user should select the appropriate checkboxes (under Graph) and enter a race time and distance (under Analysis) to complete the process.</p>
+<p>The user should select the appropriate checkboxes (under Graph) and enter a split time and distance (under Analysis) to complete the process.</p>
 <p>After the inital run, these preferences and information will be retained as defaults but can be changed as necessary.</p>
 </div>
 <div class="section" id="interactive-features">
@@ -353,7 +353,7 @@ div.document .option-list kbd {
 <li><dl class="first docutils">
 <dt>Analysis</dt>
 <dd><ul class="first last simple">
-<li>The user's personal race times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.</li>
+<li>The user's personal split times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.</li>
 </ul>
 </dd>
 </dl>
@@ -368,7 +368,7 @@ div.document .option-list kbd {
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/VO2_max">https://en.wikipedia.org/wiki/VO2_max</a></li>
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/Jack_Daniels_(coach">https://en.wikipedia.org/wiki/Jack_Daniels_(coach</a>)#VDOT</li>
 </ul>
-<p>Fitplot uses the user's race result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).</p>
+<p>Fitplot uses the user's split result as a surrogate for the tests described in the VO2max link.  VDOT is calculated by pace of the user's currently loaded run.  The %VO2 is an indication of the intensity of a run. In the absence of a heart rate measuring device, the %VO2max number can serve to identify if a given run was too fast or slow for a particular training objective (easy run, marathon pace, threshold, interval, or repetition).</p>
 <p>The user's VO2max can also be compared to the general population (by age) using the provided table as a means to estimate cardiovascular fitness.</p>
 <p>Normative data for VO2max</p>
 <p>Female (values in ml/kg/min)</p>
@@ -533,6 +533,22 @@ div.document .option-list kbd {
 </div>
 <div class="section" id="license">
 <h1><a class="toc-backref" href="#id23">5&nbsp;&nbsp;&nbsp;License</a></h1>
+<p>This software is governed by the following software license:</p>
+<pre class="literal-block">
+Copyright 2016 Craig S. Prevallet
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</pre>
 <p>Portions of the software embedded in this software are governed by the following software licenses:</p>
 <p>Plotly, fit</p>
 <pre class="literal-block">
