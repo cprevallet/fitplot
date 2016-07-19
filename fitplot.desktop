@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=Fitplot
+GenericName=Running Visualizer
+Comment=Visualize, summarize and analyzer your runs
+Exec=/opt/fitplot/fitplot.sh
+Terminal=false
+MultipleArgs=false
+Icon=fitplot_color.png
+Type=Application
+Categories=Application;Utility;Maps
