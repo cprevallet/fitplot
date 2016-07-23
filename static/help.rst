@@ -10,7 +10,7 @@ Requirements
 
 Operating System
 ----------------
-Builds are available for Windows 7 (64-bit) and Linux Debian 8 (Jessie - 64 bit).
+Builds are available for Windows 7 (64-bit), Linux Debian 8 (Jessie - 64 bit) and Mac OSX (64 bit)
 
 Input devices
 -------------
@@ -30,6 +30,7 @@ In general browsers with the following version numbers or later should be compat
 + Microsoft Internet Explorer 10 or above
 + Mozilla Firefox version 31 or above
 + Google Chrome version 31 or above
++ Apple Safari version 9.1 or above
 
 Browser settings
 ~~~~~~~~~~~~~~~~
@@ -46,28 +47,68 @@ Fitplot has been tested under the following combinations of operating system and
 - Debian GNU/Linux 8 (Jessie - 64 bit) 
 	+ Chrome 51.0.2704.106
 	+ Firefox 45.2.0
-- Apple iOS 9 (client only iPad 2)
-	+ Safari
+- Apple OS X El Capitan version 10.11.6
+	+ Safari 9.1.2
 
 Input file formats
 ------------------
 Fitplot will display files generated in either Garmin's FIT or TCX formats.
+
+Digital Security
+================
+
+Application Integrity
+---------------------
+In lieu of a "signing certificate" that both Apple and Microsoft support within their respective operating systems, Fitplot is offered with a "message digest" to insure that the application has not been tampered with.  
+
+Background information on message digests and digital certificates (in the context of another fine program known as "Pretty Good Privacy" may be found here:
+
++ http://www.pgpi.org/doc/pgpintro/#p12
++ http://www.pgpi.org/doc/pgpintro/#p14
+
+The following utilities may be executed from the command line to verify the provided message digests upon download.
+
++ Windows
+
+::
+
+	CertUtil -hashfile [file.ext] MD5
+
++ Mac OSX
+
+::
+
+	md5 -r [file.ext]
+	
++ Linux
+
+::
+
+	md5sum [file.ext]
+
+If you are concerned about security, run these utilities on the downloaded application files and be sure the message digest matches.
+
+Why Not Digital Certificates?
+-----------------------------
+The primary reason is cost.  For a new application with only a few users, this cost is prohibitive.  See the following article:
+
+https://successfulsoftware.net/2008/02/27/the-great-digital-certificate-ripoff/
+
+Open Source
+-----------
+Fitplot is open source software.   The actual program code for this software to view, download and modify is online at Github. 
+
+https://github.com/cprevallet/fitplot
+
+Fundamentally this is the most meaningful guarantee of data security a software author can offer.
+
 
 Installation
 ============
 
 - Windows(64 bit)
 
-Installation is a performed simply by copying the files from the delivery medium (e.g. web download) into a directory/folder on the user's drive.  
-
-::
-
- Right-click on the Zip file and choose Extract All
- Choose a location for the folder to be extracted into
- If you checked "Show extracted files when complete", the files or folders within the Zip folder appear. If you unchecked the box, a folder or file with the same name (without the Zip) should appear.
- This folder will contain the application and necessary accompanying files from the Zip file.  Do not modify files in this folder or the application may break.
- You may keep the Zip file or delete it.
-
+Installation is a performed simply by downloading and running Fitplot Windows x64 Setup.exe.  The setup executable will display the license and then prompt for an installation location.  A start menu icon and folder will be created.
 
 - GNU/Linux(64 bit)
 
@@ -76,10 +117,15 @@ Installation is performed by copying the files from the delivery medium and inst
 ::
 
  sudo tar -xvzf fitplot.tgz -C /opt/
- sudo /opt/fitplot/icons/cpfitplot_color.png /usr/share/icons/hicolor/48x48/apps/
+ sudo /opt/fitplot/icons/cpfitplot_color.png /usr/share/icons/hicolor/128x128/apps/
  sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
- 
-The program needs write access to a temporary directory (typically C:\\Users\\User Name\\AppData\\Local\\Temp on MS Windows) or (/tmp on Linux). Nothing else is required.
+
+- Mac OSX (64 bit)
+
+Installation is performed by downloading the file with the dmg file and single clicking on it.  This should result in a drive icon appearing on the desktop.  Double click on it to open.  Proceed to Starting the Application. 
+
+
+The program needs write access to a temporary directory (typically C:\\Users\\User Name\\AppData\\Local\\Temp on MS Windows) or (/tmp on Linux and OSX). Nothing else is required.
 
 Usage
 =====
@@ -136,11 +182,20 @@ Starting the application
 Fitplot has both a web server and web client.  Both must be loaded in order to use the application.  
 
 - Windows
-	+ Click on fitplot.exe or a shortcut if you created one.
+	+ Start Menu
+	+ Fitplot
+	+ You will receive a message indicating that the application is an unsigned binary from an unknown developer and asking if you are sure you want to run it. See the Digital Security and Privacy section.
 
 - Linux
 	+ From a bash shell: /opt/fitplot/fitplot.sh
 	+ From the menu (if desktop file was copied per the installation instructions): /Utilities/Fitplot
+
+- OSX
+	+ Click or tap with two fingers on fitplot.command to open the application.  
+	+ You will receive a message indicating that fitplot.command is from an unknown developer and asking if you are sure you want to open it. This is due to the developer (me) not signing and making it available to the Mac App Store.  See the Digital Security and Privacy section.
+	+ Click the open button to begin the application.  
+	
+A terminal window may appear and the application will start as a tab in the user's default browser. 
 
 If the browser client is closed and the server is left running, the user-interface may be generated by opening any supported browser and typing "http://localhost:8080" (without the quotes) into the address bar.
 
