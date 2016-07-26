@@ -130,7 +130,7 @@ function build_and_package {
         package_osx
     fi
     if [ "$1" = 'all' ]; then
-		build "windows" "amd64"s
+		build "windows" "amd64"
         package_windows
 		build "linux" "amd64"
         package_linux
