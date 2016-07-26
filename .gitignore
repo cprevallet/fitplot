@@ -23,10 +23,12 @@ _testmain.go
 *.exe
 *.test
 *.prof
+*.debug
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Fitplot specific
 # Samples Folders
 samples/
 
