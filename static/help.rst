@@ -2,6 +2,8 @@
  Fitplot User Documentation
 ============================
 
+.. image:: fitplot_color.png
+
 .. sectnum::
 .. contents:: Table of Contents
 
@@ -61,7 +63,7 @@ Application Integrity
 ---------------------
 In lieu of a "signing certificate" that both Apple and Microsoft support within their respective operating systems, Fitplot is offered with a "message digest" to insure that the application has not been tampered with.  
 
-Background information on message digests and digital certificates (in the context of another fine program known as "Pretty Good Privacy" may be found here:
+Background information on message digests and digital certificates (in the context of another fine program known as "Pretty Good Privacy") may be found here:
 
 + http://www.pgpi.org/doc/pgpintro/#p12
 + http://www.pgpi.org/doc/pgpintro/#p14
@@ -306,6 +308,21 @@ The run graph does not support panning via a touchscreen only.  Zooming gestures
 + Google Chrome: Zoom by a single tap with two fingers followed by a single tap with one finger.  No feedback will be given after the inital two finger tap.
 
 + Mozilla Firefox: Zoom by a single finger tap, hold and drag.
+
+Online Support
+==============
+
+Issues
+------
+The tracking system at Github will be used to report problems and suggest enhancements.  As Fitplot runs under a variety of versions, operating systems, cpu architectures, and browsers, identifying the operating environment is a key to understanding and resolving problems. Please use the hamburger menu (upper left) and select Environment.  Report the browser, operating system, architecture, and the last 4 or 5 digits of the githash when submitting your issue.
+
++ https://github.com/cprevallet/fitplot/issues
+
+Enhancements
+------------
+The above tracking system will also be used to identify potential enhancements and improvements.   If you have an idea for improvements, actual source code speaks louder than words.  Let's collaborate!  Create a fork of the Fitplot source code, update it with your changes and issue a pull request at:
+
++ https://github.com/cprevallet/fitplot
 
 
 License
