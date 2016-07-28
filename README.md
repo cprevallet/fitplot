@@ -9,8 +9,10 @@ Application Requirements
 
 ### Operating System
 
-Builds will be made available for Windows(64-bit), Linux (64 bit) and Mac 
-OSX (64 bit).
+Installable images for Windows(64-bit), Linux (64 bit) and Mac 
+OSX (64 bit) are available here:
+
+-    <https://github.com/cprevallet/fitplot/releases>
 
 ### Input devices
 
