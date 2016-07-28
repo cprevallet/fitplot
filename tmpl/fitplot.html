@@ -98,11 +98,13 @@
     // This event fires after the window loads.
     //
 	$(window).load(function () {
+		var nocookies = true
     	// Set the checkboxes based on the cookie when the window loads.
     	$("input.mdl-checkbox__input").each(function () {
     		var mycookie = $.cookie($(this).attr('id'));
     		if (mycookie && mycookie == "true") {
     			$(this).prop('checked', mycookie);
+    			nocookies = false;
     		}
     	});
 
@@ -111,6 +113,7 @@
     		var mycookie = $.cookie($(this).attr('id'));
     		if (mycookie != null) {
     			$(this).prop('value', mycookie);
+    			nocookies = false;
     		}
     	});
 
@@ -129,6 +132,11 @@
     			expires: 365
     		});
     	});
+    	// If no cookies, the program is running for the first time.  We'll set the 
+    	// pace trend so the user has something to look at.
+    	if (nocookies) {
+			$("#pacechk").prop('checked', true);
+    	}
     });
 
 	//
