@@ -71,7 +71,15 @@
 						message: 'File load completed!.'
 					}
 					);
-    				requestData();
+    				if ($("#fixed-tab-1").hasClass("is-active")) {
+						summarize();
+    				} 
+    				if ($("#fixed-tab-2").hasClass("is-active")) {
+						visualize();
+    				} 
+    				if ($("#fixed-tab-3").hasClass("is-active")) {
+						analyze();
+    				} 
     			},
     			error: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
@@ -216,10 +224,20 @@
 	//
 	$(function () {
 		$('.sum-tab').click(function () {
-			createSummary(serverdata);
-   			createLaps(serverdata);
+			summarize()
 		})
 	});
+	
+	//
+	// Show the summary information.
+	//
+	function summarize() {
+		requestData();
+		setTimeout(function(){ 
+			createSummary(serverdata);
+			createLaps(serverdata);
+		}, 1000);
+	}
 
 	//
 	// Visualize tab has been selected.
