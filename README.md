@@ -1,7 +1,7 @@
 <img src="https://github.com/cprevallet/fitplot/blob/master/icons/fitplot_color.png">
 
 # fitplot
-Visualize, summarize and analyze runnning activities from Garmin devices.
+Visualize, summarize and analyze running activities from Garmin devices.
 
 
 Application Requirements
