@@ -150,8 +150,8 @@ will be created.
 Installation is performed by copying the files from the delivery medium
 and installing into the /opt/fitplot directory on the user's drive.
 
-    sudo tar -xvzf fitplot.tgz -C /opt/
-    sudo /opt/fitplot/icons/cpfitplot_color.png /usr/share/icons/hicolor/128x128/apps/
+    sudo tar -xvzf fitplot_linux64bit.tgz -C /opt/
+    sudo cp /opt/fitplot/icons/fitplot_color.png /usr/share/icons/hicolor/128x128/apps/
     sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 
 -   Mac OSX (64 bit)

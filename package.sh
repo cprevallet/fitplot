@@ -36,7 +36,8 @@ function build() {
 	
 	cd $SOURCE_DIR
     echo -e '\nbuilding:'$os, $arch
-	if arch=="windows" ; then
+	go clean
+	if [ "$os" == "windows" ] ; then
 		env GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
 	else
 		env GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
