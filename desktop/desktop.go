@@ -1,11 +1,11 @@
-/* The desktop package exposes Open function which acts like the user clicked on a uri. */
+// Package desktop contains OS specific functions.
 package desktop
 
 import (
 	"os"
 	"os/exec"
 	"runtime"
-//	"fmt"
+	//	"fmt"
 )
 
 var commands = map[string]string{
@@ -13,8 +13,6 @@ var commands = map[string]string{
 	"darwin":  "open",
 	"linux":   "xdg-open",
 }
-
-var Version = "0.1.0"
 
 func run(cmd *exec.Cmd) {
 	cmd.Stdout = os.Stdout
@@ -30,7 +28,7 @@ func run(cmd *exec.Cmd) {
 	}
 }
 
-// Open calls the OS default program for uri
+// Open calls the OS default program for a URI.
 func Open(uri string) (err error) {
 	if runtime.GOOS == "windows" {
 		run(exec.Command("cmd", "/c", "start", uri))
@@ -41,6 +39,6 @@ func Open(uri string) (err error) {
 	if runtime.GOOS == "linux" {
 		err = exec.Command("xdg-open", uri).Start()
 	}
-//	fmt.Println("Client started.")
+	//	fmt.Println("Client started.")
 	return
 }

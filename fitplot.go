@@ -1,14 +1,13 @@
+//
+// Fitplot provides a webserver used to process .fit and .tcx files.
+//
 package main
-
-//
-// Provide webserver functionality.
-//
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cprevallet/fitplot/tcx"
 	"github.com/cprevallet/fitplot/desktop"
+	"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"html/template"
 	"io"
@@ -20,16 +19,18 @@ import (
 	"time"
 )
 
-
-//
-// Create a build timestamp to use for versioning.
-// Using the linker option -X we can set a value for a symbol that can be accessed from within the binary.
+// Buildstamp represents a build timestamp for use in technical support.  It is
+// created using the linker option -X we can set a value for a symbol that can
+// be accessed from within the binary.
 // go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
-//
+var Buildstamp = "No build timestamp provided"
 
-var Buildstamp string = "No build timestamp provided"
-var Githash string = "No git hash provided"
-var uploadFname string = ""
+// Githash represents a hash from the version control system for use in
+// technical support.  It is created using the linker option -X we can
+// set a value for a symbol that can be accessed from within the binary.
+// go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
+var Githash = "No git hash provided"
+var uploadFname = ""
 
 // Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
@@ -103,22 +104,22 @@ func envHandler(w http.ResponseWriter, r *http.Request) {
 		CPUArchitecture string
 		OperatingSystem string
 	}
-	
-	e := Environ {
+
+	e := Environ{
 		Buildstamp:      Buildstamp,
 		Githash:         Githash,
 		CPUArchitecture: runtime.GOARCH,
 		OperatingSystem: runtime.GOOS,
 	}
-	
+
 	//Convert to json.
 	js, err := json.Marshal(e)
-	
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	//fmt.Println("plotHandler Received Request")
 	w.Header().Set("Content-Type", "text/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -169,15 +170,15 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		Buildstamp     string
 		Githash        string
 	}
-	var xStr string = "Distance "
-	var y0Str string = "Pace "
-	var y1Str string = "Elevation "
-	var y2Str string = "Cadence "
+	var xStr = "Distance "
+	var y0Str = "Pace "
+	var y1Str = "Elevation "
+	var y2Str = "Cadence "
 	var runRecs []fit.Record
 	var runLaps []fit.Lap
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
 	var fitStruct fit.FitFile
-	var db *tcx.TCXDB = nil
+	var db *tcx.TCXDB
 
 	// What has the user selected for unit system?
 	toEnglish = true
@@ -217,7 +218,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		racesecs = 0
 	}
-	
+
 	// Calculate analysis results based on segment or whole run?
 	useSegment := false
 	param6s := r.URL.Query()["useSegment"]
@@ -255,15 +256,15 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		splitsecs, _ = strconv.ParseInt(param10s[0], 10, 64)
 	} else {
 		splitsecs = 0
-	}	
-	/*
-	dump, err := httputil.DumpRequest(r, true)
-	if err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-		return
 	}
-	
-	fmt.Printf("%s\n\n", dump)
+	/*
+		dump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Printf("%s\n\n", dump)
 	*/
 	// Read file. uploadFname gets set in uploadHandler.
 	b, _ := ioutil.ReadFile(uploadFname)
@@ -278,9 +279,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	case rslt == "text/xml; charset=utf-8":
 		// Filetype is TCX or at least it could be?
 		db, _ = tcx.ReadTCXFile(uploadFname)
-//		if err != nil {
-//			fmt.Printf("Error parsing file", err)
-//		}
+		//		if err != nil {
+		//			fmt.Printf("Error parsing file", err)
+		//		}
 
 		// We cleverly convert the values of interest into a structures we already
 		// can handle.
@@ -347,9 +348,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		DeviceProdID:   "",
 		RunScore:       0.0,
 		VO2max:         0.0,
-		
 	}
-	
+
 	if rslt == "application/octet-stream" {
 		p.DeviceName = fitStruct.DeviceInfo[0].Manufacturer
 		p.DeviceProdID = fitStruct.DeviceInfo[0].Product
@@ -358,7 +358,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	if rslt == "text/xml; charset=utf-8" {
 		p.DeviceName, p.DeviceUnitID, p.DeviceProdID = tcx.DeviceInfo(db)
 	}
-	
+
 	// Here's where the heavy lifting of pulling tracks and performance information
 	// from (portions of) the fit file into something we can view is done.
 	p.Latlongs, p.TimeStamps, p.DispDistance, p.DispPace, p.DispAltitude, p.DispCadence =
@@ -370,13 +370,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
-	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp, 
+	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp,
 		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
 
 	// Calculate the analysis page.
-		p.PredictedTimes, p.VDOT, p.VO2max, p.RunScore, p.TrainingPaces = createAnalysis(toEnglish, 
-			useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins, 
-			splitsecs, racedist, racehours, racemins, racesecs )
+	p.PredictedTimes, p.VDOT, p.VO2max, p.RunScore, p.TrainingPaces = createAnalysis(toEnglish,
+		useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins,
+		splitsecs, racedist, racehours, racemins, racesecs)
 
 	//Convert to json.
 	js, err := json.Marshal(p)
@@ -405,7 +405,7 @@ func main() {
 	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-    // Handle normal requests.
+	// Handle normal requests.
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
 	http.HandleFunc("/stop", stopHandler)

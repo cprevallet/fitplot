@@ -1,13 +1,18 @@
+//
+// Package tcx reads garmin XML format files (.tcx file extension) and converts 
+// them into .fit format Go structures.
+//
 package tcx
 
 import (
+	"fmt"
 	"github.com/jezard/fit"
 	"math"
 	"time"
-	"fmt"
 )
 
-// Convert the TCXDB structure to device information.
+// DeviceInfo converts GPS device information from the TCXDB structure to
+// strings.
 func DeviceInfo(db *TCXDB) (DevName string, DevUnitId string, DevProdID string) {
 	for _, item := range db.Acts.Act {
 		DevName = item.Creator.Name
@@ -17,15 +22,17 @@ func DeviceInfo(db *TCXDB) (DevName string, DevUnitId string, DevProdID string) 
 	return
 }
 
-// Convert the TCXDB structure created from the XML to fit.Record structure
+// CvtToFitRecs converts timestamp, position (latitude/longitude), altitude,
+// distance, speed and cadence (e.g. tracks) from the TCXDB structure to the
+// fit.Record structure.
 func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 	var hasspeed bool
 	var hasdist bool
 
 	// Determine if TCX file supplied cumulative distance and speed.
-	for i, _ := range db.Acts.Act {
-		for j, _ := range db.Acts.Act[i].Laps {
-			for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {
+	for i := range db.Acts.Act {
+		for j := range db.Acts.Act[i].Laps {
+			for k := range db.Acts.Act[i].Laps[j].Trk.Pt {
 				if db.Acts.Act[i].Laps[j].Trk.Pt[k].Speed != 0.0 {
 					hasspeed = true
 				}
@@ -39,9 +46,9 @@ func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 	// Calculate cumulative distance in meters using latitude and longitude if not supplied in XML.
 	if !hasdist {
 		var lat0, long0, lat1, long1, totalDist, newDist float64
-		for i, _ := range db.Acts.Act {
-			for j, _ := range db.Acts.Act[i].Laps {
-				for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {
+		for i := range db.Acts.Act {
+			for j := range db.Acts.Act[i].Laps {
+				for k := range db.Acts.Act[i].Laps[j].Trk.Pt {
 					if i == 0 && j == 0 && k == 0 {
 						lat0 = db.Acts.Act[0].Laps[0].Trk.Pt[0].Lat
 						long0 = db.Acts.Act[0].Laps[0].Trk.Pt[0].Long
@@ -64,9 +71,9 @@ func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 		var lasttime, thistime time.Time
 		var deltaT time.Duration
 		var dist, lastdist float64 //meters
-		for i, _ := range db.Acts.Act {
-			for j, _ := range db.Acts.Act[i].Laps {
-				for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {
+		for i := range db.Acts.Act {
+			for j := range db.Acts.Act[i].Laps {
+				for k := range db.Acts.Act[i].Laps[j].Trk.Pt {
 					if i == 0 && j == 0 && k == 0 {
 						lasttime = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time
 						lastdist = 0.0
@@ -88,9 +95,9 @@ func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 		}
 	}
 	// Create the run records.
-	for i, _ := range db.Acts.Act {
-		for j, _ := range db.Acts.Act[i].Laps {
-			for k, _ := range db.Acts.Act[i].Laps[j].Trk.Pt {
+	for i := range db.Acts.Act {
+		for j := range db.Acts.Act[i].Laps {
+			for k := range db.Acts.Act[i].Laps[j].Trk.Pt {
 
 				var newRec fit.Record
 				newRec.Timestamp = db.Acts.Act[i].Laps[j].Trk.Pt[k].Time.Unix()
@@ -109,9 +116,10 @@ func CvtToFitRecs(db *TCXDB) (runRecs []fit.Record) {
 	return runRecs
 }
 
-// Convert the TCXDB structure created from the XML to fit.Laps structure
+// CvtToFitLaps converts lap-specific values (elapsed time, distance, calories)
+// from the TCXDB structure to the fit.Lap structure.
 func CvtToFitLaps(db *TCXDB) (runLaps []fit.Lap) {
-	for i, _ := range db.Acts.Act {
+	for i := range db.Acts.Act {
 		for _, lap := range db.Acts.Act[i].Laps {
 			var newLap fit.Lap
 			//TODO This doesn't seem to work.  Maybe time.RFC3339 isn't right...
@@ -126,12 +134,13 @@ func CvtToFitLaps(db *TCXDB) (runLaps []fit.Lap) {
 	return runLaps
 }
 
-// Distance function returns the distance (in meters) between two points of
+// Distance returns the distance (in meters) between two points of
 // a given longitude and latitude relatively accurately (using a spherical
 // approximation of the Earth) through the Haversin Distance Formula for
-// great arc distance on a sphere with accuracy for small distances
+// great arc distance on a sphere with accuracy for small distances.
 //
-// point coordinates are supplied in degrees and converted into rad. in the func
+// Point coordinates are supplied in degrees and converted into rad. in 
+// the function.
 //
 // distance returned is METERS!!!!!!
 // http://en.wikipedia.org/wiki/Haversine_formula

@@ -1,8 +1,7 @@
+//
+// Package predict makes running performance estimates based on VO2max formulas.
+//
 package predict
-
-//
-// Make race performance predictions.
-//
 
 import (
 	//"fmt"
@@ -19,7 +18,6 @@ import (
 //
 // Ref: J. Daniels, R. Fitts and G. Sheehan  The Conditioning for Distance Running--
 //  the Scientific Aspects (John Wiley & Sons, New York, 1978)]
-//
 func calcO2cost(v float64) (O2cost float64) {
 	O2cost = 0.000104*math.Pow(v, 2) + (0.182258 * v) - 4.60
 	return O2cost
@@ -35,10 +33,9 @@ func calcIntensity(t float64) float64 {
 	return Intensity
 }
 
-// Calculate V02max using the Daniel's and Gilbert formula.
+// CalcVO2max calculates V02max using the Daniel's and Gilbert formula.
 // The velocity is expressed in meters per minute.
 // The time is expressed in minutes.
-//
 func CalcVO2max(v, t float64) float64 {
 	O2Cost := calcO2cost(v)
 	Intensity := calcIntensity(t)
@@ -46,15 +43,12 @@ func CalcVO2max(v, t float64) float64 {
 	return VO2max
 }
 
-//
 // Takes a VO2 measurement and converts it to a velocity in m/min.
-//
 func vo2ToPace(vo2Val float64) float64 {
-	return 29.54 + 5.000663 * vo2Val - 0.007546 * (vo2Val * vo2Val)
+	return 29.54 + 5.000663*vo2Val - 0.007546*(vo2Val*vo2Val)
 }
 
-
-// Find the root of the function (in this case, CalcVO2max) by bisecting
+// Bisect finds the root of the function (in this case, CalcVO2max) by bisecting
 // https://en.wikipedia.org/wiki/Bisection_method
 // The function argument (fn) signature is specific to CalcVO2max.
 func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64,
@@ -66,7 +60,7 @@ func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64
 		if fn(c, raceLengthMeters) == 0 || (b-a)/2.0 < tol {
 			return c, nil
 		} else {
-			n += 1
+			n++
 			if fn(c, raceLengthMeters)*fn(a, raceLengthMeters) > 0.0 {
 				a = c
 			} else {
@@ -77,8 +71,8 @@ func Bisect(fn func(float64, float64) float64, a float64, b float64, tol float64
 	return math.NaN(), errors.New("Failed to converge.")
 }
 
-// Calculate a predicted race time using the Daniel's Gilbert VO2max criteria.
-func Daniels(runLengthMeters float64, elapsedTime float64, 
+// Daniels calculates a predicted race time using the Daniel's Gilbert VO2max criteria.
+func Daniels(runLengthMeters float64, elapsedTime float64,
 	raceLengthMeters float64) (tOut float64, VO2max float64, err error) {
 	// Inputs are:
 	// a run length in meters and the elapsed time in minutes
@@ -113,8 +107,8 @@ func Daniels(runLengthMeters float64, elapsedTime float64,
 
 }
 
-// Predicted race times using the Daniel's Gilbert VO2max criteria.
-func PredictRaces(runLengthMeters float64, elapsedTime float64) (PredictedTimes map[string]float64, VDOT float64, err error) {
+// Races predicts race times using the Daniel's Gilbert VO2max criteria.
+func Races(runLengthMeters float64, elapsedTime float64) (PredictedTimes map[string]float64, VDOT float64, err error) {
 	// Make predictions.  Tell the future.  :)
 	//
 	// Inputs are: a run length in meters and elapsed time in minutes.
@@ -138,14 +132,14 @@ func PredictRaces(runLengthMeters float64, elapsedTime float64) (PredictedTimes 
 	return PredictedTimes, VDOT, err
 }
 
-
+// TrainingPaces calculates training paces based on percentages of VO2max.
 func TrainingPaces(VO2max float64) (easyPace, maraPace, thresholdPace, intervalPace, repPace float64) {
 	// Calculate training paces in meters/min
-	easyPace = vo2ToPace (VO2max * 0.7)         // 70% vo2max
-	maraPace = vo2ToPace(VO2max * 0.82)         // 82% vo2max
-	thresholdPace = vo2ToPace (VO2max * 0.88)   // 88% vo2max
-	intervalPace = vo2ToPace (VO2max * 0.98)    // 98% vo2max
-	repPace = vo2ToPace (VO2max * 1.05)         // 105% vo2max
+	easyPace = vo2ToPace(VO2max * 0.7)       // 70% vo2max
+	maraPace = vo2ToPace(VO2max * 0.82)      // 82% vo2max
+	thresholdPace = vo2ToPace(VO2max * 0.88) // 88% vo2max
+	intervalPace = vo2ToPace(VO2max * 0.98)  // 98% vo2max
+	repPace = vo2ToPace(VO2max * 1.05)       // 105% vo2max
 	return
-	
+
 }

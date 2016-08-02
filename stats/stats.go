@@ -1,3 +1,6 @@
+//
+// Package stats provides statistical functions.
+//
 package stats
 
 import (
@@ -14,7 +17,7 @@ func Sum(numbers []float64) (total float64) {
 	return total
 }
 
-// Find the middle number.
+// Median finds the middle number.
 func Median(numbers []float64) float64 {
 	middle := len(numbers) / 2
 	result := numbers[middle]
@@ -24,7 +27,7 @@ func Median(numbers []float64) float64 {
 	return result
 }
 
-// Find the number that appears the most often.
+// Mode finds the number that appears the most often.
 func Mode(numbers []float64) (modes []float64) {
 	frequencies := make(map[float64]int, len(numbers))
 	highestFrequency := 0
@@ -46,7 +49,7 @@ func Mode(numbers []float64) (modes []float64) {
 	return modes
 }
 
-// Calculate the amount of variation or dispersion.
+// StdDev calculate the amount of variation or dispersion.
 func StdDev(numbers []float64, mean float64) float64 {
 	total := 0.0
 	for _, number := range numbers {

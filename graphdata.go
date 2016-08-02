@@ -16,14 +16,14 @@ import (
 )
 
 // Conversions
-var metersToMiles float64 = 0.00062137119 // meter -> mile
-var metersToKm float64 = 0.001            // meter -> km
-var metersToFt float64 = 3.2808399        // meter ->ft
-var paceToEnglish float64 = 26.8224       // sec/meter -> min/mile
-var paceToMetric float64 = 16.666667      // sec/meter -> min/km
-var stridestoSteps float64 = 2.0          // strides/min -> steps/min (for bipeds)
+var metersToMiles = 0.00062137119 // meter -> mile
+var metersToKm = 0.001            // meter -> km
+var metersToFt = 3.2808399        // meter ->ft
+var paceToEnglish = 26.8224       // sec/meter -> min/mile
+var paceToMetric = 16.666667      // sec/meter -> min/km
+var stridestoSteps = 2.0          // strides/min -> steps/min (for bipeds)
 // Unit system set by user.
-var toEnglish bool = true
+var toEnglish = true
 
 // Do unit conversion for slices of type valtype.
 func convertUnits(vals []float64, valtype string, toEnglish bool) (cvtVals []float64) {
@@ -79,7 +79,7 @@ func unpackRecs(runRecs []fit.Record) (timestamp []int64, distance []float64,
 
 // Convert two arrays into a map used by Google maps.
 func getMapCoordinates(latSlice []float64, lngSlice []float64) (data []map[string]float64) {
-	for i, _ := range latSlice {
+	for i := range latSlice {
 		mapPos := map[string]float64{"lat": latSlice[i], "lng": lngSlice[i]}
 		data = append(data, mapPos)
 	}
@@ -93,7 +93,7 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool) (mapData []map[strin
 	timestamp, distance, altitude, cadence, speed, lat, lng := unpackRecs(runRecs)
 	// Speed -> pace
 	var pace []float64
-	for i, _ := range speed {
+	for i := range speed {
 		if speed[i] > 1.8 { //m/s
 			pace = append(pace, 1.0/speed[i])
 		} else {
@@ -109,23 +109,23 @@ func processFitRecord(runRecs []fit.Record, toEnglish bool) (mapData []map[strin
 	for _, item := range markOutliers(lng) {
 		outIdxs = append(outIdxs, item)
 	}
-	timestamp_clean := removeOutliersInt(timestamp, outIdxs)
-	distance_clean := removeOutliers(distance, outIdxs)
-	pace_clean := removeOutliers(pace, outIdxs)
-	altitude_clean := removeOutliers(altitude, outIdxs)
-	cadence_clean := removeOutliers(cadence, outIdxs)
-	lat_clean := removeOutliers(lat, outIdxs)
-	lng_clean := removeOutliers(lng, outIdxs)
+	timestampClean := removeOutliersInt(timestamp, outIdxs)
+	distanceClean := removeOutliers(distance, outIdxs)
+	paceClean := removeOutliers(pace, outIdxs)
+	altitudeClean := removeOutliers(altitude, outIdxs)
+	cadenceClean := removeOutliers(cadence, outIdxs)
+	latClean := removeOutliers(lat, outIdxs)
+	lngClean := removeOutliers(lng, outIdxs)
 
 	// Convert the units for the slices that have them.
-	dispDistance = convertUnits(distance_clean, "distance", toEnglish)
-	dispPace = convertUnits(pace_clean, "pace", toEnglish)
-	dispAltitude = convertUnits(altitude_clean, "altitude", toEnglish)
-	dispCadence = convertUnits(cadence_clean, "cadence", toEnglish)
-	dispTimestamp = timestamp_clean
+	dispDistance = convertUnits(distanceClean, "distance", toEnglish)
+	dispPace = convertUnits(paceClean, "pace", toEnglish)
+	dispAltitude = convertUnits(altitudeClean, "altitude", toEnglish)
+	dispCadence = convertUnits(cadenceClean, "cadence", toEnglish)
+	dispTimestamp = timestampClean
 
 	//Return the values used in the user interface.
-	mapData = getMapCoordinates(lat_clean, lng_clean)
+	mapData = getMapCoordinates(latClean, lngClean)
 
 	return
 }
@@ -138,7 +138,7 @@ func markOutliers(x []float64) (outliersIdx []int) {
 	sigma := stats.StdDev(x, mean)
 	upperLimit := mean + (3.0 * sigma)
 	lowerLimit := mean - (3.0 * sigma)
-	for i, _ := range x {
+	for i := range x {
 		if x[i] < lowerLimit || x[i] > upperLimit {
 			outliersIdx = append(outliersIdx, i)
 		}
@@ -185,15 +185,15 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
 		dist := unitCvt(item.Total_distance, "distance", toEnglish)
 		cal := float64(item.Total_calories)
 		// Seconds to "min:sec"
-		laptime_str := strutil.DecimalTimetoMinSec(float64(item.Total_elapsed_time / 60.0))
+		laptimeStr := strutil.DecimalTimetoMinSec(float64(item.Total_elapsed_time / 60.0))
 		// Calculate pace string.
 		pace := item.Total_elapsed_time / 60.0 / dist
 		//pace = unitCvt(pace, "pace", toEnglish)
-		pace_str := strutil.DecimalTimetoMinSec(pace)
+		paceStr := strutil.DecimalTimetoMinSec(pace)
 		LapDist = append(LapDist, dist)
 		LapCal = append(LapCal, cal)
-		LapPace = append(LapPace, pace_str)
-		LapTime = append(LapTime, laptime_str)
+		LapPace = append(LapPace, paceStr)
+		LapTime = append(LapTime, laptimeStr)
 	}
 	return LapDist, LapTime, LapCal, LapPace
 }
@@ -231,7 +231,7 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 		totcal += calorie
 	}
 	totalCal = strconv.Itoa(int((math.Floor(totcal)))) + " kcal"
-	
+
 	// Calculate power expended based on Garmin calculated calories
 	power := totcal * 4186.8 / (timeDiffinMinutes * 60.0)
 	avgPower = strconv.FormatFloat(power, 'f', 2, 64) + " Watts"
@@ -239,23 +239,23 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 }
 
 // Do a prediction based on this run.
-func createAnalysis(toEnglish bool, 
-					   useSegment bool, 
-					   DispDistance []float64,
-					   TimeStamps []int64, 
-					   splitdist float64, 
-					   splithours, splitmins, splitsecs int64,
-					   racedist float64, 
-					   racehours, racemins,racesecs int64,				   
-  					) (PredictedRaceTimes map[string]string, 
-					   VDOT float64,
-					   VO2Max float64,
-					   RunScore float64,
-					   TrainingPaces map[string]string ) {
+func createAnalysis(toEnglish bool,
+	useSegment bool,
+	DispDistance []float64,
+	TimeStamps []int64,
+	splitdist float64,
+	splithours, splitmins, splitsecs int64,
+	racedist float64,
+	racehours, racemins, racesecs int64,
+) (PredictedRaceTimes map[string]string,
+	VDOT float64,
+	VO2Max float64,
+	RunScore float64,
+	TrainingPaces map[string]string) {
 	// Need to assign variables based on whether the user has selected the entire
-	// run or just a run segment (e.g. a split time and distance) to basis the 
+	// run or just a run segment (e.g. a split time and distance) to basis the
 	// prediction on.
-	// Do the type conversions to get the inputs into forms expected by PredictRaces.
+	// Do the type conversions to get the inputs into forms expected by Races.
 	var d, dist, tStart, tEnd, elapsedTime float64
 	if useSegment != true {
 		d = DispDistance[len(DispDistance)-1]
@@ -263,26 +263,26 @@ func createAnalysis(toEnglish bool,
 		if toEnglish {
 			dist = d / metersToMiles
 		} else {
-			dist = d / metersToKm		
+			dist = d / metersToKm
 		}
 		tStart = float64(TimeStamps[0])
 		tEnd = float64(TimeStamps[len(TimeStamps)-1])
-		elapsedTime = (tEnd - tStart) / 60.0 
+		elapsedTime = (tEnd - tStart) / 60.0
 	} else {
 		dist = splitdist
 		elapsedTime = (float64(splithours) * 60.0) + float64(splitmins) + (float64(splitsecs) / 60.0)
 	}
-	
+
 	// Calculate the equivalent race times for this run (segment or complete).
-	PredictedTimes, v, _ := predict.PredictRaces(dist, elapsedTime)
+	PredictedTimes, v, _ := predict.Races(dist, elapsedTime)
 	VDOT = v
 
 	// Calculate the % of VO2max for this run relative to the provided race information.
 	elapsedTimeRace := (float64(racehours) * 60.0) + float64(racemins) + (float64(racesecs) / 60.0)
 	velocityRace := racedist / elapsedTimeRace
-	VO2Max = predict.CalcVO2max(velocityRace, elapsedTimeRace)	
+	VO2Max = predict.CalcVO2max(velocityRace, elapsedTimeRace)
 	RunScore = VDOT / VO2Max * 100.0
-	
+
 	// Calculate the training paces.
 	easyPace, maraPace, thresholdPace, intervalPace, repPace := predict.TrainingPaces(VO2Max)
 	TrainingPaces = make(map[string]string)
@@ -304,7 +304,7 @@ func createAnalysis(toEnglish bool,
 	TrainingPaces["Threshold"] = strutil.DecimalTimetoMinSec(thresholdPace)
 	TrainingPaces["Interval"] = strutil.DecimalTimetoMinSec(intervalPace)
 	TrainingPaces["Repeats"] = strutil.DecimalTimetoMinSec(repPace)
-	
+
 	// Convert the times from decimal minutes to hh:mm:ss for the user.
 	PredictedRaceTimes = make(map[string]string)
 	for key, val := range PredictedTimes {
