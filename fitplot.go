@@ -170,6 +170,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		Buildstamp     string
 		Githash        string
 	}
+	// Note extra space on following assignments.
 	var xStr = "Distance "
 	var y0Str = "Pace "
 	var y1Str = "Elevation "
