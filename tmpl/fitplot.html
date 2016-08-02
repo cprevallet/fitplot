@@ -188,6 +188,15 @@
 				splitsecs: splitsecs,
     		},
     		dataType: "json",
+    		error: function(XMLHttpRequest, textStatus, errorThrown) {
+				var e = XMLHttpRequest.error()
+				if (e.status == 409) {
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar( {
+					message: e["responseText"]
+					} );				
+				}
+    		},
     		success: function (returneddata) {
     			// Save a global copy.
 				serverdata = returneddata;

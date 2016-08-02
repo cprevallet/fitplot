@@ -181,6 +181,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var fitStruct fit.FitFile
 	var db *tcx.TCXDB
 
+	// User hasn't uploaded a file yet?  Avoid a panic.
+	if uploadFname == "" {
+		http.Error(w, "No file loaded.", http.StatusConflict)
+		return
+	}
 	// What has the user selected for unit system?
 	toEnglish = true
 	param1s := r.URL.Query()["toEnglish"]
