@@ -7,6 +7,7 @@ import (
 	"log"
 	//"os"
 	//"fmt"
+	"time"
 )
 
 // InitializeDatabase opens a database file and create the appropriate tables.
@@ -34,7 +35,7 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 
 // InsertNewRecord inserts a new record into the runfiles table containing a filename
 // and a binary blob.
-func InsertNewRecord(db *sql.DB, fName string, fType string, content []byte, timestamp string) {
+func InsertNewRecord(db *sql.DB, fName string, fType string, content []byte, timestamp time.Time) {
 	// insert
 	stmt, err := db.Prepare("insert into runfiles(filename, filetype, content, timestamp) values(?,?,?,?)")
 	if err != nil {
