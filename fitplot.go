@@ -97,13 +97,11 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			// Filetype is FIT, or at least it could be?
 			fitStruct := fit.Parse(tmpFname, false)
 			fType = "FIT"
-//			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0).Format(time.UnixDate)
 			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
 		case rslt == "text/xml; charset=utf-8":
 			// Filetype is TCX or at least it could be?
 			db, _ := tcx.ReadTCXFile(tmpFname)
 			fType = "TCX"
-//			timeStamp = time.Unix(db.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0).Format(time.UnixDate)
 			timeStamp = time.Unix(db.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
 	}	
 	// Persist the in-memory array of bytes to the database.

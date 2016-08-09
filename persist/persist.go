@@ -34,16 +34,27 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 }
 
 // InsertNewRecord inserts a new record into the runfiles table containing a filename
-// and a binary blob.
+// and a binary blob.  It assumes the database has been initialized and the table built.
 func InsertNewRecord(db *sql.DB, fName string, fType string, content []byte, timestamp time.Time) {
-	// insert
-	stmt, err := db.Prepare("insert into runfiles(filename, filetype, content, timestamp) values(?,?,?,?)")
+	// Check for existing file with the same file name.
+	queryString := "select id, filename from runfiles where filename = " + "'" + fName + "'"
+	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// TODO need to figure out how to retrieve last id entered.
-	_, err = stmt.Exec(fName, fType, content, timestamp)
-	if err != nil {
-		log.Fatal(err)
+	found := false
+	for rows.Next() {
+		found = true
+	}
+	// Insert a new row.
+	if found == false {
+		stmt, err := db.Prepare("insert into runfiles(filename, filetype, content, timestamp) values(?,?,?,?)")
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = stmt.Exec(fName, fType, content, timestamp)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
