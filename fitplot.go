@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cprevallet/fitplot/desktop"
+	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"html/template"
@@ -90,7 +91,39 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//fmt.Println("uploadHandler Received Request")
+	//Testing!!!!
+	//TODO Need to pace filename that was uploaded not copy!!!
+	_ = "breakpoint"
+	
+	dbfile, err := ioutil.ReadFile(uploadFname)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	dbHandler(w, r, uploadFname, dbfile)
 
+}
+
+// Initialize the database used to store run files if one doesn't exist.
+func dbHandler(w http.ResponseWriter, r *http.Request, uploadFname string, file[]byte) {
+	finfo, err := os.Stat("./fitplot.db")
+	if err != nil {
+		// no such file or dir
+		db, err := persist.InitializeDatabase("fitplot", "./")
+		// could not create database.
+		if db == nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		persist.InsertNewRecord(db, uploadFname, file)
+		return
+	}
+	if finfo.IsDir() {
+		http.Error(w, "Directory named fitplot.db exists.", 500)
+		return
+	} else {
+		// TODO open existing database
+	}
 }
 
 //
@@ -405,6 +438,7 @@ func stopHandler(w http.ResponseWriter, r *http.Request) {
 	os.Exit(0)
 	return
 }
+
 
 func main() {
 	desktop.Open("http://localhost:8080")
