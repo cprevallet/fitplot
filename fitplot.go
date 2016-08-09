@@ -11,7 +11,6 @@ import (
 	"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"html/template"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -31,7 +30,7 @@ var Buildstamp = "No build timestamp provided"
 // set a value for a symbol that can be accessed from within the binary.
 // go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
 var Githash = "No git hash provided"
-var uploadFname = ""
+var tmpFname = ""
 
 // Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
@@ -58,62 +57,65 @@ func pageloadHandler(w http.ResponseWriter, r *http.Request) {
 
 //Upload a copy the fit file to a temporary local directory.
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse the multipart form in the request.
-	err := r.ParseMultipartForm(100000)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Get a ref to the parsed multipart form.
-	m := r.MultipartForm
-
-	// Get the *fileheaders.
-	_ = "breakpoint"
-	myfile := m.File["file"]
-	// Get a handle to the actual file.
-	file, err := myfile[0].Open()
-	defer file.Close()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	dst, err := ioutil.TempFile("", "example")
-	uploadFname = ""
-	uploadFname = dst.Name()
-	defer dst.Close()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// Copy the uploaded file to the destination file.
-	if _, err := io.Copy(dst, file); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	//fmt.Println("uploadHandler Received Request")
 	// Do some low-level stuff to retrieve the file name and byte array.
-	_ = "breakpoint"
 	file, handler, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// fBytes is an in-memory array of bytes read from the file.
 	fBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	fName := handler.Filename
-	// Persist it to the database.
-	dbHandler(w, r, fName, fBytes)
+	rslt := http.DetectContentType(fBytes)
 
+	
+	// Make a copy in a temporary folder for use with fit and tcx 
+	// libraries.
+	tmpFile, err := ioutil.TempFile("", "tmp")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tmpFile.Close()
+	tmpFile.Write(fBytes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	tmpFname = tmpFile.Name()
+	_ = "breakpoint"
+
+	// Determine the run start timestamp and file type meta-data.
+	var fileType string
+	var timeStamp string
+	switch {
+		case rslt == "application/octet-stream":
+			// Filetype is FIT, or at least it could be?
+			fitStruct := fit.Parse(tmpFname, false)
+			fileType = "FIT"
+			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0).Format(time.UnixDate)
+			fmt.Println(fileType, timeStamp)
+		case rslt == "text/xml; charset=utf-8":
+			// Filetype is TCX or at least it could be?
+			db, _ := tcx.ReadTCXFile(tmpFname)
+			fileType = "TCX"
+			fmt.Println(db)
+			timeStamp = time.Unix(db.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0).Format(time.UnixDate)
+	}	
+	fmt.Println(fileType, timeStamp)
+	// Persist the in-memory array of bytes to the database.
+	dbHandler(w, r, fName, fBytes)
 }
 
 // Initialize the database used to store run files if one doesn't exist.
-func dbHandler(w http.ResponseWriter, r *http.Request, uploadFname string, file[]byte) {
+func dbHandler(w http.ResponseWriter, r *http.Request, fname string, file[]byte) {
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	persist.InsertNewRecord(db, uploadFname, file)
+	persist.InsertNewRecord(db, fname, file)
 	db.Close()
 }
 
@@ -206,7 +208,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var db *tcx.TCXDB
 
 	// User hasn't uploaded a file yet?  Avoid a panic.
-	if uploadFname == "" {
+	if tmpFname == "" {
 		http.Error(w, "No file loaded.", http.StatusConflict)
 		return
 	}
@@ -296,19 +298,19 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Printf("%s\n\n", dump)
 	*/
-	// Read file. uploadFname gets set in uploadHandler.
-	b, _ := ioutil.ReadFile(uploadFname)
+	// Read file. tmpFname gets set in uploadHandler.
+	b, _ := ioutil.ReadFile(tmpFname)
 	rslt := http.DetectContentType(b)
 	switch {
 	case rslt == "application/octet-stream":
 		// Filetype is FIT, or at least it could be?
-		fitStruct = fit.Parse(uploadFname, false)
+		fitStruct = fit.Parse(tmpFname, false)
 		runRecs = fitStruct.Records
 		runLaps = fitStruct.Laps
 
 	case rslt == "text/xml; charset=utf-8":
 		// Filetype is TCX or at least it could be?
-		db, _ = tcx.ReadTCXFile(uploadFname)
+		db, _ = tcx.ReadTCXFile(tmpFname)
 		//		if err != nil {
 		//			fmt.Printf("Error parsing file", err)
 		//		}
