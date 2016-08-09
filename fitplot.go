@@ -92,18 +92,21 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//fmt.Println("uploadHandler Received Request")
-	//Testing!!!!
-	//TODO Need to pace filename that was uploaded not copy!!!
+	// Do some low-level stuff to retrieve the file name and byte array.
 	_ = "breakpoint"
-	
 	file, handler, err := r.FormFile("file")
-	dbfile, err := ioutil.ReadFile(uploadFname)
-	fname := handler.Filename
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	dbHandler(w, r, fname, dbfile)
+	fBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fName := handler.Filename
+	// Persist it to the database.
+	dbHandler(w, r, fName, fBytes)
 
 }
 
