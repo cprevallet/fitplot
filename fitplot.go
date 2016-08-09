@@ -106,24 +106,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 // Initialize the database used to store run files if one doesn't exist.
 func dbHandler(w http.ResponseWriter, r *http.Request, uploadFname string, file[]byte) {
-	finfo, err := os.Stat("./fitplot.db")
-	if err != nil {
-		// no such file or dir
-		db, err := persist.InitializeDatabase("fitplot", "./")
-		// could not create database.
-		if db == nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		persist.InsertNewRecord(db, uploadFname, file)
-		return
-	}
-	if finfo.IsDir() {
-		http.Error(w, "Directory named fitplot.db exists.", 500)
-		return
-	} else {
-		// TODO open existing database
-	}
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	persist.InsertNewRecord(db, uploadFname, file)
+	db.Close()
 }
 
 //
