@@ -69,6 +69,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	m := r.MultipartForm
 
 	// Get the *fileheaders.
+	_ = "breakpoint"
 	myfile := m.File["file"]
 	// Get a handle to the actual file.
 	file, err := myfile[0].Open()
@@ -95,12 +96,14 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	//TODO Need to pace filename that was uploaded not copy!!!
 	_ = "breakpoint"
 	
+	file, handler, err := r.FormFile("file")
 	dbfile, err := ioutil.ReadFile(uploadFname)
+	fname := handler.Filename
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	dbHandler(w, r, uploadFname, dbfile)
+	dbHandler(w, r, fname, dbfile)
 
 }
 
