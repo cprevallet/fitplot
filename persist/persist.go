@@ -22,7 +22,7 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	}
 //	defer db.Close()
 	sqlStmt := `
-	create table if not exists runfiles (id integer not null primary key, filename text, file blob);
+	create table if not exists runfiles (id integer not null primary key, filename text, filetype text, content blob, timestamp text );
 	`
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
@@ -34,14 +34,14 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 
 // InsertNewRecord inserts a new record into the runfiles table containing a filename
 // and a binary blob.
-func InsertNewRecord(db *sql.DB, filename string, file []byte) {
+func InsertNewRecord(db *sql.DB, fName string, fType string, content []byte, timestamp string) {
 	// insert
-	stmt, err := db.Prepare("insert into runfiles(filename, file) values(?,?)")
+	stmt, err := db.Prepare("insert into runfiles(filename, filetype, content, timestamp) values(?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	// TODO need to figure out how to retrieve last id entered.
-	_, err = stmt.Exec(filename, file)
+	_, err = stmt.Exec(fName, fType, content, timestamp)
 	if err != nil {
 		log.Fatal(err)
 	}

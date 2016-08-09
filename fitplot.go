@@ -88,34 +88,30 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tmpFname = tmpFile.Name()
-	_ = "breakpoint"
 
 	// Determine the run start timestamp and file type meta-data.
-	var fileType string
+	var fType string
 	var timeStamp string
 	switch {
 		case rslt == "application/octet-stream":
 			// Filetype is FIT, or at least it could be?
 			fitStruct := fit.Parse(tmpFname, false)
-			fileType = "FIT"
+			fType = "FIT"
 			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0).Format(time.UnixDate)
-			fmt.Println(fileType, timeStamp)
 		case rslt == "text/xml; charset=utf-8":
 			// Filetype is TCX or at least it could be?
 			db, _ := tcx.ReadTCXFile(tmpFname)
-			fileType = "TCX"
-			fmt.Println(db)
+			fType = "TCX"
 			timeStamp = time.Unix(db.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0).Format(time.UnixDate)
 	}	
-	fmt.Println(fileType, timeStamp)
 	// Persist the in-memory array of bytes to the database.
-	dbHandler(w, r, fName, fBytes)
+	dbHandler(fName, fType, fBytes, timeStamp)
 }
 
 // Initialize the database used to store run files if one doesn't exist.
-func dbHandler(w http.ResponseWriter, r *http.Request, fname string, file[]byte) {
+func dbHandler(fName string, fType string, fBytes []byte, timeStamp string) {
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	persist.InsertNewRecord(db, fname, file)
+	persist.InsertNewRecord(db, fName, fType, fBytes, timeStamp)
 	db.Close()
 }
 
