@@ -11,11 +11,9 @@ import (
 )
 
 // InitializeDatabase opens a database file and create the appropriate tables.
-// WARNING: Existing database of the same name will be DELETED.
 func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	_ = "breakpoint"
 	dbname := name + ".db"
-	//finfo, err := os.Stat(dbpath + dbname)
 	db, err = sql.Open("sqlite3", dbpath + dbname)
 	if err != nil {
 		// no such file
