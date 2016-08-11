@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	//"os"
-	//"fmt"
+	"fmt"
 	"time"
 )
 
@@ -55,4 +55,41 @@ func InsertNewRecord(db *sql.DB, fName string, fType string, content []byte, tim
 			log.Fatal(err)
 		}
 	}
+}
+
+// GetFileByTimeStamp retrieves on or more binary blobs stored in the database for 
+// a given day provided by a timestamp.
+func GetFileByTimeStamp(db *sql.DB, timestamp time.Time) (file[][]byte) {
+	todayDate := time.Date(timestamp.Year(), timestamp.Month(), timestamp.Day(), 0, 0, 0, 0, time.UTC)
+	todayStr := todayDate.Format("2006-01-02")
+	// Between is inclusive.
+	queryString := "select * from runfiles between '" + todayStr + "' " + "and" + "'" + todayStr + "'"
+	rows, err := db.Query(queryString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	/*
+	count := 0
+	for rows.Next() {
+		count += 1
+	}
+	fmt.Println(count) 
+	*/
+	
+	for rows.Next() {
+		var id int
+		var fName, fType string
+		var content []byte
+		var tStamp time.Time
+		err = rows.Scan(&id, &fName, &fType, &content, &tStamp )
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(id, fName, fType, tStamp)
+		/*
+		file.append(file, content)
+		*/
+	}
+	return nil
 }

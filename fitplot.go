@@ -4,6 +4,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/cprevallet/fitplot/desktop"
@@ -31,6 +32,7 @@ var Buildstamp = "No build timestamp provided"
 // go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
 var Githash = "No git hash provided"
 var tmpFname = ""
+var db *sql.DB
 
 // Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
@@ -100,9 +102,9 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
 		case rslt == "text/xml; charset=utf-8":
 			// Filetype is TCX or at least it could be?
-			db, _ := tcx.ReadTCXFile(tmpFname)
+			tcxdb, _ := tcx.ReadTCXFile(tmpFname)
 			fType = "TCX"
-			timeStamp = time.Unix(db.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
+			timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
 	}	
 	// Persist the in-memory array of bytes to the database.
 	dbHandler(fName, fType, fBytes, timeStamp)
@@ -110,7 +112,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 // Initialize the database used to store run files if one doesn't exist.
 func dbHandler(fName string, fType string, fBytes []byte, timeStamp time.Time) {
-	db, _ := persist.ConnectDatabase("fitplot", "./")
+	db, _ = persist.ConnectDatabase("fitplot", "./")
 	persist.InsertNewRecord(db, fName, fType, fBytes, timeStamp)
 	db.Close()
 }
@@ -201,7 +203,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var runLaps []fit.Lap
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
 	var fitStruct fit.FitFile
-	var db *tcx.TCXDB
+	var tcxdb *tcx.TCXDB
 
 	// User hasn't uploaded a file yet?  Avoid a panic.
 	if tmpFname == "" {
@@ -306,15 +308,15 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	case rslt == "text/xml; charset=utf-8":
 		// Filetype is TCX or at least it could be?
-		db, _ = tcx.ReadTCXFile(tmpFname)
+		tcxdb, _ = tcx.ReadTCXFile(tmpFname)
 		//		if err != nil {
 		//			fmt.Printf("Error parsing file", err)
 		//		}
 
 		// We cleverly convert the values of interest into a structures we already
 		// can handle.
-		runRecs = tcx.CvtToFitRecs(db)
-		runLaps = tcx.CvtToFitLaps(db)
+		runRecs = tcx.CvtToFitRecs(tcxdb)
+		runLaps = tcx.CvtToFitLaps(tcxdb)
 	}
 	// Build the variable strings based on unit system.
 	if toEnglish {
@@ -384,7 +386,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		p.DeviceUnitID = fmt.Sprint(fitStruct.DeviceInfo[0].Serial_number)
 	}
 	if rslt == "text/xml; charset=utf-8" {
-		p.DeviceName, p.DeviceUnitID, p.DeviceProdID = tcx.DeviceInfo(db)
+		p.DeviceName, p.DeviceUnitID, p.DeviceProdID = tcx.DeviceInfo(tcxdb)
 	}
 
 	// Here's where the heavy lifting of pulling tracks and performance information
