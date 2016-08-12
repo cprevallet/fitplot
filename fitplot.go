@@ -32,6 +32,7 @@ var Buildstamp = "No build timestamp provided"
 // go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
 var Githash = "No git hash provided"
 var tmpFname = ""
+var timeStamp time.Time
 
 // Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
@@ -92,7 +93,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Determine the run start timestamp and file type meta-data.
 	var fType string
-	var timeStamp time.Time
 	switch {
 		case rslt == "application/octet-stream":
 			// Filetype is FIT, or at least it could be?
@@ -107,11 +107,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}	
 	// Persist the in-memory array of bytes to the database.
 	dbRecord := persist.Record{FName: fName, FType: fType, FContent: fBytes, TimeStamp: timeStamp}
-	dbHandler(dbRecord)
-}
-
-// Initialize the database used to store run files if one doesn't exist.
-func dbHandler(dbRecord persist.Record) {
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	persist.InsertNewRecord(db, dbRecord)
 	db.Close()
@@ -300,10 +295,30 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	
 	// Testing read!
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	t := time.Date(2016, time.August, 10, 12, 0, 0, 0, time.UTC)
-	recs := persist.GetFileByTimeStamp(db, t)
+//	t := time.Date(2016, time.August, 10, 12, 0, 0, 0, time.UTC)
+	recs := persist.GetFileByTimeStamp(db, timeStamp)
+	db.Close()
 	fmt.Println(recs)
+	// TODO Handle more than one run result on a given day from database.
 	b := recs[0].FContent
+	
+	// The fit and tcx libraries need to read from a file rather 
+	// than from in memory. Make a copy in a temporary folder.
+	tmpFile, err := ioutil.TempFile("", "tmp")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer tmpFile.Close()
+	tmpFile.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	tmpFname = tmpFile.Name()
+	
+	
+	
 	//b, _ := ioutil.ReadFile(tmpFname)
 	rslt := http.DetectContentType(b)
 	switch {

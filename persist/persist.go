@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	//"os"
-	"fmt"
+	//"fmt"
 	"time"
 )
 
@@ -20,7 +20,6 @@ type Record struct {
 
 // InitializeDatabase opens a database file and create the appropriate tables.
 func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
-	_ = "breakpoint"
 	dbname := name + ".db"
 	db, err = sql.Open("sqlite3", dbpath + dbname)
 	if err != nil {
@@ -29,7 +28,7 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	}
 //	defer db.Close()
 	sqlStmt := `
-	create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp text );
+	create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp DATETIME );
 	`
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
@@ -68,26 +67,20 @@ func InsertNewRecord(db *sql.DB, r Record) {
 // GetFileByTimeStamp retrieves on or more binary blobs stored in the database for 
 // a given day provided by a timestamp.
 func GetFileByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
-	_ = "breakpoint"
-	todayDate := time.Date(timestamp.Year(), timestamp.Month(), timestamp.Day(), 0, 0, 0, 0, time.UTC)
-	todayStr := todayDate.Format("2006-01-02")
+
+	thisDay := time.Date(timestamp.Year(), timestamp.Month(), timestamp.Day(), 0, 0, 0, 0, time.UTC)
+	thisDate := thisDay.Format("2006-01-02")
+	addOneDay := timestamp.Add(time.Hour * 24)
+	nextDay := time.Date(addOneDay.Year(), addOneDay.Month(), addOneDay.Day(), 0, 0, 0, 0, time.UTC)
+	nextDate := nextDay.Format("2006-01-02")
+	
 	// Between is inclusive.
-	queryString := "select * from runfiles between '" + todayStr + "' " + "and '" + todayStr + "'"
-	fmt.Println(queryString)
+	queryString := "select * from runfiles where timestamp between '" + thisDate + "' " + "and '" + nextDate + "'"
 	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	/*
-	count := 0
-	for rows.Next() {
-		count += 1
-	}
-	fmt.Println(count) 
-	*/
-	
-	result := make([]Record, 1)
+	var result []Record
 	for rows.Next() {
 		var id int
 		var fName, fType string
@@ -97,7 +90,7 @@ func GetFileByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		rec := Record{FName: fName, FType: fType, FContent: content, TimeStamp: tStamp}
+		rec := Record{FName: fName, FType: fType, FContent: content, TimeStamp: tStamp }
 		result = append(result, rec)
 	}
 	return result
