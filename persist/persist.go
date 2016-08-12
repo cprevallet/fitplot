@@ -64,7 +64,7 @@ func InsertNewRecord(db *sql.DB, r Record) {
 	}
 }
 
-// GetFileByTimeStamp retrieves on or more binary blobs stored in the database for 
+// GetRecsByTimeStamp retrieves on or more binary blobs stored in the database for 
 // a given day provided by a timestamp.
 func GetRecsByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
 
