@@ -4,7 +4,7 @@
 package main
 
 import (
-	"database/sql"
+	//"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/cprevallet/fitplot/desktop"
@@ -32,7 +32,6 @@ var Buildstamp = "No build timestamp provided"
 // go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" fitplot.go
 var Githash = "No git hash provided"
 var tmpFname = ""
-var db *sql.DB
 
 // Compile templates on start for better performance.
 var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
@@ -107,13 +106,14 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
 	}	
 	// Persist the in-memory array of bytes to the database.
-	dbHandler(fName, fType, fBytes, timeStamp)
+	dbRecord := persist.Record{FName: fName, FType: fType, FContent: fBytes, TimeStamp: timeStamp}
+	dbHandler(dbRecord)
 }
 
 // Initialize the database used to store run files if one doesn't exist.
-func dbHandler(fName string, fType string, fBytes []byte, timeStamp time.Time) {
-	db, _ = persist.ConnectDatabase("fitplot", "./")
-	persist.InsertNewRecord(db, fName, fType, fBytes, timeStamp)
+func dbHandler(dbRecord persist.Record) {
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	persist.InsertNewRecord(db, dbRecord)
 	db.Close()
 }
 
@@ -297,7 +297,14 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("%s\n\n", dump)
 	*/
 	// Read file. tmpFname gets set in uploadHandler.
-	b, _ := ioutil.ReadFile(tmpFname)
+	
+	// Testing read!
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	t := time.Date(2016, time.August, 10, 12, 0, 0, 0, time.UTC)
+	recs := persist.GetFileByTimeStamp(db, t)
+	fmt.Println(recs)
+	b := recs[0].FContent
+	//b, _ := ioutil.ReadFile(tmpFname)
 	rslt := http.DetectContentType(b)
 	switch {
 	case rslt == "application/octet-stream":
