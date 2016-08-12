@@ -66,7 +66,7 @@ func InsertNewRecord(db *sql.DB, r Record) {
 
 // GetFileByTimeStamp retrieves on or more binary blobs stored in the database for 
 // a given day provided by a timestamp.
-func GetFileByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
+func GetRecsByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
 
 	thisDay := time.Date(timestamp.Year(), timestamp.Month(), timestamp.Day(), 0, 0, 0, 0, time.UTC)
 	thisDate := thisDay.Format("2006-01-02")

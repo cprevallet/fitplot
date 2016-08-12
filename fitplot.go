@@ -6,7 +6,7 @@ package main
 import (
 	//"database/sql"
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	"github.com/cprevallet/fitplot/desktop"
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/tcx"
@@ -293,12 +293,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 	// Read file. tmpFname gets set in uploadHandler.
 	
-	// Testing read!
+	// Retrieve the file from the database via the timeStamp global
+	// variable.
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-//	t := time.Date(2016, time.August, 10, 12, 0, 0, 0, time.UTC)
-	recs := persist.GetFileByTimeStamp(db, timeStamp)
+	recs := persist.GetRecsByTimeStamp(db, timeStamp)
 	db.Close()
-	fmt.Println(recs)
 	// TODO Handle more than one run result on a given day from database.
 	b := recs[0].FContent
 	
