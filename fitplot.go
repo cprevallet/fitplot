@@ -6,7 +6,7 @@ package main
 import (
 	//"database/sql"
 	"encoding/json"
-	//"fmt"
+	"fmt"
 	"github.com/cprevallet/fitplot/desktop"
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/tcx"
