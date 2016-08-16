@@ -1,5 +1,6 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.js"></script>
 <script type="text/javascript" src="http://cdn.jsdelivr.net/jquery.cookie/1.3/jquery.cookie.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript"> google.charts.load('current', {'packages':['table', 'gauge']}); </script>
@@ -236,6 +237,36 @@
     	});
     };
 
+	$(function () {
+		$('.str-tab').click(function () {
+			createCalendar()
+		})
+	});
+	
+    // Show the summary information.
+	//
+	function createCalendar(serverdata) {
+		$("#datepicker").datepicker({
+			beforeShowDay: function(date) {
+				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input1").val());
+				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input2").val());
+				return [true, date1 && ((date.getTime() == date1.getTime()) || (date2 && date >= date1 && date <= date2)) ? "dp-highlight" : ""];
+			},
+			onSelect: function(dateText, inst) {
+				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input1").val());
+				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input2").val());
+				if (!date1 || date2) {
+					$("#input1").val(dateText);
+					$("#input2").val("");
+					$(this).datepicker("option", "minDate", dateText);
+				} else {
+					$("#input2").val(dateText);
+					$(this).datepicker("option", "minDate", null);
+				}
+			}
+		});
+	}
+	
 	//
 	// Summarize tab has been selected.
 	//
@@ -845,6 +876,7 @@
 <!-- Styling -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.min.css" >
 <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 <style>
 
@@ -896,6 +928,10 @@
    width: 75px;
 }
 
+.dp-highlight .ui-state-default {
+	background: #484;
+	color: #FFF;
+}
 </style>
 
 </head>
@@ -907,6 +943,7 @@
 	<header class="mdl-layout__header">
     <!-- Tabs -->
 		<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+			<a href="#fixed-tab-4" class="mdl-layout__tab str-tab">Stored Runs</a>
 			<a href="#fixed-tab-2" class="mdl-layout__tab vis-tab">Visualize</a>
 			<a href="#fixed-tab-1" class="mdl-layout__tab sum-tab">Summarize</a>
 			<a href="#fixed-tab-3" class="mdl-layout__tab ana-tab">Analyze</a>
@@ -939,6 +976,52 @@
 	</div>
 
   <main class="mdl-layout__content">
+  
+  
+	<section class="mdl-layout__tab-panel" id="fixed-tab-4">
+		<div class="page-content"><!-- Your content goes here -->
+
+		<div class="mdl-grid">
+			<!-- Selector -->
+			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Calendar</h2>
+				</div>
+				<div id="datepicker" class="mdl-card__supporting-text">
+				Dates:
+				<input type="text" id="input1" size="10">
+				<input type="text" id="input2" size="10">
+				</div>      
+			</div>
+		</div>
+
+		</div>
+
+		<footer class="mdl-mini-footer">
+		<div class="mdl-mini-footer__left-section">
+			<div class="mdl-logo">
+			More Information
+			</div>
+			<ul class="mdl-mini-footer__link-list">
+			<li><a target="_blank" href="/static/help.html">Help</a></li>
+			<li><a target="_blank" href="/static/help.html#license">License</a></li>
+			</ul>
+		</div>
+		<div class="mdl-mini-footer__right-section">
+		<!--
+			<button class="mdl-mini-footer__social-btn"></button>
+			<button class="mdl-mini-footer__social-btn"></button>
+			<button class="mdl-mini-footer__social-btn"></button>
+		-->
+		</div>
+		</footer>
+
+	</section>
+  
+  
+  
+  
+  
 	<section class="mdl-layout__tab-panel" id="fixed-tab-1">
 		<div class="page-content"><!-- Your content goes here -->
 
