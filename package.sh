@@ -12,6 +12,10 @@
 # github.com/akavel/rsrc/ - embed windows icons - go get github.com/akavel/rsrc
 # nsis - windows installer utility - apt-get install nsis
 # hfsplus + dependencies - osx file system - apt-get install hfsplus
+# cross-compilers for C language programs (e.g. sqlite3 dependency is cgo )
+# x86_64-w64-mingw32-gcc and o64-clang
+# see: https://www.limitlessfx.com/cross-compile-golang-app-for-windows-from-linux.html
+#      https://github.com/tpoechtrager/osxcross
  
 # Configure these to match your system
 SOURCE_DIR=/home/penguin/work/src/github.com/cprevallet/fitplot
@@ -40,8 +44,12 @@ function build() {
 	if [ "$os" == "windows" ] ; then
 		# env GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
 		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=x86_64-w64-mingw32-gcc go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
-	else
-		env GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
+	fi
+	if [ "$os" == "linux" ] ; then
+		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
+	fi
+	if [ "$os" == "darwin" ] ; then
+		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=o64-clang go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
 	fi
 }
 
@@ -55,7 +63,6 @@ function package_windows {
 	sudo mkdir windows_dist/fitplot
 	sudo cp $SOURCE_DIR/fitplot.exe ./windows_dist/fitplot
 	sudo cp $SOURCE_DIR/LICENSE.txt ./windows_dist/fitplot
-	#sudo cp -r $SOURCE_DIR/sqlite-dll-win64-x64-3140000/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/static/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/tmpl/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/samples/ ./windows_dist/fitplot
