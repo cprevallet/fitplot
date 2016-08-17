@@ -275,9 +275,11 @@
 	$(function () {
 		$('.str-tab').click(function () {
 			createCalendar()
+			createFileTable()
 		})
 	});
 	
+	//
     // Show the summary information.
 	//
 	function createCalendar(serverdata) {
@@ -301,6 +303,41 @@
 			}
 		});
 	}
+
+    //
+    // Create the database file table using the Google Charts API.
+    //
+    function createFileTable(dbfilelist) {
+    	// Add training pace values to the training pace table.
+    	var filedata = new google.visualization.DataTable();
+    	filedata.addColumn('string', 'File name');
+    	filedata.addColumn('string', 'File format');
+    	filedata.addColumn('string', 'Time stamp');
+    	var cellStyle = {
+    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    	}
+    	/*
+    	var row = 0;
+    	for (var k in p.TrainingPaces) {
+    		if (p.TrainingPaces.hasOwnProperty(k)) {
+    			filedata.addRows([
+    				[k, p.TrainingPaces[k], ]
+    			]);
+    		}
+    		filedata.setProperties(row, 0, cellStyle);
+    		filedata.setProperties(row, 1, cellStyle);
+    		row = row + 1
+    	}
+    	*/
+    	filedata.sort({column: 1, desc: false});
+    	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
+    	filetable.draw(filedata, {
+    		showRowNumber: false,
+    		width: '100%',
+    		height: '100%',
+    		allowHtml: true
+    	});
+    }
 	
 	//
 	// Summarize tab has been selected.
@@ -1029,6 +1066,13 @@
 				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="requestRuns()">
 				Find!
 				</button>
+			</div>
+			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Runs In Database</h2>
+				</div>
+				<div class="google-table" id="run_dbase_div">
+				</div>
 			</div>
 		</div>
 
