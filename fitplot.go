@@ -122,6 +122,9 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		DBStart      string
 		DBEnd        string
 	}
+	
+	var DBFileList []map[string]string
+	
 	decoder := json.NewDecoder(r.Body)
 	var dbQuery DBDateStrings //string
 	err := decoder.Decode(&dbQuery)
@@ -139,22 +142,28 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(endTime)
 	recs := persist.GetRecsByTime(db, startTime, endTime )
 	db.Close()
+	_ = "breakpoint"
 	for _, rec := range recs {
 		fmt.Println(rec.FName, rec.FType, rec.TimeStamp)
+		var filerec map[string]string
+		filerec = make(map[string]string)
+		filerec["File name"] = rec.FName
+		filerec["File type"] = rec.FType
+		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC3339)
+		DBFileList = append(DBFileList, filerec)
 	}
-	/*
 	//Convert to json.
-	js, err := json.Marshal(e)
+	js, err := json.Marshal(DBFileList)
 
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//Send
 	w.Write(js)
-*/
 }
 
 //
@@ -340,7 +349,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	
 	// Retrieve the file from the database by timeStamp global
 	// variable.
-	_ = "breakpoint"
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	recs := persist.GetRecsByTime(db, timeStamp.Add(-1 * time.Second), timeStamp.Add(1 * time.Second) )
 	db.Close()

@@ -223,7 +223,6 @@
     		url: '/getruns',
     		data: JSON.stringify(data),
     		type: 'POST',
-    		dataType: 'application/json; charset=UTF-8',
     		error: function(XMLHttpRequest, textStatus, errorThrown) {
 				var e = XMLHttpRequest.error()
 				if (e.status != 200) {
@@ -275,7 +274,7 @@
 	$(function () {
 		$('.str-tab').click(function () {
 			createCalendar()
-			createFileTable()
+			createFileTable(dbfilelist)
 		})
 	});
 	
@@ -308,7 +307,7 @@
     // Create the database file table using the Google Charts API.
     //
     function createFileTable(dbfilelist) {
-    	// Add training pace values to the training pace table.
+    	// Add file values to the database file table.
     	var filedata = new google.visualization.DataTable();
     	filedata.addColumn('string', 'File name');
     	filedata.addColumn('string', 'File format');
@@ -316,19 +315,25 @@
     	var cellStyle = {
     		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
-    	/*
+    	if (dbfilelist == null) {
+			return
+    	}
     	var row = 0;
-    	for (var k in p.TrainingPaces) {
-    		if (p.TrainingPaces.hasOwnProperty(k)) {
-    			filedata.addRows([
-    				[k, p.TrainingPaces[k], ]
-    			]);
-    		}
+		for (var i = 0; i < dbfilelist.length; i++) {
+    		filedata.addRows([
+    			[dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp']],
+    		]);
+//    	for (var k in dbfilelist) {
+//    		if (dbfilelist.hasOwnProperty(k)) {
+//    			filedata.addRows([
+//    				[k, dbfilelist[k], ]
+//    			]);
+//    		}
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
+    		filedata.setProperties(row, 2, cellStyle);
     		row = row + 1
     	}
-    	*/
     	filedata.sort({column: 1, desc: false});
     	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
     	filetable.draw(filedata, {
