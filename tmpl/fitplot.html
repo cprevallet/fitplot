@@ -273,10 +273,20 @@
 
 	$(function () {
 		$('.str-tab').click(function () {
-			createCalendar()
-			createFileTable(dbfilelist)
+			memorize()
 		})
 	});
+	
+	//
+	// Plot the calendar and table using the current data.
+	//
+	function memorize() {
+		requestRuns();
+		setTimeout(function(){ 
+			createCalendar()
+			createFileTable(dbfilelist)
+		}, 1000);
+	}
 	
 	//
     // Show the summary information.
@@ -1068,7 +1078,7 @@
 				</div>      
 				Start:<input type="text" id="calStart" readonly>
 				End:<input type="text" id="calEnd" readonly>
-				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="requestRuns()">
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="memorize()">
 				Find!
 				</button>
 			</div>
