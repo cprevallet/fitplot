@@ -12,6 +12,8 @@
     "use strict";
 
 	var serverdata
+	var dbfilelist
+	
     //
     // This event fires when the document's DOM is loaded (which may be some 
     // time before the images, etc. are loaded).
@@ -205,7 +207,40 @@
     		cache: false
     	});
     };
-
+    
+    //
+    // Request a list of runs from the server.
+    //
+    function requestRuns() {
+		// Do a little fancy footwork to format the calendar dates into
+		// database compatible timestamps.
+		var dbStartDate = $.datepicker.parseDate( "mm/dd/yy", $("#calStart").val() )
+		var dbStart = $.datepicker.formatDate("yy-mm-dd", dbStartDate)
+		var dbEndDate = $.datepicker.parseDate( "mm/dd/yy", $("#calEnd").val() )
+		var dbEnd = $.datepicker.formatDate("yy-mm-dd", dbEndDate)
+		var data = {"dbStart": dbStart, "dbEnd": dbEnd}
+    	$.ajax({
+    		url: '/getruns',
+    		data: JSON.stringify(data),
+    		type: 'POST',
+    		dataType: 'application/json; charset=UTF-8',
+    		error: function(XMLHttpRequest, textStatus, errorThrown) {
+				var e = XMLHttpRequest.error()
+				if (e.status != 200) {
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar( {
+					message: e["responseText"]
+					} );				
+				}
+    		},
+    		success: function (returneddata) {
+    			// Save a global copy.
+				dbfilelist = returneddata;
+    		},
+    		cache: false
+    	});
+    };
+    
     //
     // Display the environment the program is executing in.
     //
@@ -248,19 +283,19 @@
 	function createCalendar(serverdata) {
 		$("#datepicker").datepicker({
 			beforeShowDay: function(date) {
-				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input1").val());
-				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input2").val());
+				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calStart").val());
+				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calEnd").val());
 				return [true, date1 && ((date.getTime() == date1.getTime()) || (date2 && date >= date1 && date <= date2)) ? "dp-highlight" : ""];
 			},
 			onSelect: function(dateText, inst) {
-				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input1").val());
-				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#input2").val());
+				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calStart").val());
+				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calEnd").val());
 				if (!date1 || date2) {
-					$("#input1").val(dateText);
-					$("#input2").val("");
+					$("#calStart").val(dateText);
+					$("#calEnd").val("");
 					$(this).datepicker("option", "minDate", dateText);
 				} else {
-					$("#input2").val(dateText);
+					$("#calEnd").val(dateText);
 					$(this).datepicker("option", "minDate", null);
 				}
 			}
@@ -983,15 +1018,17 @@
 
 		<div class="mdl-grid">
 			<!-- Selector -->
-			<div class="mdl-card mdl-cell--12-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
+			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Calendar</h2>
 				</div>
 				<div id="datepicker" class="mdl-card__supporting-text">
-				Dates:
-				<input type="text" id="input1" size="10">
-				<input type="text" id="input2" size="10">
 				</div>      
+				Start:<input type="text" id="calStart" readonly>
+				End:<input type="text" id="calEnd" readonly>
+				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="requestRuns()">
+				Find!
+				</button>
 			</div>
 		</div>
 

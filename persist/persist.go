@@ -64,18 +64,11 @@ func InsertNewRecord(db *sql.DB, r Record) {
 	}
 }
 
-// GetRecsByTimeStamp retrieves on or more binary blobs stored in the database for 
-// a given day provided by a timestamp.
-func GetRecsByTimeStamp(db *sql.DB, timestamp time.Time) (recs []Record) {
+// GetRecsByTime retrieves on or more binary blobs stored in the database for 
+// a given date range provided as YYYY-MM-DD.
+func GetRecsByTime(db *sql.DB, startTime, endTime time.Time) (recs []Record) {
 
-	thisDay := time.Date(timestamp.Year(), timestamp.Month(), timestamp.Day(), 0, 0, 0, 0, time.UTC)
-	thisDate := thisDay.Format("2006-01-02")
-	addOneDay := timestamp.Add(time.Hour * 24)
-	nextDay := time.Date(addOneDay.Year(), addOneDay.Month(), addOneDay.Day(), 0, 0, 0, 0, time.UTC)
-	nextDate := nextDay.Format("2006-01-02")
-	
-	// Between is inclusive.
-	queryString := "select * from runfiles where timestamp between '" + thisDate + "' " + "and '" + nextDate + "'"
+	queryString := "select * from runfiles where timestamp >= '" + startTime.Format("2006-01-02 15:04:05")  + "' " + "and timestamp <= '" + endTime.Format("2006-01-02 15:04:05") + "'"
 	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)

@@ -13,6 +13,7 @@ import (
 	"github.com/jezard/fit"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -110,6 +111,50 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	persist.InsertNewRecord(db, dbRecord)
 	db.Close()
+}
+
+//
+// Return information about entries in the database .
+//
+func dbHandler(w http.ResponseWriter, r *http.Request) {
+	// Structure element names MUST be uppercase or decoder can't access them.
+	type DBDateStrings struct {
+		DBStart      string
+		DBEnd        string
+	}
+	decoder := json.NewDecoder(r.Body)
+	var dbQuery DBDateStrings //string
+	err := decoder.Decode(&dbQuery)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	log.Println(dbQuery.DBStart)
+	log.Println(dbQuery.DBEnd)
+	fmt.Println("dbHandler Received Request")
+
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart + " 00:00:00")
+	log.Println(startTime)
+	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd + " 23:59:59")
+	log.Println(endTime)
+	recs := persist.GetRecsByTime(db, startTime, endTime )
+	db.Close()
+	for _, rec := range recs {
+		fmt.Println(rec.FName, rec.FType, rec.TimeStamp)
+	}
+	/*
+	//Convert to json.
+	js, err := json.Marshal(e)
+
+	if err != nil {
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//Send
+	w.Write(js)
+*/
 }
 
 //
@@ -293,10 +338,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 	// Read file. tmpFname gets set in uploadHandler.
 	
-	// Retrieve the file from the database via the timeStamp global
+	// Retrieve the file from the database by timeStamp global
 	// variable.
+	_ = "breakpoint"
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	recs := persist.GetRecsByTimeStamp(db, timeStamp)
+	recs := persist.GetRecsByTime(db, timeStamp.Add(-1 * time.Second), timeStamp.Add(1 * time.Second) )
 	db.Close()
 	// TODO Handle more than one run result on a given day from database.
 	b := recs[0].FContent
@@ -462,6 +508,7 @@ func main() {
 	http.HandleFunc("/getplot", plotHandler)
 	http.HandleFunc("/stop", stopHandler)
 	http.HandleFunc("/env", envHandler)
+	http.HandleFunc("/getruns", dbHandler)
 	//Listen on port 8080
 	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)
