@@ -113,9 +113,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	db.Close()
 }
 
-//
 // Return information about entries in the database .
-//
 func dbHandler(w http.ResponseWriter, r *http.Request) {
 	// Structure element names MUST be uppercase or decoder can't access them.
 	type DBDateStrings struct {
@@ -166,9 +164,7 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-//
 // Return information about the runtime environment.
-//
 func envHandler(w http.ResponseWriter, r *http.Request) {
 
 	type Environ struct {

@@ -352,6 +352,36 @@
     		height: '100%',
     		allowHtml: true
     	});
+    	
+    	// Add our selection handler.
+		google.visualization.events.addListener(filetable, 'select', selectHandler);
+
+		// The selection handler.
+		// Loop through all items in the selection and concatenate
+		// a single message from all of them.
+		function selectHandler() {
+			var selection = filetable.getSelection();
+			var message = '';
+			for (var i = 0; i < selection.length; i++) {
+				var item = selection[i];
+				if (item.row != null && item.column != null) {
+				var str = filedata.getFormattedValue(item.row, item.column);
+				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
+				} else if (item.row != null) {
+				var str = filedata.getFormattedValue(item.row, 0);
+				message += '{row:' + item.row + ', column:none}; value (col 0) = ' + str + '\n';
+				} else if (item.column != null) {
+				var str = filedata.getFormattedValue(0, item.column);
+				message += '{row:none, column:' + item.column + '}; value (row 0) = ' + str + '\n';
+				}
+			}
+			if (message == '') {
+				message = 'nothing';
+			}
+			alert('You selected ' + message);
+		}
+    	
+    	
     }
 	
 	//
