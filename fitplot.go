@@ -149,7 +149,7 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec = make(map[string]string)
 		filerec["File name"] = rec.FName
 		filerec["File type"] = rec.FType
-		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC3339)
+		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC1123)
 		DBFileList = append(DBFileList, filerec)
 	}
 	//Convert to json.
