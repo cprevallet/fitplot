@@ -75,23 +75,14 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fName := handler.Filename
 	rslt := http.DetectContentType(fBytes)
-
-	
 	// Make a copy in a temporary folder for use with fit and tcx 
 	// libraries.
-	tmpFile, err := ioutil.TempFile("", "tmp")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer tmpFile.Close()
-	tmpFile.Write(fBytes)
+	tmpFile, err := persist.CreateTempFile(fBytes)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	tmpFname = tmpFile.Name()
-
 	// Determine the run start timestamp and file type meta-data.
 	var fType string
 	switch {
@@ -250,6 +241,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var fitStruct fit.FitFile
 	var tcxdb *tcx.TCXDB
 
+	// TODO Does the following check even work now that we are
+	// using the timestamp as an indication of upload complete?
 	// User hasn't uploaded a file yet?  Avoid a panic.
 	if tmpFname == "" {
 		http.Error(w, "No file loaded.", http.StatusConflict)
@@ -332,44 +325,29 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		splitsecs = 0
 	}
-	/*
-		dump, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-			return
-		}
-
-		fmt.Printf("%s\n\n", dump)
-	*/
-	// Read file. tmpFname gets set in uploadHandler.
 	
 	// Retrieve the file from the database by timeStamp global
-	// variable.
+	// variable.  Make the search criteria just outside the 
+	// expected run start time.
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	recs := persist.GetRecsByTime(db, timeStamp.Add(-1 * time.Second), timeStamp.Add(1 * time.Second) )
+	slightlyOlder := timeStamp.Add(-1 * time.Second)
+	slightlyNewer := timeStamp.Add(1 * time.Second)
+	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer )
 	db.Close()
-	// TODO Handle more than one run result on a given day from database.
-	b := recs[0].FContent
+	fBytes := recs[0].FContent
 	
-	// The fit and tcx libraries need to read from a file rather 
-	// than from in memory. Make a copy in a temporary folder.
-	tmpFile, err := ioutil.TempFile("", "tmp")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer tmpFile.Close()
-	tmpFile.Write(b)
+	// Make a copy in a temporary folder for use with fit and tcx 
+	// libraries.
+	tmpFile, err := persist.CreateTempFile(fBytes)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	tmpFname = tmpFile.Name()
-	
-	
-	
-	//b, _ := ioutil.ReadFile(tmpFname)
-	rslt := http.DetectContentType(b)
+	// TODO Is this now redundant? Since uploadHandler does it for us?
+	// Just read/use fType from database?
+	// Determine what type of file we've uploaded.
+	rslt := http.DetectContentType(fBytes)
 	switch {
 	case rslt == "application/octet-stream":
 		// Filetype is FIT, or at least it could be?
@@ -451,6 +429,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		VO2max:         0.0,
 	}
 
+	// Retrieve overview information.
 	if rslt == "application/octet-stream" {
 		p.DeviceName = fitStruct.DeviceInfo[0].Manufacturer
 		p.DeviceProdID = fitStruct.DeviceInfo[0].Product

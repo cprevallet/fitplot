@@ -4,8 +4,9 @@ package persist
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"io/ioutil"
 	"log"
-	//"os"
+	"os"
 	//"fmt"
 	"time"
 )
@@ -87,4 +88,19 @@ func GetRecsByTime(db *sql.DB, startTime, endTime time.Time) (recs []Record) {
 		result = append(result, rec)
 	}
 	return result
+}
+
+// CreateTempFile takes an in-memory array of bytes and stores it in a temporary
+// file location (which varies by operating system)
+func CreateTempFile(bytes []byte) (tmpFile *os.File, err error) {
+	tmpFile, err = ioutil.TempFile("", "tmp")
+	if err != nil {
+		return tmpFile, err
+	}
+	defer tmpFile.Close()
+	tmpFile.Write(bytes)
+	if err != nil {
+		return nil, err
+	}
+	return tmpFile, nil
 }
