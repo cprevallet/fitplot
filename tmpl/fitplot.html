@@ -83,6 +83,9 @@
     				if ($("#fixed-tab-3").hasClass("is-active")) {
 						analyze();
     				} 
+    				if ($("#fixed-tab-4").hasClass("is-active")) {
+						memorize();
+    				} 
     			},
     			error: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
@@ -140,6 +143,10 @@
     	if (nocookies) {
 			$("#pacechk").prop('checked', true);
     	}
+    	// Need to initialize the calendar or it doesn't display properly.
+		if ($("#fixed-tab-4").hasClass("is-active")) {
+			memorize();
+    	} 
     });
 
 	//
@@ -289,7 +296,7 @@
 	}
 	
 	//
-    // Show the summary information.
+    // Show the datepicker information.
 	//
 	function createCalendar(serverdata) {
 		$("#datepicker").datepicker({
@@ -311,6 +318,7 @@
 				}
 			}
 		});
+		$("#datepicker").datepicker( "refresh" )
 	}
 
     //
