@@ -369,6 +369,30 @@
 				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
 				} else if (item.row != null) {
 				var str = filedata.getFormattedValue(item.row, 0);
+				var selectedDate = filedata.getFormattedValue(item.row, 2)
+				
+				
+		$.ajax({
+    		url: '/selectrun',
+    		data: JSON.stringify(selectedDate),
+    		type: 'POST',
+    		error: function(XMLHttpRequest, textStatus, errorThrown) {
+				var e = XMLHttpRequest.error()
+				if (e.status != 200) {
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar( {
+					message: e["responseText"]
+					} );				
+				}
+    		},
+    		success: function () {
+				alert('Sent!!!')
+    		},
+    		cache: false
+    	});
+				
+				
+				
 				message += '{row:' + item.row + ', column:none}; value (col 0) = ' + str + '\n';
 				} else if (item.column != null) {
 				var str = filedata.getFormattedValue(0, item.column);

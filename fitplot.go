@@ -120,20 +120,19 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	log.Println(dbQuery.DBStart)
-	log.Println(dbQuery.DBEnd)
+	//log.Println(dbQuery.DBStart)
+	//log.Println(dbQuery.DBEnd)
 	fmt.Println("dbHandler Received Request")
 
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart + " 00:00:00")
-	log.Println(startTime)
+	//log.Println(startTime)
 	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd + " 23:59:59")
-	log.Println(endTime)
+	//log.Println(endTime)
 	recs := persist.GetRecsByTime(db, startTime, endTime )
 	db.Close()
-	_ = "breakpoint"
 	for _, rec := range recs {
-		fmt.Println(rec.FName, rec.FType, rec.TimeStamp)
+		//fmt.Println(rec.FName, rec.FType, rec.TimeStamp)
 		var filerec map[string]string
 		filerec = make(map[string]string)
 		filerec["File name"] = rec.FName
@@ -149,6 +148,35 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//Send
+	w.Write(js)
+}
+
+// Return information about entries in the database .
+func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var ts string
+	err := decoder.Decode(&ts)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	log.Println(ts)
+	// ts returned as RFC1123 string 
+	timeStamp, err = time.Parse(time.RFC1123Z, ts)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	log.Println(timeStamp, ts)
+	
+	//Convert to json.
+	js, err := json.Marshal("Success!")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//Send
@@ -244,10 +272,13 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO Does the following check even work now that we are
 	// using the timestamp as an indication of upload complete?
 	// User hasn't uploaded a file yet?  Avoid a panic.
+	/*
 	if tmpFname == "" {
 		http.Error(w, "No file loaded.", http.StatusConflict)
 		return
 	}
+	*/
+	
 	// What has the user selected for unit system?
 	toEnglish = true
 	param1s := r.URL.Query()["toEnglish"]
@@ -329,12 +360,16 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the file from the database by timeStamp global
 	// variable.  Make the search criteria just outside the 
 	// expected run start time.
+	fmt.Println(timeStamp)
+	
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	slightlyOlder := timeStamp.Add(-1 * time.Second)
 	slightlyNewer := timeStamp.Add(1 * time.Second)
 	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer )
 	db.Close()
 	fBytes := recs[0].FContent
+	
+	fmt.Println(fBytes)
 	
 	// Make a copy in a temporary folder for use with fit and tcx 
 	// libraries.
@@ -343,6 +378,9 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	
+	fmt.Println(tmpFile.Name)
+	
 	tmpFname = tmpFile.Name()
 	// TODO Is this now redundant? Since uploadHandler does it for us?
 	// Just read/use fType from database?
@@ -492,6 +530,7 @@ func main() {
 	http.HandleFunc("/stop", stopHandler)
 	http.HandleFunc("/env", envHandler)
 	http.HandleFunc("/getruns", dbHandler)
+	http.HandleFunc("/selectrun", dbSelectHandler)
 	//Listen on port 8080
 	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)
