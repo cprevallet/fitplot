@@ -13,7 +13,7 @@ import (
 	"github.com/jezard/fit"
 	"html/template"
 	"io/ioutil"
-	"log"
+	//"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -120,19 +120,14 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	//log.Println(dbQuery.DBStart)
-	//log.Println(dbQuery.DBEnd)
-	fmt.Println("dbHandler Received Request")
-
+	// Connect to database and retrieve.  Be sure we bracket the entirety of
+	// the selected day.
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart + " 00:00:00")
-	//log.Println(startTime)
 	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd + " 23:59:59")
-	//log.Println(endTime)
 	recs := persist.GetRecsByTime(db, startTime, endTime )
 	db.Close()
 	for _, rec := range recs {
-		//fmt.Println(rec.FName, rec.FType, rec.TimeStamp)
 		var filerec map[string]string
 		filerec = make(map[string]string)
 		filerec["File name"] = rec.FName
@@ -142,19 +137,18 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//Convert to json.
 	js, err := json.Marshal(DBFileList)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//Send
 	w.Write(js)
 }
 
-// Return information about entries in the database .
+// Set an individually record in the the database as the one to process via
+// the timeStamp global variable.
 func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var ts string
@@ -162,17 +156,14 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	log.Println(ts)
 	// ts returned as RFC1123 string 
 	timeStamp, err = time.Parse(time.RFC1123Z, ts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	log.Println(timeStamp, ts)
-	
+	/*
 	//Convert to json.
 	js, err := json.Marshal("Success!")
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -181,6 +172,7 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	//Send
 	w.Write(js)
+	*/
 }
 
 // Return information about the runtime environment.
@@ -269,15 +261,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var fitStruct fit.FitFile
 	var tcxdb *tcx.TCXDB
 
-	// TODO Does the following check even work now that we are
-	// using the timestamp as an indication of upload complete?
-	// User hasn't uploaded a file yet?  Avoid a panic.
-	/*
-	if tmpFname == "" {
-		http.Error(w, "No file loaded.", http.StatusConflict)
+	// User hasn't selected a file yet?  Avoid a panic.
+	if timeStamp.IsZero() {
+		http.Error(w, "No file selected.", http.StatusConflict)
 		return
 	}
-	*/
 	
 	// What has the user selected for unit system?
 	toEnglish = true
@@ -360,16 +348,12 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the file from the database by timeStamp global
 	// variable.  Make the search criteria just outside the 
 	// expected run start time.
-	fmt.Println(timeStamp)
-	
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	slightlyOlder := timeStamp.Add(-1 * time.Second)
 	slightlyNewer := timeStamp.Add(1 * time.Second)
 	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer )
 	db.Close()
 	fBytes := recs[0].FContent
-	
-	fmt.Println(fBytes)
 	
 	// Make a copy in a temporary folder for use with fit and tcx 
 	// libraries.
@@ -378,9 +362,6 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
-	fmt.Println(tmpFile.Name)
-	
 	tmpFname = tmpFile.Name()
 	// TODO Is this now redundant? Since uploadHandler does it for us?
 	// Just read/use fType from database?

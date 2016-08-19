@@ -333,12 +333,6 @@
     		filedata.addRows([
     			[dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp']],
     		]);
-//    	for (var k in dbfilelist) {
-//    		if (dbfilelist.hasOwnProperty(k)) {
-//    			filedata.addRows([
-//    				[k, dbfilelist[k], ]
-//    			]);
-//    		}
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
     		filedata.setProperties(row, 2, cellStyle);
@@ -370,39 +364,34 @@
 				} else if (item.row != null) {
 				var str = filedata.getFormattedValue(item.row, 0);
 				var selectedDate = filedata.getFormattedValue(item.row, 2)
-				
-				
-		$.ajax({
-    		url: '/selectrun',
-    		data: JSON.stringify(selectedDate),
-    		type: 'POST',
-    		error: function(XMLHttpRequest, textStatus, errorThrown) {
-				var e = XMLHttpRequest.error()
-				if (e.status != 200) {
-					var notification = document.querySelector('.mdl-js-snackbar');
-					notification.MaterialSnackbar.showSnackbar( {
-					message: e["responseText"]
-					} );				
-				}
-    		},
-    		success: function () {
-				alert('Sent!!!')
-    		},
-    		cache: false
-    	});
-				
-				
-				
+				$.ajax({
+					url: '/selectrun',
+					data: JSON.stringify(selectedDate),
+					type: 'POST',
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+						var e = XMLHttpRequest.error()
+						if (e.status != 200) {
+							var notification = document.querySelector('.mdl-js-snackbar');
+							notification.MaterialSnackbar.showSnackbar( {
+							message: e["responseText"]
+							} );				
+						}
+					},
+					success: function () {
+						var notification = document.querySelector('.mdl-js-snackbar');
+						notification.MaterialSnackbar.showSnackbar(
+						{
+							message: 'Run selected.  Select another tab to continue.'
+						} );
+					},
+					cache: false
+				});
 				message += '{row:' + item.row + ', column:none}; value (col 0) = ' + str + '\n';
 				} else if (item.column != null) {
 				var str = filedata.getFormattedValue(0, item.column);
 				message += '{row:none, column:' + item.column + '}; value (row 0) = ' + str + '\n';
 				}
 			}
-			if (message == '') {
-				message = 'nothing';
-			}
-			alert('You selected ' + message);
 		}
     	
     	
@@ -1126,20 +1115,23 @@
 			<!-- Selector -->
 			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">Calendar</h2>
+					<h2 class="mdl-card__title-text">Search</h2>
 				</div>
 				<div id="datepicker" class="mdl-card__supporting-text">
 				</div>      
+				<span for="datepicker" class="mdl-tooltip">Select two days on the calendar to bracket the search for runs in the database.</span>
 				Start:<input type="text" id="calStart" readonly>
 				End:<input type="text" id="calEnd" readonly>
-				<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="memorize()">
+				<button id="searchbutton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="memorize()">
 				Find!
 				</button>
+				<span for="searchbutton" class="mdl-tooltip">Query the database.</span>
 			</div>
 			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
-					<h2 class="mdl-card__title-text">Runs In Database</h2>
+					<h2 class="mdl-card__title-text">Results</h2>
 				</div>
+				<span for="run_dbase_div" class="mdl-tooltip">Click on a row to select which run to view.</span>
 				<div class="google-table" id="run_dbase_div">
 				</div>
 			</div>
