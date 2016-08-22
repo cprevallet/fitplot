@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"strconv"
 	"time"
 )
 
@@ -161,18 +160,6 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	/*
-	//Convert to json.
-	js, err := json.Marshal("Success!")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	//Send
-	w.Write(js)
-	*/
 }
 
 // Return information about the runtime environment.
@@ -266,85 +253,27 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No file selected.", http.StatusConflict)
 		return
 	}
-	
-	// What has the user selected for unit system?
-	toEnglish = true
-	param1s := r.URL.Query()["toEnglish"]
-	if param1s != nil {
-		if param1s[0] == "true" {
-			toEnglish = true
-		}
-		if param1s[0] == "false" {
-			toEnglish = false
-		}
+	// Structure element names MUST be uppercase or decoder can't access them.
+	type UIData struct {
+		UseEnglish   bool
+		Racedist 	 float64
+		Racehours	 int64
+		Racemins	 int64
+		Racesecs	 int64
+		UseSegment	 bool
+		Splitdist	 float64
+		Splithours	 int64
+		Splitmins	 int64
+		Splitsecs	 int64
 	}
-	// What race time/distance has the user entered?
-	var racedist float64
-	var racehours, racemins, racesecs int64
-	param2s := r.URL.Query()["racedist"]
-	if param2s != nil {
-		racedist, _ = strconv.ParseFloat(param2s[0], 64)
-	} else {
-		racedist = 5000.0
+	decoder := json.NewDecoder(r.Body)
+	var UI UIData 
+	err := decoder.Decode(&UI)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	param3s := r.URL.Query()["racehours"]
-	if param3s != nil {
-		racehours, _ = strconv.ParseInt(param3s[0], 10, 64)
-	} else {
-		racehours = 0
-	}
-	param4s := r.URL.Query()["racemins"]
-	if param4s != nil {
-		racemins, _ = strconv.ParseInt(param4s[0], 10, 64)
-	} else {
-		racemins = 25
-	}
-	param5s := r.URL.Query()["racesecs"]
-	if param5s != nil {
-		racesecs, _ = strconv.ParseInt(param5s[0], 10, 64)
-	} else {
-		racesecs = 0
-	}
+	toEnglish = UI.UseEnglish
 
-	// Calculate analysis results based on segment or whole run?
-	useSegment := false
-	param6s := r.URL.Query()["useSegment"]
-	if param6s != nil {
-		if param6s[0] == "true" {
-			useSegment = true
-		}
-		if param6s[0] == "false" {
-			useSegment = false
-		}
-	}
-	// What split time/distance has the user entered?
-	var splitdist float64
-	var splithours, splitmins, splitsecs int64
-	param7s := r.URL.Query()["splitdist"]
-	if param7s != nil {
-		splitdist, _ = strconv.ParseFloat(param7s[0], 64)
-	} else {
-		splitdist = 5000.0
-	}
-	param8s := r.URL.Query()["splithours"]
-	if param8s != nil {
-		splithours, _ = strconv.ParseInt(param8s[0], 10, 64)
-	} else {
-		splithours = 0
-	}
-	param9s := r.URL.Query()["splitmins"]
-	if param9s != nil {
-		splitmins, _ = strconv.ParseInt(param9s[0], 10, 64)
-	} else {
-		splitmins = 25
-	}
-	param10s := r.URL.Query()["splitsecs"]
-	if param10s != nil {
-		splitsecs, _ = strconv.ParseInt(param10s[0], 10, 64)
-	} else {
-		splitsecs = 0
-	}
-	
 	// Retrieve the file from the database by timeStamp global
 	// variable.  Make the search criteria just outside the 
 	// expected run start time.
@@ -474,8 +403,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Calculate the analysis page.
 	p.PredictedTimes, p.VDOT, p.VO2max, p.RunScore, p.TrainingPaces = createAnalysis(toEnglish,
-		useSegment, p.DispDistance, p.TimeStamps, splitdist, splithours, splitmins,
-		splitsecs, racedist, racehours, racemins, racesecs)
+		UI.UseSegment, p.DispDistance, p.TimeStamps, UI.Splitdist, UI.Splithours, UI.Splitmins,
+		UI.Splitsecs, UI.Racedist, UI.Racehours, UI.Racemins, UI.Racesecs)
 
 	//Convert to json.
 	js, err := json.Marshal(p)

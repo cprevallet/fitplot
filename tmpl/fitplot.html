@@ -173,31 +173,22 @@
     // Request data from the server.
     //
     function requestData() {
-		var useEnglish = !$("#usemetric").is(':checked')
-		var racedist = $("#racedist")[0].value
-		var racehours = $("#racehours")[0].value
-		var racemins = $("#racemins")[0].value
-		var racesecs = $("#racesecs")[0].value
-		var useSegment = $("#calc-2").is(':checked')
-		var splitdist = $("#splitdist")[0].value
-		var splithours = $("#splithours")[0].value
-		var splitmins = $("#splitmins")[0].value
-		var splitsecs = $("#splitsecs")[0].value
+		var data = {
+		"UseEnglish" : !$("#usemetric").is(':checked'),
+		"Racedist" : parseFloat($("#racedist")[0].value),
+		"Racehours" : parseInt($("#racehours")[0].value),
+		"Racemins" : parseInt($("#racemins")[0].value),
+		"Racesecs" : parseInt($("#racesecs")[0].value),
+		"UseSegment" : $("#calc-2").is(':checked'),
+		"Splitdist" : parseFloat($("#splitdist")[0].value),
+		"Splithours" : parseInt($("#splithours")[0].value),
+		"Splitmins" : parseInt($("#splitmins")[0].value),
+		"Splitsecs" : parseInt($("#splitsecs")[0].value),
+		}
     	$.ajax({
     		url: '/getplot',
-    		data: {
-    			toEnglish: useEnglish,
-				racedist: racedist,
-				racehours: racehours,
-				racemins: racemins,
-				racesecs: racesecs,
-				useSegment: useSegment,
-				splitdist: splitdist,
-				splithours: splithours,
-				splitmins: splitmins,
-				splitsecs: splitsecs,
-    		},
-    		dataType: "json",
+    		type: 'POST',
+    		data: JSON.stringify(data),
     		error: function(XMLHttpRequest, textStatus, errorThrown) {
 				var e = XMLHttpRequest.error()
 				if (e.status == 409) {
