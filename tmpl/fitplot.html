@@ -322,7 +322,7 @@
     	filedata.addColumn('string', 'File format');
     	filedata.addColumn('string', 'Time stamp');
     	var cellStyle = {
-    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	if (dbfilelist == null) {
 			return
@@ -872,7 +872,7 @@
     	data.addColumn('string', p.C3Str);
     	data.addColumn('number', p.C4Str);
     	var cellStyle = {
-    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	for (var i = 0; i < p.LapDist.length; i++) {
     		data.addRows([
@@ -902,7 +902,7 @@
     	preddata.addColumn('string', 'Race');
     	preddata.addColumn('string', 'Time (hh:mm:ss)');
     	var cellStyle = {
-    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	var row = 0;
     	for (var k in p.PredictedTimes) {
@@ -936,7 +936,7 @@
     	traindata.addColumn('string', 'Workout');
     	traindata.addColumn('string', 'Pace (mm:ss)');
     	var cellStyle = {
-    		style: 'font-family: Roboto, serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	var row = 0;
     	for (var k in p.TrainingPaces) {
