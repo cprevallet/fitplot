@@ -306,6 +306,7 @@
 				} else {
 					$("#calEnd").val(dateText);
 					$(this).datepicker("option", "minDate", null);
+					memorize();
 				}
 			}
 		});
@@ -1127,10 +1128,6 @@
 				<span for="datepicker" class="mdl-tooltip">Select two days on the calendar to bracket the search for runs in the database.</span>
 				Start:<input type="text" id="calStart" readonly>
 				End:<input type="text" id="calEnd" readonly>
-				<button id="searchbutton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="memorize()">
-				Find!
-				</button>
-				<span for="searchbutton" class="mdl-tooltip">Query the database.</span>
 			</div>
 			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
