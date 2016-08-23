@@ -330,7 +330,7 @@
     	var row = 0;
 		for (var i = 0; i < dbfilelist.length; i++) {
     		filedata.addRows([
-    			[dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp']],
+    			[dbfilelist[i]['Timestamp'], dbfilelist[i]['File name'], dbfilelist[i]['File type']],
     		]);
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
@@ -361,8 +361,8 @@
 				var str = filedata.getFormattedValue(item.row, item.column);
 				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
 				} else if (item.row != null) {
-				var str = filedata.getFormattedValue(item.row, 0);
-				var selectedDate = filedata.getFormattedValue(item.row, 2)
+				var str = filedata.getFormattedValue(item.row, 1);
+				var selectedDate = filedata.getFormattedValue(item.row, 0)
 				$.ajax({
 					url: '/selectrun',
 					data: JSON.stringify(selectedDate),
@@ -1004,9 +1004,9 @@
 
 <!-- Styling -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue-green.min.css" />
+<link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.blue-green.min.css" />
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.min.css" >
-<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+<script defer src="https://code.getmdl.io/1.2.0/material.min.js"></script>
 <style>
 
 #runfile { display: none }
