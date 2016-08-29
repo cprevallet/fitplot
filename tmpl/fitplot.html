@@ -22,27 +22,27 @@
 
     	// Set the hook for submitting the file upload form.
     	document.getElementById("runfile").onchange = function () {
-    		var file = $('#runfile').get(0).files[0];
-    		//var file = runfile.files[0]; // grab the first (and only) file in the list
-    		var fileExt = $("input#runfile").val();
-    		fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
-    		fileExt = fileExt.toLowerCase();
-			sendFile(file, fileExt);
+			//for every file...
+			for (var x = 0; x < this.files.length; x++) {
+				var filename = this.files[x].name;
+				var fileExt = filename.slice(filename.length - 3, filename.length);
+				fileExt = fileExt.toLowerCase();
+				sendFile(this.files[x], fileExt);
+			}
     	}
 
     	// Set the hook for submitting the file upload form.
     	document.getElementById("runfilemenu").onchange = function () {
-    		var file = $('#runfilemenu').get(0).files[0];
-    		//var file = runfile.files[0]; // grab the first (and only) file in the list
-    		var fileExt = $("input#runfilemenu").val();
-    		fileExt = fileExt.slice(fileExt.length - 3, fileExt.length);
-    		fileExt = fileExt.toLowerCase();
-			sendFile(file, fileExt);
+			for (var x = 0; x < this.files.length; x++) {
+				var filename = this.files[x].name;
+				var fileExt = filename.slice(filename.length - 3, filename.length);
+				fileExt = fileExt.toLowerCase();
+				sendFile(this.files[x], fileExt);
+			}
     	}
 
 
     });
-
 
 	//
 	//  Send the file!
@@ -71,7 +71,7 @@
 					var notification = document.querySelector('.mdl-js-snackbar');
 					notification.MaterialSnackbar.showSnackbar(
 					{
-						message: 'File load completed!.'
+						message: file.name  + ' load completed succesfully.'  
 					}
 					);
     				if ($("#fixed-tab-1").hasClass("is-active")) {
@@ -90,7 +90,7 @@
     			error: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
 					var data = {
-					message: 'Sorry! Error uploading file.',
+					message: file.name + 'load failed.  Error uploading file.',
 					actionHandler: function(event) {sendFile(file, fileExt);},
 					actionText: 'Retry',
 					timeout: 10000
@@ -1090,7 +1090,7 @@
 
 	<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent float-run-button ">
 		<i class="material-icons">add</i>
-		<input type="file" name="runfile" id="runfile"> 
+		<input type="file" name="runfile" id="runfile" multiple> 
 	</label>
 	<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
 
@@ -1098,7 +1098,7 @@
 	<span class="mdl-layout-title">FITPLOT</span>
 	<nav class="mdl-navigation">
 		<label id="runbtnmenu" for="runfilemenu" class="mdl-button mdl-js-button mdl-button--colored">
-		<input type="file" name="runfilemenu" id="runfilemenu"> 
+		<input type="file" name="runfilemenu" id="runfilemenu" multiple> 
 		<span>Load file</span>
 		</label>
 		<button type="button" id="drawer-env" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="showEnvironment()">Environment</button>
