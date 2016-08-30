@@ -383,6 +383,19 @@
 						{
 							message: 'Run selected.  Select another tab to continue.'
 						} );
+						
+					// remove all is-active classes from tabs
+					$('a.mdl-layout__tab').removeClass('is-active');
+					// activate desired tab
+					$('a[href="#fixed-tab-2"]').addClass('is-active');
+					// remove all is-active classes from panels
+					$('.mdl-layout__tab-panel').removeClass('is-active');
+					// activate desired tab panel
+					$('#fixed-tab-2').addClass('is-active');
+					visualize()	
+						
+						
+						
 					},
 					cache: false
 				});
