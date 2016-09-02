@@ -73,29 +73,17 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fName := handler.Filename
-	rslt := http.DetectContentType(fBytes)
-	// Make a copy in a temporary folder for use with fit and tcx 
-	// libraries.
-	tmpFile, err := persist.CreateTempFile(fBytes)
+	fType, fitStruct, tcxdb, _, _, err := parseInputBytes(fBytes)
+	switch {
+		case fType == "FIT":
+			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
+		case fType == "TCX":
+			timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
+	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	tmpFname = tmpFile.Name()
-	// Determine the run start timestamp and file type meta-data.
-	var fType string
-	switch {
-		case rslt == "application/octet-stream":
-			// Filetype is FIT, or at least it could be?
-			fitStruct := fit.Parse(tmpFname, false)
-			fType = "FIT"
-			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
-		case rslt == "text/xml; charset=utf-8":
-			// Filetype is TCX or at least it could be?
-			tcxdb, _ := tcx.ReadTCXFile(tmpFname)
-			fType = "TCX"
-			timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
-	}	
 	// Persist the in-memory array of bytes to the database.
 	dbRecord := persist.Record{FName: fName, FType: fType, FContent: fBytes, TimeStamp: timeStamp}
 	db, _ := persist.ConnectDatabase("fitplot", "./")
@@ -194,6 +182,42 @@ func envHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// Parse the input bytes into structures more conducive for additional 
+// processing by routines in graphdata.go.
+func parseInputBytes (fBytes []byte)(fType string, fitStruct fit.FitFile, tcxdb *tcx.TCXDB, runRecs []fit.Record, runLaps []fit.Lap, err error) {
+	// Make a copy in a temporary folder for use with fit and tcx 
+	// libraries.
+	tmpFile, err := persist.CreateTempFile(fBytes)
+	if err != nil {
+		return "", fit.FitFile{}, nil, nil, nil, err
+	}
+	err = nil
+	tmpFname = tmpFile.Name()
+	// Determine what type of file we're looking at.
+	rslt := http.DetectContentType(fBytes)
+	switch {
+	case rslt == "application/octet-stream":
+		// Filetype is FIT, or at least it could be?
+		fType = "FIT"
+		fitStruct = fit.Parse(tmpFname, false)
+		tcxdb = nil
+		runRecs = fitStruct.Records
+		runLaps = fitStruct.Laps
+	case rslt == "text/xml; charset=utf-8":
+		// Filetype is TCX or at least it could be?
+		fType = "TCX"
+		fitStruct = fit.FitFile{}
+		tcxdb, err := tcx.ReadTCXFile(tmpFname)
+		// We cleverly convert the values of interest into a structures we already
+		// can handle.
+		if err != nil {
+			runRecs = tcx.CvtToFitRecs(tcxdb)
+			runLaps = tcx.CvtToFitLaps(tcxdb)
+		}
+	}
+	return fType, fitStruct, tcxdb, runRecs, runLaps, err
+}
+
 // Parse the uploaded file, parse it and return run information suitable
 // to construct the user interface.
 func plotHandler(w http.ResponseWriter, r *http.Request) {
@@ -242,11 +266,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	var y0Str = "Pace "
 	var y1Str = "Elevation "
 	var y2Str = "Cadence "
-	var runRecs []fit.Record
-	var runLaps []fit.Lap
 	var c0Str, c1Str, c2Str, c3Str, c4Str string
-	var fitStruct fit.FitFile
-	var tcxdb *tcx.TCXDB
 
 	// User hasn't selected a file yet?  Avoid a panic.
 	if timeStamp.IsZero() {
@@ -284,37 +304,14 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	db.Close()
 	fBytes := recs[0].FContent
 	
-	// Make a copy in a temporary folder for use with fit and tcx 
-	// libraries.
-	tmpFile, err := persist.CreateTempFile(fBytes)
+	// Parse the input bytes into structures more conducive for additional 
+	// processing by routines in graphdata.go.
+	fType, fitStruct, tcxdb, runRecs, runLaps, err := parseInputBytes(fBytes)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	tmpFname = tmpFile.Name()
-	// TODO Is this now redundant? Since uploadHandler does it for us?
-	// Just read/use fType from database?
-	// Determine what type of file we've uploaded.
-	rslt := http.DetectContentType(fBytes)
-	switch {
-	case rslt == "application/octet-stream":
-		// Filetype is FIT, or at least it could be?
-		fitStruct = fit.Parse(tmpFname, false)
-		runRecs = fitStruct.Records
-		runLaps = fitStruct.Laps
-
-	case rslt == "text/xml; charset=utf-8":
-		// Filetype is TCX or at least it could be?
-		tcxdb, _ = tcx.ReadTCXFile(tmpFname)
-		//		if err != nil {
-		//			fmt.Printf("Error parsing file", err)
-		//		}
-
-		// We cleverly convert the values of interest into a structures we already
-		// can handle.
-		runRecs = tcx.CvtToFitRecs(tcxdb)
-		runLaps = tcx.CvtToFitLaps(tcxdb)
-	}
+	
 	// Build the variable strings based on unit system.
 	if toEnglish {
 		xStr = xStr + "(mi)"
@@ -378,12 +375,12 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve overview information.
-	if rslt == "application/octet-stream" {
+	if fType == "FIT" {
 		p.DeviceName = fitStruct.DeviceInfo[0].Manufacturer
 		p.DeviceProdID = fitStruct.DeviceInfo[0].Product
 		p.DeviceUnitID = fmt.Sprint(fitStruct.DeviceInfo[0].Serial_number)
 	}
-	if rslt == "text/xml; charset=utf-8" {
+	if fType == "TCX" {
 		p.DeviceName, p.DeviceUnitID, p.DeviceProdID = tcx.DeviceInfo(tcxdb)
 	}
 

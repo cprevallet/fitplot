@@ -389,6 +389,7 @@
     		filedata.setProperties(row, 2, cellStyle);
     		row = row + 1
     	}
+    	// Sorting on the filename will give chronological order for FIT files.
     	filedata.sort({column: 1, desc: false});
     	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
     	filetable.draw(filedata, {
