@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/cprevallet/fitplot/desktop"
 	"github.com/cprevallet/fitplot/persist"
+	"github.com/cprevallet/fitplot/strutil"
 	"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
 	"html/template"
@@ -93,10 +94,10 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // getDistance retrieves a run's total distance in the appropriate unit system.
-func getDistance(fBytes []byte) (totalDistance float64) {
+func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64) {
 	_, _, _, _, runLaps, _ := parseInputBytes(fBytes)
-	_, _, _, _, totalDistance,_ = processFitLap(runLaps, toEnglish)
-	return totalDistance
+	_, _, _, _, totalDistance, movingTime = processFitLap(runLaps, toEnglish)
+	return totalDistance, movingTime
 }
 
 // Return information about entries in the database .
@@ -128,7 +129,9 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["File name"] = rec.FName
 		filerec["File type"] = rec.FType
 		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC1123)
-		filerec["Distance"] = strconv.FormatFloat(getDistance(rec.FContent), 'f', 2, 64)
+		totalDistance, movingTime := getOtherVals(rec.FContent)
+		filerec["Distance"] = strconv.FormatFloat(totalDistance, 'f', 2, 64)
+		filerec["Moving time"] = strutil.DecimalTimetoHourMinSec(movingTime)
 		DBFileList = append(DBFileList, filerec)
 	}
 	//Convert to json.
@@ -216,10 +219,10 @@ func parseInputBytes(fBytes []byte) (fType string, fitStruct fit.FitFile, tcxdb 
 		// Filetype is TCX or at least it could be?
 		fType = "TCX"
 		fitStruct = fit.FitFile{}
-		tcxdb, err := tcx.ReadTCXFile(tmpFname)
+		tcxdb, err = tcx.ReadTCXFile(tmpFname)
 		// We cleverly convert the values of interest into a structures we already
 		// can handle.
-		if err != nil {
+		if err == nil {
 			runRecs = tcx.CvtToFitRecs(tcxdb)
 			runLaps = tcx.CvtToFitLaps(tcxdb)
 		}
