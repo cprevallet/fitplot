@@ -180,7 +180,7 @@ func removeOutliersInt(x []int64, outliersIdx []int) (z []int64) {
 
 // This is a main entry point.
 // Convert the record structure to slices and maps suitable for use in the user interface.
-func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string) {
+func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string, TotalDistance float64) {
 	for _, item := range runLaps {
 		dist := unitCvt(item.Total_distance, "distance", toEnglish)
 		cal := float64(item.Total_calories)
@@ -195,12 +195,13 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
 		LapPace = append(LapPace, paceStr)
 		LapTime = append(LapTime, laptimeStr)
 	}
-	return LapDist, LapTime, LapCal, LapPace
+	TotalDistance = stats.Sum(LapDist)
+	return LapDist, LapTime, LapCal, LapPace, TotalDistance
 }
 
 // Create the summary statistics strings.
-func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
-	LapCal []float64) (totalDistance string, totalPace string,
+func createStats(toEnglish bool, TotalDistance float64, TimeStamps []int64,
+	LapCal []float64) (DispTotalDistance string, totalPace string,
 	elapsedTime string, totalCal string, avgPower string, startDateStamp string,
 	endDateStamp string) {
 
@@ -208,15 +209,15 @@ func createStats(toEnglish bool, DispDistance []float64, TimeStamps []int64,
 	startDateStamp = time.Unix(TimeStamps[0], 0).Format(time.UnixDate)
 	endDateStamp = time.Unix(TimeStamps[len(TimeStamps)-1], 0).Format(time.UnixDate)
 	// Calculate overall distance.
-	totalDistance = strconv.FormatFloat(DispDistance[len(DispDistance)-1], 'f', 2, 64)
+	DispTotalDistance = strconv.FormatFloat(TotalDistance, 'f', 2, 64)
 	if toEnglish {
-		totalDistance += " mi"
+		DispTotalDistance += " mi"
 	} else {
-		totalDistance += " km"
+		DispTotalDistance += " km"
 	}
 	// Calculate mm:ss for totalPace.
 	timeDiffinMinutes := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0])) / 60.0
-	decimalPace := float64(timeDiffinMinutes) / DispDistance[len(DispDistance)-1]
+	decimalPace := float64(timeDiffinMinutes) / TotalDistance 
 	totalPace = strutil.DecimalTimetoMinSec(decimalPace)
 	if toEnglish {
 		totalPace += " min/mi"

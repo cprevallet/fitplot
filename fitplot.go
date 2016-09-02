@@ -242,7 +242,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		C2Str          string
 		C3Str          string
 		C4Str          string
-		TotalDistance  string
+		TotalDistance  float64
+		DispTotalDistance  string
 		TotalPace      string
 		ElapsedTime    string
 		TotalCal       string
@@ -356,7 +357,8 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 		C2Str:          c2Str,
 		C3Str:          c3Str,
 		C4Str:          c4Str,
-		TotalDistance:  "",
+		TotalDistance:  0.0,
+		DispTotalDistance:  "",
 		TotalPace:      "",
 		ElapsedTime:    "",
 		TotalCal:       "",
@@ -389,14 +391,14 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Latlongs, p.TimeStamps, p.DispDistance, p.DispPace, p.DispAltitude, p.DispCadence =
 		processFitRecord(runRecs, toEnglish)
 
-	p.LapDist, p.LapTime, p.LapCal, p.LapPace = processFitLap(runLaps, toEnglish)
+	p.LapDist, p.LapTime, p.LapCal, p.LapPace, p.TotalDistance = processFitLap(runLaps, toEnglish)
 
 	// Get the start time.
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
-	p.TotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp,
-		p.EndDateStamp = createStats(toEnglish, p.DispDistance, p.TimeStamps, p.LapCal)
+	p.DispTotalDistance, p.TotalPace, p.ElapsedTime, p.TotalCal, p.AvgPower, p.StartDateStamp,
+		p.EndDateStamp = createStats(toEnglish, p.TotalDistance, p.TimeStamps, p.LapCal)
 
 	// Calculate the analysis page.
 	p.PredictedTimes, p.VDOT, p.VO2max, p.RunScore, p.TrainingPaces = createAnalysis(toEnglish,
