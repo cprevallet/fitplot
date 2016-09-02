@@ -180,7 +180,8 @@ func removeOutliersInt(x []int64, outliersIdx []int) (z []int64) {
 
 // This is a main entry point.
 // Convert the record structure to slices and maps suitable for use in the user interface.
-func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string, TotalDistance float64) {
+func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTime []string, LapCal []float64, LapPace []string, TotalDistance float64, MovingTime float64) {
+	MovingTime = 0.0
 	for _, item := range runLaps {
 		dist := unitCvt(item.Total_distance, "distance", toEnglish)
 		cal := float64(item.Total_calories)
@@ -194,15 +195,16 @@ func processFitLap(runLaps []fit.Lap, toEnglish bool) (LapDist []float64, LapTim
 		LapCal = append(LapCal, cal)
 		LapPace = append(LapPace, paceStr)
 		LapTime = append(LapTime, laptimeStr)
+		MovingTime = MovingTime + (item.Total_elapsed_time / 60.0)
 	}
 	TotalDistance = stats.Sum(LapDist)
-	return LapDist, LapTime, LapCal, LapPace, TotalDistance
+	return LapDist, LapTime, LapCal, LapPace, TotalDistance, MovingTime
 }
 
 // Create the summary statistics strings.
-func createStats(toEnglish bool, TotalDistance float64, TimeStamps []int64,
+func createStats(toEnglish bool, TotalDistance float64, MovingTime float64, TimeStamps []int64,
 	LapCal []float64) (DispTotalDistance string, totalPace string,
-	elapsedTime string, totalCal string, avgPower string, startDateStamp string,
+	DispMovingTime string, totalCal string, avgPower string, startDateStamp string,
 	endDateStamp string) {
 
 	// Calculate run start and end times.
@@ -216,8 +218,7 @@ func createStats(toEnglish bool, TotalDistance float64, TimeStamps []int64,
 		DispTotalDistance += " km"
 	}
 	// Calculate mm:ss for totalPace.
-	timeDiffinMinutes := (float64(TimeStamps[len(TimeStamps)-1]) - float64(TimeStamps[0])) / 60.0
-	decimalPace := float64(timeDiffinMinutes) / TotalDistance 
+	decimalPace := MovingTime / TotalDistance 
 	totalPace = strutil.DecimalTimetoMinSec(decimalPace)
 	if toEnglish {
 		totalPace += " min/mi"
@@ -225,7 +226,7 @@ func createStats(toEnglish bool, TotalDistance float64, TimeStamps []int64,
 		totalPace += " min/km"
 	}
 	// Calculate hh:mm:ss for elapsedTime.
-	elapsedTime = strutil.DecimalTimetoHourMinSec(float64(timeDiffinMinutes))
+	DispMovingTime = strutil.DecimalTimetoHourMinSec(MovingTime)
 	// Sum up the lap calories
 	totcal := 0.0
 	for _, calorie := range LapCal {
@@ -234,7 +235,7 @@ func createStats(toEnglish bool, TotalDistance float64, TimeStamps []int64,
 	totalCal = strconv.Itoa(int((math.Floor(totcal)))) + " kcal"
 
 	// Calculate power expended based on Garmin calculated calories
-	power := totcal * 4186.8 / (timeDiffinMinutes * 60.0)
+	power := totcal * 4186.8 / (MovingTime * 60.0)
 	avgPower = strconv.FormatFloat(power, 'f', 2, 64) + " Watts"
 	return
 }
