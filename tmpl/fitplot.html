@@ -373,6 +373,7 @@
     	filedata.addColumn('string', 'Time stamp');
     	filedata.addColumn('string', 'File name');
     	filedata.addColumn('string', 'File format');
+    	filedata.addColumn('number', 'Distance');
     	var cellStyle = {
     		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
@@ -382,11 +383,12 @@
     	var row = 0;
 		for (var i = 0; i < dbfilelist.length; i++) {
     		filedata.addRows([
-    			[dbfilelist[i]['Timestamp'], dbfilelist[i]['File name'], dbfilelist[i]['File type']],
+    			[dbfilelist[i]['Timestamp'], dbfilelist[i]['File name'], dbfilelist[i]['File type'], parseFloat(dbfilelist[i]['Distance'])],
     		]);
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
     		filedata.setProperties(row, 2, cellStyle);
+    		filedata.setProperties(row, 3, cellStyle);
     		row = row + 1
     	}
     	// Sorting on the filename will give chronological order for FIT files.

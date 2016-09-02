@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"time"
 )
 
@@ -91,6 +92,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	db.Close()
 }
 
+// getDistance retrieves a run's total distance in the appropriate unit system.
+func getDistance(fBytes []byte) (totalDistance float64) {
+	_, _, _, _, runLaps, _ := parseInputBytes(fBytes)
+	_, _, _, _, totalDistance,_ = processFitLap(runLaps, toEnglish)
+	return totalDistance
+}
+
 // Return information about entries in the database .
 func dbHandler(w http.ResponseWriter, r *http.Request) {
 	// Structure element names MUST be uppercase or decoder can't access them.
@@ -120,6 +128,7 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["File name"] = rec.FName
 		filerec["File type"] = rec.FType
 		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC1123)
+		filerec["Distance"] = strconv.FormatFloat(getDistance(rec.FContent), 'f', 2, 64)
 		DBFileList = append(DBFileList, filerec)
 	}
 	//Convert to json.
