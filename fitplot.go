@@ -75,10 +75,10 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	fName := handler.Filename
 	fType, fitStruct, tcxdb, _, _, err := parseInputBytes(fBytes)
 	switch {
-		case fType == "FIT":
-			timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
-		case fType == "TCX":
-			timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(),0)
+	case fType == "FIT":
+		timeStamp = time.Unix(fitStruct.Records[0].Timestamp, 0)
+	case fType == "TCX":
+		timeStamp = time.Unix(tcxdb.Acts.Act[0].Laps[0].Trk.Pt[0].Time.Unix(), 0)
 	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -95,12 +95,12 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 func dbHandler(w http.ResponseWriter, r *http.Request) {
 	// Structure element names MUST be uppercase or decoder can't access them.
 	type DBDateStrings struct {
-		DBStart      string
-		DBEnd        string
+		DBStart string
+		DBEnd   string
 	}
-	
+
 	var DBFileList []map[string]string
-	
+
 	decoder := json.NewDecoder(r.Body)
 	var dbQuery DBDateStrings //string
 	err := decoder.Decode(&dbQuery)
@@ -110,9 +110,9 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	// Connect to database and retrieve.  Be sure we bracket the entirety of
 	// the selected day.
 	db, _ := persist.ConnectDatabase("fitplot", "./")
-	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart + " 00:00:00")
-	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd + " 23:59:59")
-	recs := persist.GetRecsByTime(db, startTime, endTime )
+	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart+" 00:00:00")
+	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd+" 23:59:59")
+	recs := persist.GetRecsByTime(db, startTime, endTime)
 	db.Close()
 	for _, rec := range recs {
 		var filerec map[string]string
@@ -143,7 +143,7 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	// ts returned as RFC1123 string 
+	// ts returned as RFC1123 string
 	timeStamp, err = time.Parse(time.RFC1123Z, ts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -182,10 +182,10 @@ func envHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-// Parse the input bytes into structures more conducive for additional 
+// Parse the input bytes into structures more conducive for additional
 // processing by routines in graphdata.go.
-func parseInputBytes (fBytes []byte)(fType string, fitStruct fit.FitFile, tcxdb *tcx.TCXDB, runRecs []fit.Record, runLaps []fit.Lap, err error) {
-	// Make a copy in a temporary folder for use with fit and tcx 
+func parseInputBytes(fBytes []byte) (fType string, fitStruct fit.FitFile, tcxdb *tcx.TCXDB, runRecs []fit.Record, runLaps []fit.Lap, err error) {
+	// Make a copy in a temporary folder for use with fit and tcx
 	// libraries.
 	tmpFile, err := persist.CreateTempFile(fBytes)
 	if err != nil {
@@ -222,47 +222,47 @@ func parseInputBytes (fBytes []byte)(fType string, fitStruct fit.FitFile, tcxdb 
 // to construct the user interface.
 func plotHandler(w http.ResponseWriter, r *http.Request) {
 	type Plotvals struct {
-		Titletext      string
-		XName          string
-		Y0Name         string
-		Y1Name         string
-		Y2Name         string
-		DispDistance   []float64
-		DispPace       []float64
-		DispAltitude   []float64
-		DispCadence    []float64
-		TimeStamps     []int64
-		Latlongs       []map[string]float64
-		LapDist        []float64
-		LapTime        []string
-		LapCal         []float64
-		LapPace        []string
-		C0Str          string
-		C1Str          string
-		C2Str          string
-		C3Str          string
-		C4Str          string
-		TotalDistance  float64
-		MovingTime     float64
-		DispTotalDistance  string
-		DispMovingTime string
-		TotalPace      string
-		ElapsedTime    string
-		TotalCal       string
-		AvgPower       string
-		StartDateStamp string
-		EndDateStamp   string
-		Device         string
-		PredictedTimes map[string]string
-		TrainingPaces  map[string]string
-		VDOT           float64
-		DeviceName     string
-		DeviceUnitID   string
-		DeviceProdID   string
-		RunScore       float64
-		VO2max         float64
-		Buildstamp     string
-		Githash        string
+		Titletext         string
+		XName             string
+		Y0Name            string
+		Y1Name            string
+		Y2Name            string
+		DispDistance      []float64
+		DispPace          []float64
+		DispAltitude      []float64
+		DispCadence       []float64
+		TimeStamps        []int64
+		Latlongs          []map[string]float64
+		LapDist           []float64
+		LapTime           []string
+		LapCal            []float64
+		LapPace           []string
+		C0Str             string
+		C1Str             string
+		C2Str             string
+		C3Str             string
+		C4Str             string
+		TotalDistance     float64
+		MovingTime        float64
+		DispTotalDistance string
+		DispMovingTime    string
+		TotalPace         string
+		ElapsedTime       string
+		TotalCal          string
+		AvgPower          string
+		StartDateStamp    string
+		EndDateStamp      string
+		Device            string
+		PredictedTimes    map[string]string
+		TrainingPaces     map[string]string
+		VDOT              float64
+		DeviceName        string
+		DeviceUnitID      string
+		DeviceProdID      string
+		RunScore          float64
+		VO2max            float64
+		Buildstamp        string
+		Githash           string
 	}
 	// Note extra space on following assignments.
 	var xStr = "Distance "
@@ -278,19 +278,19 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// Structure element names MUST be uppercase or decoder can't access them.
 	type UIData struct {
-		UseEnglish   bool
-		Racedist 	 float64
-		Racehours	 int64
-		Racemins	 int64
-		Racesecs	 int64
-		UseSegment	 bool
-		Splitdist	 float64
-		Splithours	 int64
-		Splitmins	 int64
-		Splitsecs	 int64
+		UseEnglish bool
+		Racedist   float64
+		Racehours  int64
+		Racemins   int64
+		Racesecs   int64
+		UseSegment bool
+		Splitdist  float64
+		Splithours int64
+		Splitmins  int64
+		Splitsecs  int64
 	}
 	decoder := json.NewDecoder(r.Body)
-	var UI UIData 
+	var UI UIData
 	err := decoder.Decode(&UI)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -298,23 +298,23 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	toEnglish = UI.UseEnglish
 
 	// Retrieve the file from the database by timeStamp global
-	// variable.  Make the search criteria just outside the 
+	// variable.  Make the search criteria just outside the
 	// expected run start time.
 	db, _ := persist.ConnectDatabase("fitplot", "./")
 	slightlyOlder := timeStamp.Add(-1 * time.Second)
 	slightlyNewer := timeStamp.Add(1 * time.Second)
-	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer )
+	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer)
 	db.Close()
 	fBytes := recs[0].FContent
-	
-	// Parse the input bytes into structures more conducive for additional 
+
+	// Parse the input bytes into structures more conducive for additional
 	// processing by routines in graphdata.go.
 	fType, fitStruct, tcxdb, runRecs, runLaps, err := parseInputBytes(fBytes)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Build the variable strings based on unit system.
 	if toEnglish {
 		xStr = xStr + "(mi)"
@@ -340,43 +340,43 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Create an object to contain various plot values.
 	p := Plotvals{Titletext: "",
-		XName:          xStr,
-		Y0Name:         y0Str,
-		Y1Name:         y1Str,
-		Y2Name:         y2Str,
-		DispDistance:   nil,
-		DispPace:       nil,
-		DispAltitude:   nil,
-		DispCadence:    nil,
-		TimeStamps:     nil,
-		Latlongs:       nil,
-		LapDist:        nil,
-		LapTime:        nil,
-		LapCal:         nil,
-		LapPace:        nil,
-		C0Str:          c0Str,
-		C1Str:          c1Str,
-		C2Str:          c2Str,
-		C3Str:          c3Str,
-		C4Str:          c4Str,
-		TotalDistance:  0.0,
-		MovingTime:     0.0,
-		DispTotalDistance:  "",
-		DispMovingTime:  "",
-		TotalPace:      "",
-		TotalCal:       "",
-		AvgPower:       "",
-		StartDateStamp: "",
-		EndDateStamp:   "",
-		Device:         "",
-		PredictedTimes: nil,
-		TrainingPaces:  nil,
-		VDOT:           0.0,
-		DeviceName:     "",
-		DeviceUnitID:   "",
-		DeviceProdID:   "",
-		RunScore:       0.0,
-		VO2max:         0.0,
+		XName:             xStr,
+		Y0Name:            y0Str,
+		Y1Name:            y1Str,
+		Y2Name:            y2Str,
+		DispDistance:      nil,
+		DispPace:          nil,
+		DispAltitude:      nil,
+		DispCadence:       nil,
+		TimeStamps:        nil,
+		Latlongs:          nil,
+		LapDist:           nil,
+		LapTime:           nil,
+		LapCal:            nil,
+		LapPace:           nil,
+		C0Str:             c0Str,
+		C1Str:             c1Str,
+		C2Str:             c2Str,
+		C3Str:             c3Str,
+		C4Str:             c4Str,
+		TotalDistance:     0.0,
+		MovingTime:        0.0,
+		DispTotalDistance: "",
+		DispMovingTime:    "",
+		TotalPace:         "",
+		TotalCal:          "",
+		AvgPower:          "",
+		StartDateStamp:    "",
+		EndDateStamp:      "",
+		Device:            "",
+		PredictedTimes:    nil,
+		TrainingPaces:     nil,
+		VDOT:              0.0,
+		DeviceName:        "",
+		DeviceUnitID:      "",
+		DeviceProdID:      "",
+		RunScore:          0.0,
+		VO2max:            0.0,
 	}
 
 	// Retrieve overview information.
@@ -429,7 +429,6 @@ func stopHandler(w http.ResponseWriter, r *http.Request) {
 	os.Exit(0)
 	return
 }
-
 
 func main() {
 	desktop.Open("http://localhost:8080")

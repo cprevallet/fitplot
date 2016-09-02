@@ -218,7 +218,7 @@ func createStats(toEnglish bool, TotalDistance float64, MovingTime float64, Time
 		DispTotalDistance += " km"
 	}
 	// Calculate mm:ss for totalPace.
-	decimalPace := MovingTime / TotalDistance 
+	decimalPace := MovingTime / TotalDistance
 	totalPace = strutil.DecimalTimetoMinSec(decimalPace)
 	if toEnglish {
 		totalPace += " min/mi"
