@@ -3,7 +3,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsay4E0YcVz-1-OdkSnAoTBn7Axtqbw7Y"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript"> google.charts.load('current', {'packages':['table', 'gauge']}); </script>
+<script type="text/javascript"> google.charts.load('current', {'packages':['corechart', 'bar', 'table', 'gauge']}); </script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.4/jquery.contextMenu.min.js" type="text/javascript"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.2.4/jquery.contextMenu.min.css" rel="stylesheet" type="text/css" />
@@ -334,6 +334,7 @@
 		setTimeout(function(){ 
 			createCalendar()
 			createFileTable(dbfilelist)
+			createBarChart(dbfilelist)
 		}, 1000);
 	}
 	
@@ -363,7 +364,6 @@
 		});
 		$("#datepicker").datepicker( "refresh" )
 	}
-
     //
     // Create the database file table using the Google Charts API.
     //
@@ -399,7 +399,7 @@
     	filetable.draw(filedata, {
     		showRowNumber: false,
     		width: '100%',
-    		height: '100%',
+    		height: '50%',
     		allowHtml: true
     	});
     	
@@ -443,6 +443,49 @@
 		}
     	
     	
+    }
+	
+	//
+    // Create the bar chart using the Google Charts API.
+    //
+    function createBarChart(dbfilelist) {
+    	// Add file values to the database file table.
+    	var filedata = new google.visualization.DataTable();
+    	filedata.addColumn('datetime', 'Time stamp');
+    	filedata.addColumn('number', 'Distance');
+    	var cellStyle = {
+    		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
+    	}
+    	if (dbfilelist == null) {
+			return
+    	}
+    	var row = 0;
+    	var datearray = [];
+		for (var i = 0; i < dbfilelist.length; i++) {
+			datearray.push(new Date(dbfilelist[i]['Timestamp']));
+    	}
+		for (var i = 0; i < dbfilelist.length; i++) {
+    		filedata.addRows([
+//    			[dbfilelist[i]['Timestamp'], parseFloat(dbfilelist[i]['Distance'])],
+    			[datearray[i], parseFloat(dbfilelist[i]['Distance'])],
+    		]);
+    		filedata.setProperties(row, 0, cellStyle);
+    		filedata.setProperties(row, 1, cellStyle);
+    		row = row + 1
+    	}
+      var options = {
+        //hAxis: { textPosition: 'none' },
+        bar: {groupWidth: '85%'},
+        legend: { position: 'none'},
+        explorer: { 
+        actions: ['dragToZoom', 'rightClickToReset'],
+        axis: 'horizontal',
+        keepInBounds: true,
+        maxZoomIn: 8.0
+		}
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById('run_bar_div'));
+      chart.draw(filedata, options);
     }
 	
 	//
@@ -1166,7 +1209,7 @@
 		<div class="page-content"><!-- Your content goes here -->
 
 		<div class="mdl-grid">
-			<!-- Selector -->
+			<!-- Calendar -->
 			<div class="mdl-card mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Search</h2>
@@ -1177,12 +1220,16 @@
 				Start:<input type="text" id="calStart" readonly>
 				End:<input type="text" id="calEnd" readonly>
 			</div>
+			<!-- Run table -->
 			<div class="mdl-card mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-shadow--3dp">
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Results</h2>
 				</div>
+				<span for="run_bar_div" class="mdl-tooltip">Drag to zoom. Right click to reset.</span>
+				<div class="run_bar_div" id="run_bar_div">
+				</div>
 				<span for="run_dbase_div" class="mdl-tooltip">Right click on a row to select a run to view.</span>
-				<div class="google-table run_base_div" id="run_dbase_div">
+				<div class="run_base_div" id="run_dbase_div">
 				</div>
 			</div>
 		</div>
