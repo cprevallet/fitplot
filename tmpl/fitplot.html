@@ -449,9 +449,19 @@
     // Create the bar chart using the Google Charts API.
     //
     function createBarChart(dbfilelist) {
+    
+		// Bin multiple runs on a given day.
+		var bins = {};
+		for (var i = 0; i < dbfilelist.length; i++) {
+			// toDateString chops off the time
+			var key = new Date(dbfilelist[i]['Timestamp']).toISOString()
+			bins[key] = bins[key] || 0;
+			bins[key] += parseFloat(dbfilelist[i]['Distance'])
+		}
+   
     	// Add file values to the database file table.
     	var filedata = new google.visualization.DataTable();
-    	filedata.addColumn('datetime', 'Time stamp');
+    	filedata.addColumn('string', 'Date');
     	filedata.addColumn('number', 'Distance');
     	var cellStyle = {
     		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
@@ -460,22 +470,20 @@
 			return
     	}
     	var row = 0;
-    	var datearray = [];
-		for (var i = 0; i < dbfilelist.length; i++) {
-			datearray.push(new Date(dbfilelist[i]['Timestamp']));
-    	}
-		for (var i = 0; i < dbfilelist.length; i++) {
-    		filedata.addRows([
-//    			[dbfilelist[i]['Timestamp'], parseFloat(dbfilelist[i]['Distance'])],
-    			[datearray[i], parseFloat(dbfilelist[i]['Distance'])],
+    	for (var key in bins) {
+				var shortDate = key.substring(0, 10);
+    			filedata.addRows([
+    			[shortDate, bins[key]],
     		]);
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
     		row = row + 1
     	}
+    	filedata.sort({column: 0, desc: false});
+
       var options = {
         //hAxis: { textPosition: 'none' },
-        bar: {groupWidth: '85%'},
+        bar: {groupWidth: '95%'},
         legend: { position: 'none'},
         explorer: { 
         actions: ['dragToZoom', 'rightClickToReset'],
@@ -1225,7 +1233,9 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Results</h2>
 				</div>
+				<!--
 				<span for="run_bar_div" class="mdl-tooltip">Drag to zoom. Right click to reset.</span>
+				-->
 				<div class="run_bar_div" id="run_bar_div">
 				</div>
 				<span for="run_dbase_div" class="mdl-tooltip">Right click on a row to select a run to view.</span>
