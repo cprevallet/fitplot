@@ -129,6 +129,10 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["File name"] = rec.FName
 		filerec["File type"] = rec.FType
 		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC1123)
+		filerec["Date"] = rec.TimeStamp.Format(time.RFC3339)[0:10]
+		filerec["Time"] = rec.TimeStamp.Format(time.RFC3339)[11:19]
+		filerec["Time zone"] = rec.TimeStamp.Format(time.RFC3339)[19:25]
+		filerec["Weekday"] = rec.TimeStamp.Format(time.RFC1123)[0:3]
 		totalDistance, movingTime := getOtherVals(rec.FContent)
 		filerec["Distance"] = strconv.FormatFloat(totalDistance, 'f', 2, 64)
 		filerec["Moving time"] = strutil.DecimalTimetoHourMinSec(movingTime)
@@ -150,13 +154,19 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 // the timeStamp global variable.
 func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
+	type DateStrings struct {
+		DateStr string
+		TimeStr string
+		TimeZoneStr string
+	}
+	var ds DateStrings
 	var ts string
-	err := decoder.Decode(&ts)
+	err := decoder.Decode(&ds)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	// ts returned as RFC1123 string
-	timeStamp, err = time.Parse(time.RFC1123Z, ts)
+	ts = ds.DateStr + "T"+ ds.TimeStr + ds.TimeZoneStr
+	timeStamp, err = time.Parse(time.RFC3339, ts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
