@@ -371,14 +371,14 @@
     	// Add file values to the database file table.
     	var filedata = new google.visualization.DataTable();
 //    	filedata.addColumn('string', 'Time stamp');
+    	filedata.addColumn('number', 'Distance');
+    	filedata.addColumn('string', 'Moving Time');
     	filedata.addColumn('string', 'Date');
-    	filedata.addColumn('string', 'Time');
+    	filedata.addColumn('string', 'Time of Day');
     	filedata.addColumn('string', 'Time zone');
     	filedata.addColumn('string', 'Weekday');
     	filedata.addColumn('string', 'File name');
     	filedata.addColumn('string', 'File format');
-    	filedata.addColumn('number', 'Distance');
-    	filedata.addColumn('string', 'Moving Time');
     	var cellStyle = {
     		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
@@ -388,7 +388,7 @@
     	var row = 0;
 		for (var i = 0; i < dbfilelist.length; i++) {
     		filedata.addRows([
-    			[dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'], parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time']],
+    			[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'] ],
     		]);
     		filedata.setProperties(row, 0, cellStyle);
     		filedata.setProperties(row, 1, cellStyle);
@@ -401,7 +401,7 @@
     		row = row + 1
     	}
     	// Sorting on the filename will give chronological order for FIT files.
-    	filedata.sort({column: 0, desc: false});
+    	filedata.sort({column: 2, desc: false});
     	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
     	filetable.draw(filedata, {
     		showRowNumber: false,
@@ -424,10 +424,9 @@
 				var str = filedata.getFormattedValue(item.row, item.column);
 				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
 				} else if (item.row != null) {
-				var str = filedata.getFormattedValue(item.row, 1);
-				var dateStr = filedata.getFormattedValue(item.row, 0)
-				var timeStr = filedata.getFormattedValue(item.row, 1)
-				var timeZone = filedata.getFormattedValue(item.row, 2)
+				var dateStr = filedata.getFormattedValue(item.row, 2)
+				var timeStr = filedata.getFormattedValue(item.row, 3)
+				var timeZone = filedata.getFormattedValue(item.row, 4)
 				var data = {"DateStr": dateStr, "TimeStr": timeStr, "TimeZoneStr": timeZone}
 				$.ajax({
 					url: '/selectrun',
@@ -489,6 +488,11 @@
     	filedata.sort({column: 0, desc: false});
       var options = {
         //hAxis: { textPosition: 'none' },
+        animation: {
+          duration: 1000,
+          easing: 'out',
+          startup: true
+		},
         bar: {groupWidth: '95%'},
         legend: { position: 'none'},
 		height: '40vh',
