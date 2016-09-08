@@ -406,7 +406,7 @@
     	filetable.draw(filedata, {
     		showRowNumber: false,
     		width: '100%',
-    		height: '50%',
+    		height: '40vh',
     		allowHtml: true
     	});
     	
@@ -491,12 +491,7 @@
         //hAxis: { textPosition: 'none' },
         bar: {groupWidth: '95%'},
         legend: { position: 'none'},
-        explorer: { 
-        actions: ['dragToZoom', 'rightClickToReset'],
-        axis: 'horizontal',
-        keepInBounds: true,
-        maxZoomIn: 8.0
-		}
+		height: '40vh',
       };
       var chart = new google.visualization.ColumnChart(document.getElementById('run_bar_div'));
       chart.draw(filedata, options);
