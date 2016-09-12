@@ -71,7 +71,7 @@
 					var notification = document.querySelector('.mdl-js-snackbar');
 					notification.MaterialSnackbar.showSnackbar(
 					{
-						message: file.name  + ' load completed succesfully.'  
+						message: file.name  + ' load completed successfully.'  
 					}
 					);
     				if ($("#fixed-tab-1").hasClass("is-active")) {
@@ -90,7 +90,7 @@
     			error: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
 					var data = {
-					message: file.name + 'load failed.  Error uploading file.',
+					message: file.name + ' load failed.  Error uploading file.',
 					actionHandler: function(event) {sendFile(file, fileExt);},
 					actionText: 'Retry',
 					timeout: 10000
