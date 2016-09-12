@@ -22,12 +22,13 @@ type Record struct {
 // InitializeDatabase opens a database file and create the appropriate tables.
 func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	dbname := name + ".db"
-	db, err = sql.Open("sqlite3", dbpath + dbname)
+	// need to set a busy timeout (e.g. retry) when uploading multiple files to avoid locked db messages
+	db, err = sql.Open("sqlite3", "file:" + dbpath + dbname + "?_busy_timeout=20000")
 	if err != nil {
-		// no such file
-		log.Fatal(err)
+		// no such file or locked.
+		log.Printf("%q: %s\n", err, "Could not open database! Locked?")
 	}
-//	defer db.Close()
+	// defer db.Close()
 	sqlStmt := `
 	create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp DATETIME );
 	`
@@ -46,8 +47,9 @@ func InsertNewRecord(db *sql.DB, r Record) {
 	queryString := "select id, filename from runfiles where filename = " + "'" + r.FName + "'"
 	rows, err := db.Query(queryString)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("%q: %s\n", err, "Could not query database:" + r.FName)
 	}
+	defer rows.Close()
 	found := false
 	for rows.Next() {
 		found = true
@@ -56,11 +58,11 @@ func InsertNewRecord(db *sql.DB, r Record) {
 	if found == false {
 		stmt, err := db.Prepare("insert into runfiles(filename, filetype, filecontent, timestamp) values(?,?,?,?)")
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%q: %s\n", err, "Could not prepare to insert into database!")
 		}
 		_, err = stmt.Exec(r.FName, r.FType, r.FContent, r.TimeStamp)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%q: %s\n", err, "Could not insert into database!")
 		}
 	}
 }
@@ -82,7 +84,7 @@ func GetRecsByTime(db *sql.DB, startTime, endTime time.Time) (recs []Record) {
 		var tStamp time.Time
 		err = rows.Scan(&id, &fName, &fType, &content, &tStamp )
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%q: %s\n", err, "Could not scan!")
 		}
 		rec := Record{FName: fName, FType: fType, FContent: content, TimeStamp: tStamp }
 		result = append(result, rec)
