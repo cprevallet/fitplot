@@ -422,7 +422,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	p.Titletext += time.Unix(p.TimeStamps[0], 0).Format(time.UnixDate)
 
 	// Calculate the summary string information.
-	p.DispTotalDistance, p.DispMovingTime, p.TotalPace, p.TotalCal, p.AvgPower, p.StartDateStamp,
+	p.DispTotalDistance,  p.TotalPace, p.DispMovingTime, p.TotalCal, p.AvgPower, p.StartDateStamp,
 		p.EndDateStamp = createStats(toEnglish, p.TotalDistance, p.MovingTime, p.TimeStamps, p.LapCal)
 
 	// Calculate the analysis page.
