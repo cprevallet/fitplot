@@ -42,6 +42,9 @@
 				sendFile(this.files[x], fileExt);
 			}
     	}
+    	// Initialize the calendar.
+    	createCalendar()
+
     });
 
 	//
@@ -263,9 +266,7 @@
     	}).done(function(returneddata){
 				dbfilelist = returneddata;
 				document.getElementById('spin1').style.display = 'none';
-				createCalendar()
 				createFileTable(dbfilelist)
-
 			});
     };
     
