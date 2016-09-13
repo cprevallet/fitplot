@@ -84,7 +84,7 @@
 						analyze();
     				} 
     				if ($("#fixed-tab-4").hasClass("is-active")) {
-						memorize();
+						requestRuns();
     				} 
     			},
     			error: function () {
@@ -145,7 +145,7 @@
     	}
     	// Need to initialize the calendar or it doesn't display properly.
 		if ($("#fixed-tab-4").hasClass("is-active")) {
-			memorize();
+			requestRuns();
     	} 
     	
     	
@@ -257,12 +257,13 @@
 					} );				
 				}
     		},
-    		success: function (returneddata) {
-    			// Save a global copy.
-				dbfilelist = returneddata;
-    		},
     		cache: false
-    	});
+    	}).done(function(returneddata){
+				dbfilelist = returneddata;
+				createCalendar()
+				createFileTable(dbfilelist)
+
+			});
     };
     
     //
@@ -314,7 +315,7 @@
 		if (tabnum == 2) { visualize() }
 		if (tabnum == 1) { summarize() }
 		if (tabnum == 3) { analyze() }
-		if (tabnum == 4) { memorize() }
+		if (tabnum == 4) { requestRuns() }
     }
     
     //
@@ -322,20 +323,10 @@
     //
 	$(function () {
 		$('.str-tab').click(function () {
-			memorize()
+			requestRuns()
 		})
 	});
 	
-	//
-	// Plot the calendar and table using the current data.
-	//
-	function memorize() {
-		requestRuns();
-		setTimeout(function(){ 
-			createCalendar()
-			createFileTable(dbfilelist)
-		}, 1000);
-	}
 	
 	//
     // Show the datepicker information.
@@ -357,7 +348,7 @@
 				} else {
 					$("#calEnd").val(dateText);
 					$(this).datepicker("option", "minDate", null);
-					memorize();
+					requestRuns();
 				}
 			}
 		});
@@ -384,22 +375,25 @@
     		style: 'font-family: Roboto, sans-serif; font-size: 12px; opacity: 0.; text-align:center; vertical-align:middle'
     	}
     	if (dbfilelist == null) {
-			return
-    	}
-    	var row = 0;
-		for (var i = 0; i < dbfilelist.length; i++) {
     		filedata.addRows([
-    			[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'] ],
+    			[ 0.0, '', '', '', '', '', '', ''],
     		]);
-    		filedata.setProperties(row, 0, cellStyle);
-    		filedata.setProperties(row, 1, cellStyle);
-    		filedata.setProperties(row, 2, cellStyle);
-    		filedata.setProperties(row, 3, cellStyle);
-    		filedata.setProperties(row, 4, cellStyle);
-    		filedata.setProperties(row, 5, cellStyle);
-    		filedata.setProperties(row, 6, cellStyle);
-    		filedata.setProperties(row, 7, cellStyle);
-    		row = row + 1
+    	} else {
+    	   	var row = 0;
+			for (var i = 0; i < dbfilelist.length; i++) {
+				filedata.addRows([
+					[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'] ],
+				]);
+				filedata.setProperties(row, 0, cellStyle);
+				filedata.setProperties(row, 1, cellStyle);
+				filedata.setProperties(row, 2, cellStyle);
+				filedata.setProperties(row, 3, cellStyle);
+				filedata.setProperties(row, 4, cellStyle);
+				filedata.setProperties(row, 5, cellStyle);
+				filedata.setProperties(row, 6, cellStyle);
+				filedata.setProperties(row, 7, cellStyle);
+				row = row + 1
+			}
     	}
     	filedata.sort({column: 2, desc: false});
     	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
