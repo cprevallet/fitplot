@@ -476,6 +476,13 @@
 			filetable.draw(filedata, fileoptions);
 			colchart.draw(view, baroptions);   
 		}
+		
+		// Handle resizing.
+    	window.onresize = function () {
+			filetable.draw(filedata, fileoptions);
+			colchart.draw(view, baroptions);  
+    	};
+		
     }
 	
 
