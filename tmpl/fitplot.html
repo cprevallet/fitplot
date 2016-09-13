@@ -145,6 +145,7 @@
     	}
     	// Need to initialize the calendar or it doesn't display properly.
 		if ($("#fixed-tab-4").hasClass("is-active")) {
+			document.getElementById('spin1').style.display = 'none';
 			requestRuns();
     	} 
     	
@@ -244,6 +245,7 @@
 		var dbEndDate = $.datepicker.parseDate( "mm/dd/yy", $("#calEnd").val() )
 		var dbEnd = $.datepicker.formatDate("yy-mm-dd", dbEndDate)
 		var data = {"dbStart": dbStart, "dbEnd": dbEnd}
+		document.getElementById('spin1').style.display = 'block';
     	$.ajax({
     		url: '/getruns',
     		data: JSON.stringify(data),
@@ -260,6 +262,7 @@
     		cache: false
     	}).done(function(returneddata){
 				dbfilelist = returneddata;
+				document.getElementById('spin1').style.display = 'none';
 				createCalendar()
 				createFileTable(dbfilelist)
 
@@ -1217,6 +1220,7 @@
 				-->
 				<div class="run_bar_div" id="run_bar_div">
 				</div>
+				<div id="spin1" class="mdl-spinner mdl-js-spinner is-active"></div>
 				<span for="run_dbase_div" class="mdl-tooltip">Right click on a row to select a run to view.</span>
 				<div class="run_base_div" id="run_dbase_div">
 				</div>
