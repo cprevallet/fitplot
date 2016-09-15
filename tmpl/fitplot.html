@@ -14,7 +14,6 @@
     "use strict";
 
 	var serverdata
-	var dbfilelist
 	
     //
     // This event fires when the document's DOM is loaded (which may be some 
@@ -264,9 +263,8 @@
     		},
     		cache: false
     	}).done(function(returneddata){
-				dbfilelist = returneddata;
 				document.getElementById('spin1').style.display = 'none';
-				createFileTable(dbfilelist)
+				createFileTable(returneddata)
 			});
     };
     
