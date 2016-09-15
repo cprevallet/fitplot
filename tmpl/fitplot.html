@@ -359,10 +359,12 @@
     //
     // Create the database file table using the Google Charts API.
     //
-    function createFileTable(dbfilelist) {
-    
+    function createFileTable(returneddata) {
+		var dbfilelist = returneddata.DBFileList
+		var totals =  returneddata.Totals
+		var units = returneddata.Units
     	// Add file values to the database file table.
-    	
+    	$("#filesum_div").empty();
     	var filedata = new google.visualization.DataTable();
     	filedata.addColumn('number', 'Distance');
     	filedata.addColumn('string', 'Moving Time');
@@ -488,6 +490,9 @@
 			colchart.draw(barview, baroptions);  
     	};
 		
+		var summary = document.getElementById('filesum_div')
+    	summary.innerHTML += '</br><b>Total distance: </b> ' + totals["Distance"].toFixed(2) + ' ' + units["Distance"];
+
     }
 	
 
@@ -1228,6 +1233,8 @@
 				<div class="mdl-card__title">
 					<h2 class="mdl-card__title-text">Results</h2>
 				</div>
+				<div id="filesum_div" class="mdl-card__supporting-text">
+				</div>      
 				<div class="run_bar_div" id="run_bar_div">
 				</div>
 				<div id="spin1" class="mdl-spinner mdl-js-spinner is-active"></div>

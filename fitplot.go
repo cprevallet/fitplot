@@ -103,6 +103,7 @@ func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64, tot
 	return totalDistance, movingTime, totalPace
 }
 
+
 // Return information about entries in the database .
 func dbHandler(w http.ResponseWriter, r *http.Request) {
 	// Structure element names MUST be uppercase or decoder can't access them.
@@ -110,8 +111,18 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		DBStart string
 		DBEnd   string
 	}
-
+	type RtnStruct struct {
+		DBFileList []map[string]string
+		Totals map[string]float64
+		Units map[string]string
+	}
+	returnData := RtnStruct{
+		DBFileList: nil,
+		Totals:     nil,
+		Units:      nil,
+	}
 	var DBFileList []map[string]string
+	totals := map[string]float64 {"Distance": 0.0}
 
 	decoder := json.NewDecoder(r.Body)
 	var dbQuery DBDateStrings //string
@@ -140,10 +151,23 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["Distance"] = strconv.FormatFloat(totalDistance, 'f', 2, 64)
 		filerec["Moving time"] = strutil.DecimalTimetoHourMinSec(movingTime)
 		filerec["Pace"] = totalPace
+		totals["Distance"] += totalDistance
 		DBFileList = append(DBFileList, filerec)
 	}
+	
+	var units map[string]string
+	units = make(map[string]string)
+	if toEnglish {
+		units["Distance"] = "miles"
+	} else {
+		units["Distance"] = "kilometers"
+	}
+	returnData.DBFileList = DBFileList
+	returnData.Totals = totals
+	returnData.Units = units
+	
 	//Convert to json.
-	js, err := json.Marshal(DBFileList)
+	js, err := json.Marshal(returnData)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
