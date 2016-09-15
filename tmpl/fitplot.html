@@ -366,16 +366,15 @@
     	// Add file values to the database file table.
     	
     	var filedata = new google.visualization.DataTable();
-//    	filedata.addColumn('string', 'Time stamp');
     	filedata.addColumn('number', 'Distance');
     	filedata.addColumn('string', 'Moving Time');
+    	filedata.addColumn('string', 'Pace');
     	filedata.addColumn('string', 'Date');
     	filedata.addColumn('string', 'Time of Day');
     	filedata.addColumn('string', 'Time zone');
     	filedata.addColumn('string', 'Weekday');
     	filedata.addColumn('string', 'File name');
     	filedata.addColumn('string', 'File format');
-    	// filedata.addColumn({type: 'string', role: 'tooltip'});
     	filedata.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}})
     	
     	var cellStyle = {
@@ -383,13 +382,13 @@
     	}
     	if (dbfilelist == null) {
     		filedata.addRows([
-    			[ 0.0, '', '', '', '', '', '', ''],
+    			[ 0.0, '', '', '', '', '', '', '', '', ''],
     		]);
     	} else {
     	   	var row = 0;
 			for (var i = 0; i < dbfilelist.length; i++) {
 				filedata.addRows([
-					[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp'].substring(0, 25) + '\nDistance:' + dbfilelist[i]['Distance']],
+					[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Pace'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp'].substring(0, 25) + '\nDistance:' + dbfilelist[i]['Distance']],
 				]);
 				filedata.setProperties(row, 0, cellStyle);
 				filedata.setProperties(row, 1, cellStyle);
@@ -399,10 +398,11 @@
 				filedata.setProperties(row, 5, cellStyle);
 				filedata.setProperties(row, 6, cellStyle);
 				filedata.setProperties(row, 7, cellStyle);
+				filedata.setProperties(row, 8, cellStyle);
 				row = row + 1
 			}
     	}
-    	filedata.sort({column: 2, desc: false});
+    	filedata.sort({column: 3, desc: false});
     	var filetable = new google.visualization.Table(document.getElementById('run_dbase_div'));
     	var fileoptions =  {
     		showRowNumber: false,
@@ -412,13 +412,13 @@
     		tooltip: {isHtml: true},
     	} 
     	var fileview = new google.visualization.DataView(filedata);
-		fileview.setColumns([0, 1, 2, 3, 5]);
+		fileview.setColumns([0, 1, 2, 3, 4, 6]);
     	filetable.draw(fileview, fileoptions);
     	
     	// Create a column chart
     	
     	var barview = new google.visualization.DataView(filedata);
-		barview.setColumns([2, 0,  {sourceColumn: 8, role: 'tooltip'} ]);
+		barview.setColumns([3, 0,  {sourceColumn: 9, role: 'tooltip'} ]);
 		var baroptions = {
 		// This would be nice but there's a bug in the API when using a view. :(
 		//        animation: {
@@ -446,9 +446,9 @@
 				var str = filedata.getFormattedValue(item.row, item.column);
 				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
 				} else if (item.row != null) {
-				var dateStr = filedata.getFormattedValue(item.row, 2)
-				var timeStr = filedata.getFormattedValue(item.row, 3)
-				var timeZone = filedata.getFormattedValue(item.row, 4)
+				var dateStr = filedata.getFormattedValue(item.row, 3)
+				var timeStr = filedata.getFormattedValue(item.row, 4)
+				var timeZone = filedata.getFormattedValue(item.row, 5)
 				var data = {"DateStr": dateStr, "TimeStr": timeStr, "TimeZoneStr": timeZone}
 				$.ajax({
 					url: '/selectrun',
@@ -480,7 +480,7 @@
 			var rslt = filetable.getSortInfo()
 			filedata.sort({column: rslt["column"], desc: !rslt["ascending"]});
 			filetable.draw(fileview, fileoptions);
-			barview.setColumns([2, 0,  {sourceColumn: 8, role: 'tooltip'} ]);
+			barview.setColumns([3, 0,  {sourceColumn: 9, role: 'tooltip'} ]);
 			colchart.draw(barview, baroptions);   
 		}
 		

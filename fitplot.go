@@ -94,10 +94,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // getDistance retrieves a run's total distance in the appropriate unit system.
-func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64) {
+func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64, totalPace string) {
+	dummyTimeStamp := []int64{0}
+	lapCal := []float64{0.0}
 	_, _, _, _, runLaps, _ := parseInputBytes(fBytes)
 	_, _, _, _, totalDistance, movingTime = processFitLap(runLaps, toEnglish)
-	return totalDistance, movingTime
+	_,  totalPace, _, _, _, _,_ = createStats(toEnglish, totalDistance, movingTime, dummyTimeStamp, lapCal)
+	return totalDistance, movingTime, totalPace
 }
 
 // Return information about entries in the database .
@@ -133,9 +136,10 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["Time"] = rec.TimeStamp.Format(time.RFC3339)[11:19]
 		filerec["Time zone"] = rec.TimeStamp.Format(time.RFC3339)[19:25]
 		filerec["Weekday"] = rec.TimeStamp.Format(time.RFC1123)[0:3]
-		totalDistance, movingTime := getOtherVals(rec.FContent)
+		totalDistance, movingTime,totalPace := getOtherVals(rec.FContent)
 		filerec["Distance"] = strconv.FormatFloat(totalDistance, 'f', 2, 64)
 		filerec["Moving time"] = strutil.DecimalTimetoHourMinSec(movingTime)
+		filerec["Pace"] = totalPace
 		DBFileList = append(DBFileList, filerec)
 	}
 	//Convert to json.
