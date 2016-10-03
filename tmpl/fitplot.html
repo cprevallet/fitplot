@@ -672,8 +672,10 @@
     	// Boilerplate for fluid layout.
     	var d3 = Plotly.d3;
 		var WIDTH_IN_PERCENT_OF_PARENT = 99; 
-		// window.innerHeight should be set based on style settings for the "card".
-    	var HEIGHT_IN_PERCENT_OF_PARENT = Math.floor(window.innerHeight/screen.height * 100);
+    	// The following is trial and error but OSX requires a small number to avoid
+    	// overflowing (obscuring) the checkboxes.  55% is a reasonable balance for
+    	// most resolutions over about 800 px.
+    	var HEIGHT_IN_PERCENT_OF_PARENT = 55;
     	var gd3 = d3.select("#plotlyDiv")
     		.style({
     			width: WIDTH_IN_PERCENT_OF_PARENT + '%',
