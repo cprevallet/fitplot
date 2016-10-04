@@ -2,6 +2,7 @@
 package persist
 
 import (
+	"bitbucket.org/liamstask/goose/lib/goose"
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"io/ioutil"
@@ -19,6 +20,35 @@ type Record struct {
 	TimeStamp time.Time
 }
 
+// MigrateDatabase updates the database schema to the latest version.
+func MigrateDatabase(db *sql.DB) (err error) {
+	// Setup the goose configuration
+	migrateConf := &goose.DBConf{
+		MigrationsDir: "./db/migrations",
+		Env:           "production",
+		Driver: goose.DBDriver{
+			Name:    "sqlite3",
+			OpenStr:  ".",
+			Import:  "github.com/mattn/go-sqlite3",
+			Dialect: &goose.Sqlite3Dialect{},
+		},
+	}
+	// Get the latest possible migration
+	latest, err := goose.GetMostRecentDBVersion(migrateConf.MigrationsDir)
+	if err != nil {
+		log.Printf("%q: %s\n", err, "Could not get latest upgrade!")
+		return err
+	}
+	// Migrate up to the latest version
+	err = goose.RunMigrationsOnDb(migrateConf, migrateConf.MigrationsDir, latest, db)
+	if err != nil {
+		log.Printf("%q: %s\n", err, "Could not migrate database!")
+		return err
+	}
+	return nil
+}
+	
+
 // InitializeDatabase opens a database file and create the appropriate tables.
 func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	dbname := name + ".db"
@@ -28,15 +58,17 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 		// no such file or locked.
 		log.Printf("%q: %s\n", err, "Could not open database! Locked?")
 	}
+	MigrateDatabase(db);
 	// defer db.Close()
-	sqlStmt := `
-	create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp DATETIME );
-	`
-	_, err = db.Exec(sqlStmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
-		return
-	}
+	// sqlStmt := `
+	// create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp DATETIME );
+	// `
+	// _, err = db.Exec(sqlStmt)
+
+	// if err != nil {
+	//	log.Printf("%q: %s\n", err, sqlStmt)
+	//	return
+	// }
 	return db, err
 }
 
