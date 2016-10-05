@@ -485,6 +485,12 @@ func main() {
 	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	// Migrate the persistent store (database) to the current version.
+	db, err := persist.ConnectDatabase("fitplot", "./")
+	if err != nil {
+		panic("Can't locate database. Aborting.")
+	}
+	persist.MigrateDatabase(db)
 	// Handle normal requests.
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)

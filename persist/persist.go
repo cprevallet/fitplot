@@ -58,17 +58,6 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 		// no such file or locked.
 		log.Printf("%q: %s\n", err, "Could not open database! Locked?")
 	}
-	MigrateDatabase(db);
-	// defer db.Close()
-	// sqlStmt := `
-	// create table if not exists runfiles (id integer not null primary key, filename text, filetype text, filecontent blob, timestamp DATETIME );
-	// `
-	// _, err = db.Exec(sqlStmt)
-
-	// if err != nil {
-	//	log.Printf("%q: %s\n", err, sqlStmt)
-	//	return
-	// }
 	return db, err
 }
 
