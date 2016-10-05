@@ -114,9 +114,11 @@ Fitplot source code is available on GitHub.
 -   <https://github.com/cprevallet/fitplot>
 
 ### Dependencies
-This software depends on the excellent fit package.
+This software depends on the excellent fit, go-sqlite3, and goose packages.
 
 -  <https://github.com/jezard/fit>
+-  <https://github.com/mattn/go-sqlite3>
+-  <https://bitbucket.org/liamstask/goose/>
 
 ### Building and Packaging
 The software source code is an (unholy) mixture of Golang (version 1.6.2) and 
