@@ -158,34 +158,35 @@ div.document .option-list kbd {
 <li><a class="reference internal" href="#file-locations" id="id19">5.2.1&nbsp;&nbsp;&nbsp;File locations</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#database" id="id20">5.3&nbsp;&nbsp;&nbsp;Database</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#usage" id="id20">6&nbsp;&nbsp;&nbsp;Usage</a><ul class="auto-toc">
-<li><a class="reference internal" href="#using-the-application" id="id21">6.1&nbsp;&nbsp;&nbsp;Using the application</a><ul class="auto-toc">
-<li><a class="reference internal" href="#selecting-a-run" id="id22">6.1.1&nbsp;&nbsp;&nbsp;Selecting a Run</a></li>
-<li><a class="reference internal" href="#enter-user-specific-settings" id="id23">6.1.2&nbsp;&nbsp;&nbsp;Enter user-specific settings</a></li>
-<li><a class="reference internal" href="#interactive-features" id="id24">6.1.3&nbsp;&nbsp;&nbsp;Interactive features</a></li>
-<li><a class="reference internal" href="#interpreting-results" id="id25">6.1.4&nbsp;&nbsp;&nbsp;Interpreting Results</a></li>
+<li><a class="reference internal" href="#usage" id="id21">6&nbsp;&nbsp;&nbsp;Usage</a><ul class="auto-toc">
+<li><a class="reference internal" href="#using-the-application" id="id22">6.1&nbsp;&nbsp;&nbsp;Using the application</a><ul class="auto-toc">
+<li><a class="reference internal" href="#selecting-a-run" id="id23">6.1.1&nbsp;&nbsp;&nbsp;Selecting a Run</a></li>
+<li><a class="reference internal" href="#enter-user-specific-settings" id="id24">6.1.2&nbsp;&nbsp;&nbsp;Enter user-specific settings</a></li>
+<li><a class="reference internal" href="#interactive-features" id="id25">6.1.3&nbsp;&nbsp;&nbsp;Interactive features</a></li>
+<li><a class="reference internal" href="#interpreting-results" id="id26">6.1.4&nbsp;&nbsp;&nbsp;Interpreting Results</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#troubleshooting" id="id26">6.2&nbsp;&nbsp;&nbsp;Troubleshooting</a></li>
-<li><a class="reference internal" href="#ending-the-application" id="id27">6.3&nbsp;&nbsp;&nbsp;Ending the application</a></li>
+<li><a class="reference internal" href="#troubleshooting" id="id27">6.2&nbsp;&nbsp;&nbsp;Troubleshooting</a></li>
+<li><a class="reference internal" href="#ending-the-application" id="id28">6.3&nbsp;&nbsp;&nbsp;Ending the application</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#known-issues" id="id28">7&nbsp;&nbsp;&nbsp;Known Issues</a></li>
-<li><a class="reference internal" href="#online-support" id="id29">8&nbsp;&nbsp;&nbsp;Online Support</a><ul class="auto-toc">
-<li><a class="reference internal" href="#issues" id="id30">8.1&nbsp;&nbsp;&nbsp;Issues</a></li>
-<li><a class="reference internal" href="#enhancements" id="id31">8.2&nbsp;&nbsp;&nbsp;Enhancements</a></li>
+<li><a class="reference internal" href="#known-issues" id="id29">7&nbsp;&nbsp;&nbsp;Known Issues</a></li>
+<li><a class="reference internal" href="#online-support" id="id30">8&nbsp;&nbsp;&nbsp;Online Support</a><ul class="auto-toc">
+<li><a class="reference internal" href="#issues" id="id31">8.1&nbsp;&nbsp;&nbsp;Issues</a></li>
+<li><a class="reference internal" href="#enhancements" id="id32">8.2&nbsp;&nbsp;&nbsp;Enhancements</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#license" id="id32">9&nbsp;&nbsp;&nbsp;License</a></li>
+<li><a class="reference internal" href="#license" id="id33">9&nbsp;&nbsp;&nbsp;License</a></li>
 </ul>
 </div>
 <div class="section" id="requirements">
 <h1><a class="toc-backref" href="#id1">1&nbsp;&nbsp;&nbsp;Requirements</a></h1>
 <div class="section" id="operating-system">
 <h2><a class="toc-backref" href="#id2">1.1&nbsp;&nbsp;&nbsp;Operating System</a></h2>
-<p>Builds are available for Windows 7 (64-bit), Linux Debian 8 (Jessie - 64 bit) and Mac OSX (64 bit)</p>
+<p>Builds are available for Windows 7 (64-bit), Linux Debian 8 (Jessie - 64 bit) and MacOS/OSX (64 bit)</p>
 </div>
 <div class="section" id="input-devices">
 <h2><a class="toc-backref" href="#id3">1.2&nbsp;&nbsp;&nbsp;Input devices</a></h2>
@@ -234,9 +235,9 @@ div.document .option-list kbd {
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>Apple OS X El Capitan version 10.11.6</dt>
+<dt>Apple Mac OS Sierra version 10.12</dt>
 <dd><ul class="first last simple">
-<li>Safari 9.1.2</li>
+<li>Safari 10.0</li>
 </ul>
 </dd>
 </dl>
@@ -266,7 +267,7 @@ div.document .option-list kbd {
 CertUtil -hashfile [file.ext] MD5
 </pre>
 <ul class="simple">
-<li>Mac OSX</li>
+<li>MacOS/OSX</li>
 </ul>
 <pre class="literal-block">
 md5 -r [file.ext]
@@ -307,10 +308,10 @@ sudo /opt/fitplot/icons/cpfitplot_color.png /usr/share/icons/hicolor/128x128/app
 sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </pre>
 <ul class="simple">
-<li>Mac OSX (64 bit)</li>
+<li>MacOS/OSX (64 bit)</li>
 </ul>
-<p>Installation is performed by downloading the file with the dmg file and single clicking on it.  This should result in a drive icon appearing on the desktop.  Double click on it to open.  Proceed to Starting the Application.</p>
-<p>The program needs write access to a temporary directory (typically C:\Users\User Name\AppData\Local\Temp on MS Windows) or (/tmp on Linux and OSX). Nothing else is required.</p>
+<p>Installation is performed by downloading the file with the dmg file and single clicking on it.  This should result in a drive icon appearing on the desktop.  Double click on it to open.</p>
+<p>The program needs write access to a temporary directory (typically C:\Users\User Name\AppData\Local\Temp on MS Windows) or (/tmp on Linux and OSX) and the installation directory. Nothing else is required.</p>
 </div>
 <div class="section" id="running-the-application">
 <h1><a class="toc-backref" href="#id14">4&nbsp;&nbsp;&nbsp;Running the Application</a></h1>
@@ -336,7 +337,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>OSX</dt>
+<dt>MacOS/OSX</dt>
 <dd><ul class="first last simple">
 <li>Click or tap with two fingers on fitplot.command to open the application.</li>
 <li>You will receive a message indicating that fitplot.command is from an unknown developer and asking if you are sure you want to open it. This is due to the developer (me) not signing and making it available to the Mac App Store.  See the Digital Security and Privacy section.</li>
@@ -346,12 +347,12 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </dl>
 </li>
 </ul>
-<p>A terminal window may appear and the application will start as a tab in the user's default browser displaying the <em>Stored Runs</em> portion of the application.  At this juncture, the user may optionally choose to load a run or display a run from the database (if loaded previously).  See the next section.</p>
+<p>A terminal window may appear and the application will start as a tab in the user's default browser displaying the <em>Stored Runs</em> portion of the application.  At this juncture, the user may optionally choose to <a class="reference internal" href="#loading-runs">load a run</a> or <a class="reference internal" href="#selecting-a-run">select a run from the database</a> (if loaded previously).</p>
 <p>If the browser client is closed and the server is left running, the user-interface may be generated by opening any supported browser and typing &quot;<a class="reference external" href="http://localhost:8080">http://localhost:8080</a>&quot; (without the quotes) into the address bar.</p>
 </div>
 <div class="section" id="loading-runs">
 <h1><a class="toc-backref" href="#id15">5&nbsp;&nbsp;&nbsp;Loading Runs</a></h1>
-<p>Fitplot needs information on your run in the form of files generated from your Garmin watch in order to display results.  Once <a class="reference internal" href="#make-the-files-available-to-the-pc">files are available</a> and subsequently <a class="reference internal" href="#load-file-s">loaded into the application,</a> they are stored internally in a database where they serve as a historical record.  Once stored internally, runs may be used directly by <a class="reference internal" href="#selecting-a-run">selecting from a list</a> without the need to reload them each session.</p>
+<p>Fitplot needs information on your run in the form of files generated from your Garmin watch in order to display results.  Once <a class="reference internal" href="#make-the-files-available-to-the-pc">files are available</a> and subsequently <a class="reference internal" href="#load-file-s">loaded into the application,</a> they are stored internally in a <a class="reference internal" href="#database">database</a> where they serve as a historical record.  Once stored internally, runs may be used directly by <a class="reference internal" href="#selecting-a-run">selecting from a list</a> without the need to reload them each session.</p>
 <p>In addition, there are sample FIT and TCX files provided with the program itself within the directory/folder named &quot;samples&quot;.  These files may be loaded to use the application if no additional files are available.</p>
 <div class="section" id="make-the-files-available-to-the-pc">
 <h2><a class="toc-backref" href="#id16">5.1&nbsp;&nbsp;&nbsp;Make the files available to the PC</a></h2>
@@ -422,20 +423,28 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </ul>
 </div>
 </div>
+<div class="section" id="database">
+<h2><a class="toc-backref" href="#id20">5.3&nbsp;&nbsp;&nbsp;Database</a></h2>
+<p>Runs are stored internally in a database where they serve as a historical record.  The database is stored in a single file named &quot;fitplot.db&quot; in the (system dependent) application installation directory. This file is transparent to the user and normally of no consequence.  However, there are a few situations where some knowledge of the existence of this file may be helpful.</p>
+<p>If the database file is not found on application startup (e.g. the first time the application is used), a blank empty database is created.</p>
+<p>If the database file is found on application startup, a backup copy is made in the system-dependent temporary directory as a safeguard.  This file will be called &quot;tmpxxxxxxxxx&quot; where the values for &quot;x&quot; are random numbers between from 0 to 9.  In the event of a missing or corrupted database, manually copying and renaming this file to &quot;fitplot.db&quot; in the installation directory may be sufficient to recover.</p>
+<p>Manually copying fitplot.db to another name can serve as a backup strategy.  For example, if the user is only interested in viewing the runs for one year at a time, storing a single year's worth of data and then renaming fitplot.db to fitplot_yyyy.db (while the application is not running, of course) is a viable strategy to store past runs.  This may have the added benefit of avoiding overly long searches from within Fitplot.</p>
+<p>Finally, fitplot.db is an SQLite database and its contents may be viewed (and exported) from within compatible applications such as the free <a class="reference external" href="http://sqlitebrowser.org/">DB Browser for SQLite</a>.</p>
+</div>
 </div>
 <div class="section" id="usage">
-<h1><a class="toc-backref" href="#id20">6&nbsp;&nbsp;&nbsp;Usage</a></h1>
+<h1><a class="toc-backref" href="#id21">6&nbsp;&nbsp;&nbsp;Usage</a></h1>
 <div class="section" id="using-the-application">
-<h2><a class="toc-backref" href="#id21">6.1&nbsp;&nbsp;&nbsp;Using the application</a></h2>
+<h2><a class="toc-backref" href="#id22">6.1&nbsp;&nbsp;&nbsp;Using the application</a></h2>
 <div class="section" id="selecting-a-run">
-<h3><a class="toc-backref" href="#id22">6.1.1&nbsp;&nbsp;&nbsp;Selecting a Run</a></h3>
+<h3><a class="toc-backref" href="#id23">6.1.1&nbsp;&nbsp;&nbsp;Selecting a Run</a></h3>
 <p>After one or more files have been <a class="reference internal" href="#load-file-s">loaded</a> into the application, a single run should be selected for visualization or analysis.  This is accomplished in two steps.</p>
 <p>The first step is selecting a pair of dates (&quot;Start&quot; and &quot;End&quot;) on the calendar widget provided on the <em>Stored Runs</em> tab.  Navigate between months by left clicking the arrows (previous and next) on the calendar header bar and then left-clicking the desired day.  The selected dates will appear in the read-only text boxes below the calendar. The dates represent a range bounding the run(s) of interest.  The earliest (&quot;Start&quot;) date is <em>always</em> selected first however both dates can be the same if desired (e.g. a single day).  Upon selecting the end date, a table containing all runs falling between the selected dates will be returned along with a bar graph indicating the distances for each run.  The bar graph provides a comparison between runs within the selected dates.  Hovering the mouse over the bars will show values (date, time, distance) for a given run.</p>
 <p>The second step is to locate an individual run in the table.  Right click the row containing the run of interest and then click on one of the tabs (<em>Visualize</em>, <em>Summarize</em>, or <em>Analyze</em>) to see information on that run.  Alternatively left-click and select from the pop-up menu.</p>
 <p>Pro tip: Clicking the headers of the table will sort ascending based on distance, date, pace, moving time, and time-of-day.  The bar graph will reflect the new sort order.  This can be handy for locating the longest run or fastest paced run in a given week or month for example.</p>
 </div>
 <div class="section" id="enter-user-specific-settings">
-<h3><a class="toc-backref" href="#id23">6.1.2&nbsp;&nbsp;&nbsp;Enter user-specific settings</a></h3>
+<h3><a class="toc-backref" href="#id24">6.1.2&nbsp;&nbsp;&nbsp;Enter user-specific settings</a></h3>
 <p>Next the run will be processed and the results displayed upon selecting one of the tabs (<em>Visualize</em>, <em>Summarize</em>, <em>Analyze</em>, etc.).  However the first time the application runs it has no knowledge of three items:</p>
 <ul class="simple">
 <li>which trends the user wishes to display (pace/elevation/cadence)</li>
@@ -446,7 +455,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <p>After the inital run, these preferences and information will be retained as defaults but can be changed as necessary.</p>
 </div>
 <div class="section" id="interactive-features">
-<h3><a class="toc-backref" href="#id24">6.1.3&nbsp;&nbsp;&nbsp;Interactive features</a></h3>
+<h3><a class="toc-backref" href="#id25">6.1.3&nbsp;&nbsp;&nbsp;Interactive features</a></h3>
 <p>After the user-specific settings have been entered, the user may interact with several of the tools contained with the results.  The application has been designed with tooltips to describe most of the tools but there are several features worthy of further description:</p>
 <ul>
 <li><dl class="first docutils">
@@ -492,7 +501,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <p>In addition, transient popup notifications will be displayed at the bottom of the screen when new files are loaded or error messages occur.</p>
 </div>
 <div class="section" id="interpreting-results">
-<h3><a class="toc-backref" href="#id25">6.1.4&nbsp;&nbsp;&nbsp;Interpreting Results</a></h3>
+<h3><a class="toc-backref" href="#id26">6.1.4&nbsp;&nbsp;&nbsp;Interpreting Results</a></h3>
 <p>Most of the returned results are labeled to aid in easy interpretation.  However the values for VO2max and VDOT may be unfamiliar to the user.  Wikipedia has a good description for</p>
 <ul class="simple">
 <li><a class="reference external" href="https://en.wikipedia.org/wiki/VO2_max">https://en.wikipedia.org/wiki/VO2_max</a></li>
@@ -645,16 +654,16 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </div>
 </div>
 <div class="section" id="troubleshooting">
-<h2><a class="toc-backref" href="#id26">6.2&nbsp;&nbsp;&nbsp;Troubleshooting</a></h2>
+<h2><a class="toc-backref" href="#id27">6.2&nbsp;&nbsp;&nbsp;Troubleshooting</a></h2>
 <p>This section is not complete yet.</p>
 </div>
 <div class="section" id="ending-the-application">
-<h2><a class="toc-backref" href="#id27">6.3&nbsp;&nbsp;&nbsp;Ending the application</a></h2>
+<h2><a class="toc-backref" href="#id28">6.3&nbsp;&nbsp;&nbsp;Ending the application</a></h2>
 <p>Ending the application is performed by clicking on the exit target in the drop down (hamburger) menu.  The application will prompt for confirmation and when it's received, signal the server to stop and close the browser window.  If the help window is also open it will have to be closed manually.</p>
 </div>
 </div>
 <div class="section" id="known-issues">
-<h1><a class="toc-backref" href="#id28">7&nbsp;&nbsp;&nbsp;Known Issues</a></h1>
+<h1><a class="toc-backref" href="#id29">7&nbsp;&nbsp;&nbsp;Known Issues</a></h1>
 <p>The run graph does not support panning via a touchscreen only.  Zooming gestures vary by browser and often take several iterations to accomplish.</p>
 <ul class="simple">
 <li>Google Chrome: Zoom by a single tap with two fingers followed by a single tap with one finger.  No feedback will be given after the inital two finger tap.</li>
@@ -662,16 +671,16 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </ul>
 </div>
 <div class="section" id="online-support">
-<h1><a class="toc-backref" href="#id29">8&nbsp;&nbsp;&nbsp;Online Support</a></h1>
+<h1><a class="toc-backref" href="#id30">8&nbsp;&nbsp;&nbsp;Online Support</a></h1>
 <div class="section" id="issues">
-<h2><a class="toc-backref" href="#id30">8.1&nbsp;&nbsp;&nbsp;Issues</a></h2>
+<h2><a class="toc-backref" href="#id31">8.1&nbsp;&nbsp;&nbsp;Issues</a></h2>
 <p>The tracking system at Github will be used to report problems and suggest enhancements.  As Fitplot runs under a variety of versions, operating systems, cpu architectures, and browsers, identifying the operating environment is a key to understanding and resolving problems. Please use the hamburger menu (upper left) and select Environment.  Report the browser, operating system, architecture, and the last 4 or 5 digits of the githash when submitting your issue.</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/cprevallet/fitplot/issues">https://github.com/cprevallet/fitplot/issues</a></li>
 </ul>
 </div>
 <div class="section" id="enhancements">
-<h2><a class="toc-backref" href="#id31">8.2&nbsp;&nbsp;&nbsp;Enhancements</a></h2>
+<h2><a class="toc-backref" href="#id32">8.2&nbsp;&nbsp;&nbsp;Enhancements</a></h2>
 <p>The above tracking system will also be used to identify potential enhancements and improvements.   If you have an idea for improvements, actual source code speaks louder than words.  Let's collaborate!  Create a fork of the Fitplot source code, update it with your changes and issue a pull request at:</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/cprevallet/fitplot">https://github.com/cprevallet/fitplot</a></li>
@@ -679,7 +688,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </div>
 </div>
 <div class="section" id="license">
-<h1><a class="toc-backref" href="#id32">9&nbsp;&nbsp;&nbsp;License</a></h1>
+<h1><a class="toc-backref" href="#id33">9&nbsp;&nbsp;&nbsp;License</a></h1>
 <p>This software is governed by the following software license:</p>
 <pre class="literal-block">
 Copyright 2016 Craig S. Prevallet
@@ -697,12 +706,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 </pre>
 <p>Portions of the software embedded in this software are governed by the following software licenses:</p>
-<p>Plotly, fit</p>
+<p>Plotly, fit, go-sqlite3, goose</p>
 <pre class="literal-block">
 The MIT License (MIT)
 
 Copyright (c) 2016 Plotly, Inc
 Copyright (c) 2015 Jeremy Summers
+Copyright (c) 2012-2016 Yasuhiro Matsumoto, http://mattn.kaoriya.net &lt;mattn.jp&#64;gmail.com&gt;
+Copyright (c) &lt;2012&gt; &lt;Liam Staskawicz&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
