@@ -66,6 +66,7 @@ function package_windows {
 	sudo cp -r $SOURCE_DIR/static/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/tmpl/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/samples/ ./windows_dist/fitplot
+	sudo cp -r $SOURCE_DIR/db/ ./windows_dist/fitplot
 	cd windows_dist
 	sudo cp ../Fitplot\ Windows\ x64\ Setup.nsi .
 	sudo makensis Fitplot\ Windows\ x64\ Setup.nsi
@@ -86,6 +87,7 @@ function package_linux {
 	sudo cp -r $SOURCE_DIR/static/ ./linux_dist/fitplot
 	sudo cp -r $SOURCE_DIR/tmpl/ ./linux_dist/fitplot
 	sudo cp -r $SOURCE_DIR/samples/ ./linux_dist/fitplot
+	sudo cp -r $SOURCE_DIR/db/ ./linux_dist/fitplot
 	sudo cp -r $SOURCE_DIR/icons/ ./linux_dist/fitplot
 	cd linux_dist
 	sudo chown root:root fitplot -R
@@ -107,6 +109,7 @@ function package_osx {
 	sudo cp -r $SOURCE_DIR/static/ ./osx_dist/fitplot
 	sudo cp -r $SOURCE_DIR/tmpl/ ./osx_dist/fitplot
 	sudo cp -r $SOURCE_DIR/samples/ ./osx_dist/fitplot
+	sudo cp -r $SOURCE_DIR/db/ ./osx_dist/fitplot
 	sudo cp -r $SOURCE_DIR/icons/ ./osx_dist/fitplot
 	cd osx_dist
 	sudo chown root:root fitplot -R
