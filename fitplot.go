@@ -480,17 +480,31 @@ func stopHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func main() {
-	desktop.Open("http://localhost:8080")
-	// Serve static files if the prefix is "static".
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	// Migrate the persistent store (database) to the current version.
+// Migrate the persistent store (database) to the current version.
+func migrate() {
+	// Play it safe and create a single backup file in the temporary 
+	// directory in the event of problems.
+	// I don't know what the performance impact might be, this safeguard
+	// can be removed if performance becomes an issue (e.g. for large databases).
+	file, err := os.Open("fitplot.db")
+	if err == nil {
+		fBytes,_ := ioutil.ReadAll(file)
+		persist.CreateTempFile(fBytes)
+		file.Close()
+	}
 	db, err := persist.ConnectDatabase("fitplot", "./")
 	if err != nil {
 		panic("Can't locate database. Aborting.")
 	}
 	persist.MigrateDatabase(db)
+}
+
+func main() {
+	desktop.Open("http://localhost:8080")
+	// Serve static files if the prefix is "static".
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	migrate()
 	// Handle normal requests.
 	http.HandleFunc("/", pageloadHandler)
 	http.HandleFunc("/getplot", plotHandler)
