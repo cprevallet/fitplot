@@ -335,6 +335,8 @@
 	//
 	function createCalendar(serverdata) {
 		$("#datepicker").datepicker({
+			changeMonth: true,
+			changeYear: true,
 			beforeShowDay: function(date) {
 				var date1 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calStart").val());
 				var date2 = $.datepicker.parseDate($.datepicker._defaults.dateFormat, $("#calEnd").val());
