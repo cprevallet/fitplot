@@ -193,9 +193,9 @@ The Garmin learning center has detailed videos as well:
 Load file(s)
 ------------
 
-Once the `application has been started <Running the Application_>`_ and the `files are available <Make the files available to the PC_>`_,  the user may load the files by selecting a circular green target with the figure of a "+".  (On screens with smaller resolutions this may not be visible but the same functionality is available from the "hamburger" menu in the upper left.) 
+Once the `application has been started <Running the Application_>`_ and the `files are available <Make the files available to the PC_>`_,  the user may load the files by selecting a circular green target with the figure of an arrow pointing up. 
 
-	+ Pressing either of the above targets will present a file input dialog box. 
+	+ Pressing the target will present a file input dialog box. 
 	+ Navigate to one of the `folders <File locations_>`_ containing either .FIT or .TCX format files select one or more files to load.  (Selecting more than one file is operating system specific. On Windows or Linux try holding SHIFT or CTRL while selecting.  On Mac try SHIFT+CLICK or CLICK+DRAG). 
 	+ Select Open button to begin the upload process.
 

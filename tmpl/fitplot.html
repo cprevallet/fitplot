@@ -33,14 +33,14 @@
     	}
 
     	// Set the hook for submitting the file upload form.
-    	document.getElementById("runfilemenu").onchange = function () {
-			for (var x = 0; x < this.files.length; x++) {
-				var filename = this.files[x].name;
-				var fileExt = filename.slice(filename.length - 3, filename.length);
-				fileExt = fileExt.toLowerCase();
-				sendFile(this.files[x], fileExt);
-			}
-    	}
+//    	document.getElementById("runfilemenu").onchange = function () {
+//			for (var x = 0; x < this.files.length; x++) {
+//				var filename = this.files[x].name;
+//				var fileExt = filename.slice(filename.length - 3, filename.length);
+//				fileExt = fileExt.toLowerCase();
+//				sendFile(this.files[x], fileExt);
+//			}
+//    	}
     	// Initialize the calendar.
     	createCalendar()
 
@@ -1114,7 +1114,7 @@
 <style>
 
 #runfile { display: none }
-#runfilemenu { display: none }
+#expfile { display: none }
 
 .mdl-layout__tab-bar {
   height: 5vh;
@@ -1147,14 +1147,6 @@
 }
 .mdl-card__subtitle-text {
   padding: 5px;
-}
-
-.float-run-button {
-   position: absolute;
-   top: 0px;
-   right: 28px;
-   transform: translate(0px, 28px);
-   z-index: 4;
 }
 
 .mdl-textfield__input {
@@ -1191,19 +1183,11 @@
 		</div>
 	</header>
 
-	<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent float-run-button ">
-		<i class="material-icons">add</i>
-		<input type="file" name="runfile" id="runfile" multiple> 
-	</label>
-	<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+
 
 	<div class="mdl-layout__drawer">
 	<span class="mdl-layout-title">FITPLOT</span>
 	<nav class="mdl-navigation">
-		<label id="runbtnmenu" for="runfilemenu" class="mdl-button mdl-js-button mdl-button--colored">
-		<input type="file" name="runfilemenu" id="runfilemenu" multiple> 
-		<span>Load file</span>
-		</label>
 		<button type="button" id="drawer-env" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" onclick="showEnvironment()">Environment</button>
 		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html" >Help</a>
 		<a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" target="_blank" href="/static/help.html#license">License</a>
@@ -1231,6 +1215,21 @@
 				<span for="datepicker" class="mdl-tooltip">Select two days on the calendar to bracket the search for runs in the database.</span>
 				Start:<input type="text" id="calStart" readonly>
 				End:<input type="text" id="calEnd" readonly>
+				<div class="mdl-card__title">
+					<h2 class="mdl-card__title-text">Load and Export</h2>
+				</div>
+				<!-- Load button -->
+				<label id="runbtn" for="runfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent">
+					<i class="material-icons">file_upload</i>
+				<input type="file" name="runfile" id="runfile" multiple> 
+				</label>
+				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
+				<!-- Export button -->
+				<label id="expbtn" for="expfile" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent">
+					<i class="material-icons">file_download</i>
+				<input type="file" name="expfile" id="expfile" multiple> 
+				</label>
+				<span for="expbtn" class="mdl-tooltip">Export a Garmin .fit or .tcx file</span>
 			</div>
 			<!-- Run table -->
 			<div class="mdl-card mdl-cell--8-col-desktop mdl-cell--8-col-tablet mdl-shadow--3dp">
