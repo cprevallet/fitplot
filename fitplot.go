@@ -200,6 +200,17 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Export a file to disk.
+func dbExportHandler(w http.ResponseWriter, r *http.Request) {
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	slightlyOlder := timeStamp.Add(-1 * time.Second)
+	slightlyNewer := timeStamp.Add(1 * time.Second)
+	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer)
+	db.Close()
+	ioutil.WriteFile(recs[0].FName, recs[0].FContent, 0644)
+}
+
+
 // Return information about the runtime environment.
 func envHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -512,6 +523,7 @@ func main() {
 	http.HandleFunc("/env", envHandler)
 	http.HandleFunc("/getruns", dbHandler)
 	http.HandleFunc("/selectrun", dbSelectHandler)
+	http.HandleFunc("/exportrun", dbExportHandler)
 	//Listen on port 8080
 	//fmt.Println("Server starting on port 8080.")
 	http.ListenAndServe(":8080", nil)

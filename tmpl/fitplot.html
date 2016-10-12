@@ -267,6 +267,32 @@
 				createFileTable(returneddata)
 			});
     };
+
+    //
+    // Export a run previously selected from the table.
+    //
+    function exportRun(){
+//TODO Handle when no file already selected.
+     	$.ajax({
+    		url: '/exportrun',
+//    		data: JSON.stringify(data),
+    		type: 'POST',
+    		error: function(XMLHttpRequest, textStatus, errorThrown) {
+				var e = XMLHttpRequest.error()
+				if (e.status != 200) {
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar( {
+					message: e["responseText"]
+					} );				
+				}
+    		},
+    		cache: false
+//    	})
+//    	.done(function(){
+//				document.getElementById('spin1').style.display = 'none';
+//				createFileTable(returneddata)
+			});   
+    };
     
     //
     // Display the environment the program is executing in.
@@ -1225,7 +1251,7 @@
 				</label>
 				<span for="runbtn" class="mdl-tooltip">Load a Garmin .fit or .tcx file</span>
 				<!-- Export button -->
-				<button id="expbtn" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent">
+				<button id="expbtn" onclick="exportRun()" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent">
 					<i class="material-icons">file_download</i>
 				</button>
 				<span for="expbtn" class="mdl-tooltip">Dump a Garmin .fit or .tcx file from the database to disk.</span>
