@@ -17,6 +17,7 @@ import (
 	//"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"time"
@@ -103,14 +104,31 @@ func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64, tot
 	return totalDistance, movingTime, totalPace
 }
 
-
-// Return information about entries in the database .
-func dbHandler(w http.ResponseWriter, r *http.Request) {
-	// Structure element names MUST be uppercase or decoder can't access them.
+// Return information about entries in the database between two dates.
+func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record) {
 	type DBDateStrings struct {
 		DBStart string
 		DBEnd   string
 	}
+	decoder := json.NewDecoder(r.Body)
+	var dbQuery DBDateStrings //string
+	err := decoder.Decode(&dbQuery)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	// Connect to database and retrieve.  Be sure we bracket the entirety of
+	// the selected day.
+	db, _ := persist.ConnectDatabase("fitplot", "./")
+	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart+" 00:00:00")
+	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd+" 23:59:59")
+	recs = persist.GetRecsByTime(db, startTime, endTime)
+	db.Close()
+	return recs
+}
+
+// Return information about entries in the database.
+func dbHandler(w http.ResponseWriter, r *http.Request) {
+	// Structure element names MUST be uppercase or decoder can't access them.
 	type RtnStruct struct {
 		DBFileList []map[string]string
 		Totals map[string]float64
@@ -123,20 +141,7 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var DBFileList []map[string]string
 	totals := map[string]float64 {"Distance": 0.0}
-
-	decoder := json.NewDecoder(r.Body)
-	var dbQuery DBDateStrings //string
-	err := decoder.Decode(&dbQuery)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	// Connect to database and retrieve.  Be sure we bracket the entirety of
-	// the selected day.
-	db, _ := persist.ConnectDatabase("fitplot", "./")
-	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart+" 00:00:00")
-	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd+" 23:59:59")
-	recs := persist.GetRecsByTime(db, startTime, endTime)
-	db.Close()
+    recs := dbGetRecs(w, r)
 	for _, rec := range recs {
 		var filerec map[string]string
 		filerec = make(map[string]string)
@@ -200,16 +205,16 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Export a file to disk.
+// Export file(s) to disk.
 func dbExportHandler(w http.ResponseWriter, r *http.Request) {
-	db, _ := persist.ConnectDatabase("fitplot", "./")
-	slightlyOlder := timeStamp.Add(-1 * time.Second)
-	slightlyNewer := timeStamp.Add(1 * time.Second)
-	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer)
-	db.Close()
-	ioutil.WriteFile(recs[0].FName, recs[0].FContent, 0644)
+    recs := dbGetRecs(w, r)
+	slash := string(filepath.Separator)
+	path := "." + slash + "export" + slash
+	_ = "breakpoint"
+	for _, rec := range recs {
+		ioutil.WriteFile(path + rec.FName, rec.FContent, 0644)
+	}
 }
-
 
 // Return information about the runtime environment.
 func envHandler(w http.ResponseWriter, r *http.Request) {

@@ -272,10 +272,22 @@
     // Export a run previously selected from the table.
     //
     function exportRun(){
-//TODO Handle when no file already selected.
+		var dbStartDate = $.datepicker.parseDate( "mm/dd/yy", $("#calStart").val() )
+		var dbEndDate = $.datepicker.parseDate( "mm/dd/yy", $("#calEnd").val() )
+		if ((dbStartDate == null) || (dbEndDate == null)) {
+			var notification = document.querySelector('.mdl-js-snackbar');
+			notification.MaterialSnackbar.showSnackbar( {
+			message: "No files selected.  Select two dates from the calendar."
+			} );
+			return;
+		}
+		var dbStart = $.datepicker.formatDate("yy-mm-dd", dbStartDate)
+		var dbEnd = $.datepicker.formatDate("yy-mm-dd", dbEndDate)
+		var data = {"dbStart": dbStart, "dbEnd": dbEnd}
+		document.getElementById('spin1').style.display = 'block';
      	$.ajax({
     		url: '/exportrun',
-//    		data: JSON.stringify(data),
+    		data: JSON.stringify(data),
     		type: 'POST',
     		error: function(XMLHttpRequest, textStatus, errorThrown) {
 				var e = XMLHttpRequest.error()
@@ -287,10 +299,12 @@
 				}
     		},
     		cache: false
-//    	})
-//    	.done(function(){
-//				document.getElementById('spin1').style.display = 'none';
-//				createFileTable(returneddata)
+    	}).done(function(){
+				document.getElementById('spin1').style.display = 'none';
+				var notification = document.querySelector('.mdl-js-snackbar');
+				notification.MaterialSnackbar.showSnackbar( {
+				message: "Export complete."
+					} );							
 			});   
     };
     
@@ -1254,7 +1268,7 @@
 				<button id="expbtn" onclick="exportRun()" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--accent">
 					<i class="material-icons">file_download</i>
 				</button>
-				<span for="expbtn" class="mdl-tooltip">Dump a Garmin .fit or .tcx file from the database to disk.</span>
+				<span for="expbtn" class="mdl-tooltip">Dump Garmin .fit or .tcx file(s) from the database to disk.</span>
 		
 			</div>
 			<!-- Run table -->

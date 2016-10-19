@@ -67,6 +67,7 @@ function package_windows {
 	sudo cp -r $SOURCE_DIR/tmpl/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/samples/ ./windows_dist/fitplot
 	sudo cp -r $SOURCE_DIR/db/ ./windows_dist/fitplot
+	sudo cp -r $SOURCE_DIR/export/ ./windows_dist/fitplot
 	cd windows_dist
 	sudo cp ../Fitplot\ Windows\ x64\ Setup.nsi .
 	sudo makensis Fitplot\ Windows\ x64\ Setup.nsi
@@ -89,6 +90,7 @@ function package_linux {
 	sudo cp -r $SOURCE_DIR/samples/ ./linux_dist/fitplot
 	sudo cp -r $SOURCE_DIR/db/ ./linux_dist/fitplot
 	sudo cp -r $SOURCE_DIR/icons/ ./linux_dist/fitplot
+	sudo cp -r $SOURCE_DIR/export/ ./linux_dist/fitplot
 	cd linux_dist
 	sudo chown root:root fitplot -R
 	sudo sh -c "tar -cvzf fitplot_linux64bit.tgz fitplot/"
@@ -111,6 +113,7 @@ function package_osx {
 	sudo cp -r $SOURCE_DIR/samples/ ./osx_dist/fitplot
 	sudo cp -r $SOURCE_DIR/db/ ./osx_dist/fitplot
 	sudo cp -r $SOURCE_DIR/icons/ ./osx_dist/fitplot
+	sudo cp -r $SOURCE_DIR/export/ ./osx_dist/fitplot
 	cd osx_dist
 	sudo chown root:root fitplot -R
 	sudo dd if=/dev/zero of=fitplot_osx64bit.dmg bs=1M count=20
