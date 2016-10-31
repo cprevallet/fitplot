@@ -116,7 +116,7 @@ function package_osx {
 	sudo cp -r $SOURCE_DIR/export/ ./osx_dist/fitplot
 	cd osx_dist
 	sudo chown root:root fitplot -R
-	sudo dd if=/dev/zero of=fitplot_osx64bit.dmg bs=1M count=20
+	sudo dd if=/dev/zero of=fitplot_osx64bit.dmg bs=1M count=40
 	sudo mkfs.hfsplus -v Fitplot fitplot_osx64bit.dmg
 	# Does mount directory exist?
 #	if [! -d  "$MOUNT_DIR"]; then
