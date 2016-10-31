@@ -89,8 +89,17 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// Persist the in-memory array of bytes to the database.
 	dbRecord := persist.Record{FName: fName, FType: fType, FContent: fBytes, TimeStamp: timeStamp}
-	db, _ := persist.ConnectDatabase("fitplot", "./")
-	persist.InsertNewRecord(db, dbRecord)
+	db, err := persist.ConnectDatabase("fitplot", "./")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = persist.InsertNewRecord(db, dbRecord)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		db.Close()
+		return
+	}
 	db.Close()
 }
 
@@ -105,25 +114,28 @@ func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64, tot
 }
 
 // Return information about entries in the database between two dates.
-func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record) {
+func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record, err error) {
 	type DBDateStrings struct {
 		DBStart string
 		DBEnd   string
 	}
 	decoder := json.NewDecoder(r.Body)
 	var dbQuery DBDateStrings //string
-	err := decoder.Decode(&dbQuery)
+	err = decoder.Decode(&dbQuery)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return nil, err
 	}
 	// Connect to database and retrieve.  Be sure we bracket the entirety of
 	// the selected day.
-	db, _ := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", "./")
+	if err != nil {
+		return nil, err
+	}
 	startTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBStart+" 00:00:00")
 	endTime, _ := time.Parse("2006-01-02 15:04:05", dbQuery.DBEnd+" 23:59:59")
 	recs = persist.GetRecsByTime(db, startTime, endTime)
 	db.Close()
-	return recs
+	return recs, nil
 }
 
 // Return information about entries in the database.
@@ -141,7 +153,10 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var DBFileList []map[string]string
 	totals := map[string]float64 {"Distance": 0.0}
-    recs := dbGetRecs(w, r)
+    recs, err := dbGetRecs(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	for _, rec := range recs {
 		var filerec map[string]string
 		filerec = make(map[string]string)
@@ -207,7 +222,10 @@ func dbSelectHandler(w http.ResponseWriter, r *http.Request) {
 
 // Export file(s) to disk.
 func dbExportHandler(w http.ResponseWriter, r *http.Request) {
-    recs := dbGetRecs(w, r)
+    recs,err := dbGetRecs(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	slash := string(filepath.Separator)
 	path := "." + slash + "export" + slash
 	_ = "breakpoint"
@@ -366,7 +384,11 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the file from the database by timeStamp global
 	// variable.  Make the search criteria just outside the
 	// expected run start time.
-	db, _ := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", "./")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	slightlyOlder := timeStamp.Add(-1 * time.Second)
 	slightlyNewer := timeStamp.Add(1 * time.Second)
 	recs := persist.GetRecsByTime(db, slightlyOlder, slightlyNewer)
@@ -513,6 +535,8 @@ func migrate() {
 		panic("Can't locate database. Aborting.")
 	}
 	persist.MigrateDatabase(db)
+	db.Close()
+	return
 }
 
 func main() {

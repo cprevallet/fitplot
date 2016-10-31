@@ -63,12 +63,13 @@ func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 
 // InsertNewRecord inserts a new record into the runfiles table containing a filename
 // and a binary blob.  It assumes the database has been initialized and the table built.
-func InsertNewRecord(db *sql.DB, r Record) {
+func InsertNewRecord(db *sql.DB, r Record) (err error) {
 	// Check for existing file with the same file name.
 	queryString := "select id, filename from runfiles where filename = " + "'" + r.FName + "'"
 	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Printf("%q: %s\n", err, "Could not query database:" + r.FName)
+		return err
 	}
 	defer rows.Close()
 	found := false
@@ -80,12 +81,15 @@ func InsertNewRecord(db *sql.DB, r Record) {
 		stmt, err := db.Prepare("insert into runfiles(filename, filetype, filecontent, timestamp) values(?,?,?,?)")
 		if err != nil {
 			log.Printf("%q: %s\n", err, "Could not prepare to insert into database!")
+			return err
 		}
 		_, err = stmt.Exec(r.FName, r.FType, r.FContent, r.TimeStamp)
 		if err != nil {
 			log.Printf("%q: %s\n", err, "Could not insert into database!")
+			return err
 		}
 	}
+	return nil
 }
 
 // GetRecsByTime retrieves on or more binary blobs stored in the database for 

@@ -31,16 +31,6 @@
 				sendFile(this.files[x], fileExt);
 			}
     	}
-
-    	// Set the hook for submitting the file upload form.
-//    	document.getElementById("runfilemenu").onchange = function () {
-//			for (var x = 0; x < this.files.length; x++) {
-//				var filename = this.files[x].name;
-//				var fileExt = filename.slice(filename.length - 3, filename.length);
-//				fileExt = fileExt.toLowerCase();
-//				sendFile(this.files[x], fileExt);
-//			}
-//    	}
     	// Initialize the calendar.
     	createCalendar()
 
@@ -69,6 +59,7 @@
     			data: formData,
     			processData: false,
     			contentType: false,
+    			/*
     			success: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
 					notification.MaterialSnackbar.showSnackbar(
@@ -89,6 +80,15 @@
 						requestRuns();
     				} 
     			},
+    			*/
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					var e = XMLHttpRequest.error()
+					var notification = document.querySelector('.mdl-js-snackbar');
+					notification.MaterialSnackbar.showSnackbar( {
+					message: e["responseText"]
+					} );				
+				},
+				/*
     			error: function () {
 					var notification = document.querySelector('.mdl-js-snackbar');
 					var data = {
@@ -99,7 +99,18 @@
 					};
 					notification.MaterialSnackbar.showSnackbar(data);
 									}
-								});
+				*/
+				//				});
+				}).done(function(){
+						console.log('post done');
+						var notification = document.querySelector('.mdl-js-snackbar');
+						notification.MaterialSnackbar.showSnackbar(
+						{
+							message: file.name  + ' load completed successfully.'  
+						}
+						);
+					});
+			console.log('post ajax');
 	}
 
     //
