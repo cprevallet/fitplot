@@ -135,8 +135,14 @@ func CreateTempFile(bytes []byte) (tmpFile *os.File, err error) {
 }
 
 // DeleteTempFile deletes the temp file if it exists.
-func DeleteTempFile(tmpFile *os.File) {
-	err := os.Remove(tmpFile.Name())
+func DeleteTempFile(tempFile *os.File) {
+	// Close file
+	err := tempFile.Close()
+	if err != nil {
+		log.Printf("%q: %s\n", err, "Could close temp file!")
+	}
+	// Delete the resources we created
+	err = os.Remove(tempFile.Name())
 	if err != nil {
 		log.Printf("%q: %s\n", err, "Could delete temp file!")
 	}
