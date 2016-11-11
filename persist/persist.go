@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	//"fmt"
+	// "fmt"
 	"time"
 )
 
@@ -132,4 +132,12 @@ func CreateTempFile(bytes []byte) (tmpFile *os.File, err error) {
 		return nil, err
 	}
 	return tmpFile, nil
+}
+
+// DeleteTempFile deletes the temp file if it exists.
+func DeleteTempFile(tmpFile *os.File) {
+	err := os.Remove(tmpFile.Name())
+	if err != nil {
+		log.Printf("%q: %s\n", err, "Could delete temp file!")
+	}
 }

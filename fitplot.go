@@ -299,6 +299,7 @@ func parseInputBytes(fBytes []byte) (fType string, fitStruct fit.FitFile, tcxdb 
 			runLaps = tcx.CvtToFitLaps(tcxdb)
 		}
 	}
+	persist.DeleteTempFile(tmpFile)
 	return fType, fitStruct, tcxdb, runRecs, runLaps, err
 }
 
