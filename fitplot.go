@@ -141,24 +141,6 @@ func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record, e
 
 // Return information about entries in the database.
 func dbHandler(w http.ResponseWriter, r *http.Request) {
-	// Structure element names MUST be uppercase or decoder can't access them.
-	type RtnStruct struct {
-		DBFileList []map[string]string
-		Totals map[string]float64
-		Units map[string]string
-	}
-	returnData := RtnStruct{
-		DBFileList: nil,
-		Totals:     nil,
-		Units:      nil,
-	}
-	var DBFileList []map[string]string
-	totals := map[string]float64 {"Distance": 0.0}
-    recs, err := dbGetRecs(w, r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	
 	type RunInfoStruct struct {
 		FName		string
 		FType		string
@@ -171,6 +153,27 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		Pace        string
 		Distance    string
 	}
+	var DBFileList []RunInfoStruct
+	// Structure element names MUST be uppercase or decoder can't access them.
+	type RtnStruct struct {
+		DBFileList []RunInfoStruct
+		Totals map[string]float64
+		Units map[string]string
+	}
+	returnData := RtnStruct{
+		DBFileList: nil,
+		Totals:     nil,
+		Units:      nil,
+	}
+//	var DBFileList []map[string]string
+	totals := map[string]float64 {"Distance": 0.0}
+    recs, err := dbGetRecs(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	
+
+	
 	ch := make(chan RunInfoStruct, 100)  //make this buffered only 100 at a time
 	for _, rec := range recs {
 		go func(rec persist.Record) {
@@ -203,6 +206,7 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 	for i, _ := range recs {
 		rs1 := <-ch
 		fmt.Println(i)
+		/*
 		var filerec map[string]string
 		filerec = make(map[string]string)
 		filerec["File name"] = rs1.FName
@@ -216,9 +220,11 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		filerec["Distance"] = rs1.Distance
 		filerec["Moving time"] = rs1.MovingTime
 		filerec["Pace"] = rs1.Pace
+		*/
 		// FIXME
 		totals["Distance"] += 0.0  
-		DBFileList = append(DBFileList, filerec)
+//		DBFileList = append(DBFileList, filerec)
+		DBFileList = append(DBFileList, rs1)
 	}
 	
 	var units map[string]string
