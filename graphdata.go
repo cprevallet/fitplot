@@ -8,7 +8,7 @@ import (
 	"github.com/cprevallet/fitplot/predict"
 	"github.com/cprevallet/fitplot/stats"
 	"github.com/cprevallet/fitplot/strutil"
-	"github.com/jezard/fit"
+	"github.com/cprevallet/fit"
 	//"fmt"
 	"math"
 	"strconv"

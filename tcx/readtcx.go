@@ -6,7 +6,7 @@ package tcx
 
 import (
 	"fmt"
-	"github.com/jezard/fit"
+	"github.com/cprevallet/fit"
 	"math"
 	"time"
 )
