@@ -165,20 +165,16 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		Totals:     nil,
 		Units:      nil,
 	}
-//	var DBFileList []map[string]string
 	totals := map[string]float64 {"Distance": 0.0}
     recs, err := dbGetRecs(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	
-
-	
+	// Do a bit of fancy footwork to speed up the reads with goroutines.
 	ch := make(chan RunInfoStruct, 100)  //make this buffered only 100 at a time
 	for _, rec := range recs {
 		go func(rec persist.Record) {
 			// process
-			fmt.Println("processing ", rec.FName)
 			var rs RunInfoStruct
 			rs.FName = rec.FName
 			rs.FType = rec.FType
@@ -193,40 +189,11 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 			rs.Pace = totalPace
 			ch <- rs
 		}(rec)
-	}
-	/*
-	for i, _ := range recs {
-		//fmt.Println(i)
-		// fmt.Println(<-ch)
-		// var rs1 RunInfoStruct
-		fmt.Println(i, rs1)
-	}
-	*/
-
-	for i, _ := range recs {
 		rs1 := <-ch
-		fmt.Println(i)
-		/*
-		var filerec map[string]string
-		filerec = make(map[string]string)
-		filerec["File name"] = rs1.FName
-		filerec["File type"] = rs1.FType
-		filerec["Timestamp"] = rs1.TimeStamp
-		filerec["Date"] = rs1.Date
-		filerec["Time"] = rs1.Time
-		filerec["Time zone"] = rs1.TimeZone
-		filerec["Weekday"] = rs1.Weekday
-//		totalDistance, movingTime,totalPace := getOtherVals(rec.FContent)
-		filerec["Distance"] = rs1.Distance
-		filerec["Moving time"] = rs1.MovingTime
-		filerec["Pace"] = rs1.Pace
-		*/
-		// FIXME
-		totals["Distance"] += 0.0  
-//		DBFileList = append(DBFileList, filerec)
+		f, _ := strconv.ParseFloat(rs1.Distance, 64)
+		totals["Distance"] += f
 		DBFileList = append(DBFileList, rs1)
 	}
-	
 	var units map[string]string
 	units = make(map[string]string)
 	if toEnglish {
