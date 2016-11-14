@@ -14,7 +14,7 @@ import (
 	"github.com/jezard/fit"
 	"html/template"
 	"io/ioutil"
-	//"log"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -511,6 +511,15 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// openLog opens a log file.
+func openLog(){
+	f, err := os.OpenFile("fitplot.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	if err != nil {
+		panic("Can't open log file. Aborting.")
+	}
+	log.SetOutput(f)
+}
+
 // Allow the user to shutdown the server from a target in the user interface client.
 func stopHandler(w http.ResponseWriter, r *http.Request) {
 	// Nothing graceful about this exit.  Just bail out.
@@ -540,6 +549,7 @@ func migrate() {
 }
 
 func main() {
+	openLog()
 	desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))

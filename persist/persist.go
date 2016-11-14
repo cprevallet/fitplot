@@ -122,11 +122,13 @@ func GetRecsByTime(db *sql.DB, startTime, endTime time.Time) (recs []Record) {
 func CreateTempFile(bytes []byte) (tmpFile *os.File, err error) {
 	tmpFile, err = ioutil.TempFile("", "tmp")
 	if err != nil {
+		log.Printf("%q: %s %s\n", err, "Could not open", tmpFile.Name())
 		return tmpFile, err
 	}
 	defer tmpFile.Close()
 	tmpFile.Write(bytes)
 	if err != nil {
+		log.Printf("%q: %s\n", err, "Could not write to open temp file.")
 		return nil, err
 	}
 	return tmpFile, nil
