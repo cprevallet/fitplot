@@ -113,6 +113,7 @@ func getOtherVals(fBytes []byte) (totalDistance float64, movingTime float64, tot
 	return totalDistance, movingTime, totalPace
 }
 
+
 // Return information about entries in the database between two dates.
 func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record, err error) {
 	type DBDateStrings struct {
@@ -140,9 +141,22 @@ func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record, e
 
 // Return information about entries in the database.
 func dbHandler(w http.ResponseWriter, r *http.Request) {
+	type RunInfoStruct struct {
+		FName		string
+		FType		string
+		TimeStamp	string
+		Date		string
+		Time		string
+		TimeZone	string
+		Weekday		string
+		MovingTime	string
+		Pace        string
+		Distance    string
+	}
+	var DBFileList []RunInfoStruct
 	// Structure element names MUST be uppercase or decoder can't access them.
 	type RtnStruct struct {
-		DBFileList []map[string]string
+		DBFileList []RunInfoStruct
 		Totals map[string]float64
 		Units map[string]string
 	}
@@ -151,30 +165,35 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		Totals:     nil,
 		Units:      nil,
 	}
-	var DBFileList []map[string]string
 	totals := map[string]float64 {"Distance": 0.0}
     recs, err := dbGetRecs(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	// Do a bit of fancy footwork to speed up the reads with goroutines.
+	ch := make(chan RunInfoStruct, 100)  //make this buffered only 100 at a time
 	for _, rec := range recs {
-		var filerec map[string]string
-		filerec = make(map[string]string)
-		filerec["File name"] = rec.FName
-		filerec["File type"] = rec.FType
-		filerec["Timestamp"] = rec.TimeStamp.Format(time.RFC1123)
-		filerec["Date"] = rec.TimeStamp.Format(time.RFC3339)[0:10]
-		filerec["Time"] = rec.TimeStamp.Format(time.RFC3339)[11:19]
-		filerec["Time zone"] = rec.TimeStamp.Format(time.RFC3339)[19:25]
-		filerec["Weekday"] = rec.TimeStamp.Format(time.RFC1123)[0:3]
-		totalDistance, movingTime,totalPace := getOtherVals(rec.FContent)
-		filerec["Distance"] = strconv.FormatFloat(totalDistance, 'f', 2, 64)
-		filerec["Moving time"] = strutil.DecimalTimetoHourMinSec(movingTime)
-		filerec["Pace"] = totalPace
-		totals["Distance"] += totalDistance
-		DBFileList = append(DBFileList, filerec)
+		go func(rec persist.Record) {
+			// process
+			var rs RunInfoStruct
+			rs.FName = rec.FName
+			rs.FType = rec.FType
+			rs.TimeStamp = rec.TimeStamp.Format(time.RFC1123)
+			rs.Date = rec.TimeStamp.Format(time.RFC3339)[0:10]
+			rs.Time = rec.TimeStamp.Format(time.RFC3339)[11:19]
+			rs.TimeZone = rec.TimeStamp.Format(time.RFC3339)[19:25]
+			rs.Weekday = rec.TimeStamp.Format(time.RFC1123)[0:3]
+			totalDistance, movingTime,totalPace := getOtherVals(rec.FContent)
+			rs.Distance = strconv.FormatFloat(totalDistance, 'f', 2, 64)
+			rs.MovingTime = strutil.DecimalTimetoHourMinSec(movingTime)
+			rs.Pace = totalPace
+			ch <- rs
+		}(rec)
+		rs1 := <-ch
+		f, _ := strconv.ParseFloat(rs1.Distance, 64)
+		totals["Distance"] += f
+		DBFileList = append(DBFileList, rs1)
 	}
-	
 	var units map[string]string
 	units = make(map[string]string)
 	if toEnglish {

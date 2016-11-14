@@ -441,7 +441,7 @@
     	   	var row = 0;
 			for (var i = 0; i < dbfilelist.length; i++) {
 				filedata.addRows([
-					[ parseFloat(dbfilelist[i]['Distance']), dbfilelist[i]['Moving time'], dbfilelist[i]['Pace'], dbfilelist[i]['Date'], dbfilelist[i]['Time'], dbfilelist[i]['Time zone'], dbfilelist[i]['Weekday'], dbfilelist[i]['File name'], dbfilelist[i]['File type'], dbfilelist[i]['Timestamp'].substring(0, 25) + '\nDistance:' + dbfilelist[i]['Distance']],
+					[ parseFloat(dbfilelist[i].Distance), dbfilelist[i].MovingTime, dbfilelist[i].Pace, dbfilelist[i].Date, dbfilelist[i].Time, dbfilelist[i].TimeZone, dbfilelist[i].Weekday, dbfilelist[i].FName, dbfilelist[i].FType, dbfilelist[i].TimeStamp.substring(0, 25) + '\nDistance:' + dbfilelist[i].Distance],
 				]);
 				filedata.setProperties(row, 0, cellStyle);
 				filedata.setProperties(row, 1, cellStyle);
