@@ -11,7 +11,7 @@ import (
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/strutil"
 	"github.com/cprevallet/fitplot/tcx"
-	"github.com/cprevallet/fit"
+	"github.com/jezard/fit"
 	"html/template"
 	"io/ioutil"
 	"log"
