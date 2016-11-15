@@ -121,7 +121,7 @@ This software depends on the excellent fit, go-sqlite3, and goose packages.
 -  <https://bitbucket.org/liamstask/goose/>
 
 ### Building and Packaging
-The software source code is an (unholy) mixture of Golang (version 1.6.2) and 
+The software source code is an (unholy) mixture of Golang (version 1.7.3) and 
 Javascript, HTML and Javascript.  The source code may be cross-compiled and packaged by using 
 the shell script (package.sh) under Linux.  Building under Windows is 
 untested. See comments in that document about the other tools that may 
