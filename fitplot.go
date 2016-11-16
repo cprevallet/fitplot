@@ -191,8 +191,8 @@ func dbHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	// Do a bit of fancy footwork to speed up the reads with goroutines.
-	jobs := make(chan persist.Record, 10000)  //make this buffered only 100 at a time
-	results := make(chan RunInfoStruct, 10000)  //make this buffered only 100 at a time
+	jobs := make(chan persist.Record, 10000)  //make this buffered
+	results := make(chan RunInfoStruct, 10000)  //make this buffered
 	for i, _ := range recs {
 		go worker(i, jobs, results) // initially blocked 
 	}
