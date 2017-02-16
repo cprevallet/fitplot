@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.13.1: http://docutils.sourceforge.net/" />
 <title>Fitplot User Documentation</title>
 <style type="text/css">
 
@@ -125,7 +125,6 @@ div.document .option-list kbd {
 <div class="document" id="fitplot-user-documentation">
 <h1 class="title">Fitplot User Documentation</h1>
 
-<img alt="fitplot_color.png" src="fitplot_color.png" />
 <div class="contents topic" id="table-of-contents">
 <p class="topic-title first">Table of Contents</p>
 <ul class="auto-toc simple">
@@ -214,10 +213,10 @@ div.document .option-list kbd {
 <div class="section" id="tested-configurations">
 <h2><a class="toc-backref" href="#id7">1.4&nbsp;&nbsp;&nbsp;Tested configurations</a></h2>
 <p>Fitplot has been tested under the following combinations of operating system and browser:</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>Microsoft Windows 7 (64 bit build)</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Internet Explorer 11</li>
 <li>Firefox 47.0.1</li>
 <li>Chrome 51.0.2704.103</li>
@@ -227,7 +226,7 @@ div.document .option-list kbd {
 </li>
 <li><dl class="first docutils">
 <dt>Debian GNU/Linux 8 (Jessie - 64 bit)</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Chrome 51.0.2704.106</li>
 <li>Firefox 45.2.0</li>
 </ul>
@@ -236,7 +235,7 @@ div.document .option-list kbd {
 </li>
 <li><dl class="first docutils">
 <dt>Apple Mac OS Sierra version 10.12</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Safari 10.0</li>
 </ul>
 </dd>
@@ -316,10 +315,10 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <div class="section" id="running-the-application">
 <h1><a class="toc-backref" href="#id14">4&nbsp;&nbsp;&nbsp;Running the Application</a></h1>
 <p>Fitplot has both a web server and web client.  Both must be loaded into memory in order to use the application.  The procedure to do this depends on the operating system.</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>Windows</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Start Menu</li>
 <li>Fitplot</li>
 <li>You will receive a message indicating that the application is an unsigned binary from an unknown developer and asking if you are sure you want to run it. See the Digital Security and Privacy section.</li>
@@ -329,7 +328,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </li>
 <li><dl class="first docutils">
 <dt>Linux</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>From a bash shell: /opt/fitplot/fitplot.sh</li>
 <li>From the menu (if desktop file was copied per the installation instructions): /Utilities/Fitplot</li>
 </ul>
@@ -338,7 +337,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </li>
 <li><dl class="first docutils">
 <dt>MacOS/OSX</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Click or tap with two fingers on fitplot.command to open the application.</li>
 <li>You will receive a message indicating that fitplot.command is from an unknown developer and asking if you are sure you want to open it. This is due to the developer (me) not signing and making it available to the Mac App Store.  See the Digital Security and Privacy section.</li>
 <li>Click the open button to begin the application.</li>
@@ -362,7 +361,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <li>Devices using a docking cradle to download files: Forerunner/Edge 205 and 305</li>
 <li>Devices using a USB cable to download files: Forerunner/Edge 10, 110, 210, 220, 620, 500, 510, 705, 800, 810, 1000, and 920XT</li>
 </ul>
-<p>Detailed instructions describing the process of moving the file from the watch to the PC for the numerous models Garmin manufactures is beyond the scope of this document but there are a number of descriptions of the process <a class="reference internal" href="#instructions-for-your-device">available on the Internet</a>.  Newer Garmin devices support the <a class="reference internal" href="#usb">USB</a> option which tends to be less problematic than older Ant Agent transfers.</p>
+<p>Detailed instructions describing the process of moving the file from the watch to the PC for the numerous models Garmin manufactures is beyond the scope of this document but there are a number of descriptions of the process <a class="reference internal" href="#instructions-for-your-device">available on the Internet</a>.  Newer Garmin devices support the USB option which tends to be less problematic than older Ant Agent transfers.</p>
 <p>Once the files are transferred to the PC's hard drive or available via USB continue to <a class="reference internal" href="#load-file-s">load files.</a>.</p>
 <div class="section" id="instructions-for-your-device">
 <h3><a class="toc-backref" href="#id17">5.1.1&nbsp;&nbsp;&nbsp;Instructions for your device</a></h3>
@@ -397,11 +396,11 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <p>Note: It is not recommended to load more than about one month's worth of files (25-30) at one time.  It is possible under some circumstances for files to fail to load if this limit is exceeded.</p>
 <div class="section" id="file-locations">
 <h3><a class="toc-backref" href="#id19">5.2.1&nbsp;&nbsp;&nbsp;File locations</a></h3>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>ANT+ protocol</dt>
-<dd><ul class="first last simple">
-<li>On Windows computers, the Application Data (AppData) folders are hidden by default and you must enable the display of hidden files before you are able to see these elements. Please see: <a class="reference external" href="http://windows.microsoft.com/en-us/windows/show-hidden-files#show-hidden-files=windows-7">http://windows.microsoft.com/en-us/windows/show-hidden-files#show-hidden-files=windows-7</a></li>
+<dd><ul class="first last">
+<li>On Windows computers, the Application Data (AppData) folders are hidden by default and you must enable the display of hidden files before you are able to see these elements.﻿ Please see: <a class="reference external" href="http://windows.microsoft.com/en-us/windows/show-hidden-files#show-hidden-files=windows-7">http://windows.microsoft.com/en-us/windows/show-hidden-files#show-hidden-files=windows-7</a></li>
 <li>Windows 2000 and Windows XP: C:\Documents and Settings\&lt;USERNAME&gt;\Application Data\GARMIN\Devices\&lt;DEVICE-ID&gt;</li>
 <li>Windows Vista, Windows 7 and Windows 8: C:\Users\&lt;USERNAME&gt;\AppData\Roaming\GARMIN\Devices\&lt;DEVICE-ID&gt;</li>
 <li>Mac OS X: Macintosh HD/Users/&lt;USERNAME&gt;/Library/Application Support/Garmin/Devices/&lt;DEVICE-ID&gt;</li>
@@ -409,11 +408,9 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </dd>
 </dl>
 </li>
-</ul>
-<ul id="usb">
 <li><dl class="first docutils">
 <dt>USB</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Connect your Garmin to the USB cable and ensure the cable is plugged into your computer and wait for your computer to recognize the device.  Files may be loaded directly from the watch in this configuration.</li>
 <li>&lt;DRIVE&gt;\Garmin\Garmin\Activity\</li>
 </ul>
@@ -457,10 +454,10 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 <div class="section" id="interactive-features">
 <h3><a class="toc-backref" href="#id25">6.1.3&nbsp;&nbsp;&nbsp;Interactive features</a></h3>
 <p>After the user-specific settings have been entered, the user may interact with several of the tools contained with the results.  The application has been designed with tooltips to describe most of the tools but there are several features worthy of further description:</p>
-<ul>
+<ul class="simple">
 <li><dl class="first docutils">
 <dt>Laps/Splits</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Clicking the headers sorts based on that field (distance, pace, etc.)</li>
 </ul>
 </dd>
@@ -468,7 +465,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </li>
 <li><dl class="first docutils">
 <dt>Graph</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Hovering over the graph displays the Modebar containing a series of icons.</li>
 <li>Zooming may be accomplished via click and drag on the graph or via the modebar.</li>
 <li>Double clicking the graph returns to the maximum zoom.  There is also a modebar icon to do the same.</li>
@@ -480,7 +477,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </li>
 <li><dl class="first docutils">
 <dt>Map</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Dragging and dropping the yellow figure on the map will bring up a street view of the position.</li>
 <li>Satellite and map views may be toggled by the targets in the upper left.</li>
 <li>Click and drag pans across the map independently of the current marker position.</li>
@@ -491,7 +488,7 @@ sudo cp /opt/fitplot/fitplot.desktop /usr/share/applications/
 </li>
 <li><dl class="first docutils">
 <dt>Analysis</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>The user's personal split times is used to calculate VO2max values. Entering new values for the time distance will update the VO2max calculation and the %VO2 gauge.</li>
 </ul>
 </dd>

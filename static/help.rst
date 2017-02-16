@@ -2,8 +2,6 @@
  Fitplot User Documentation
 ============================
 
-.. image:: fitplot_color.png
-
 .. sectnum::
 .. contents:: Table of Contents
 
@@ -171,7 +169,7 @@ Instructions for making a Garmin file available to the PC vary according to the 
 
 - Devices using a USB cable to download files: Forerunner/Edge 10, 110, 210, 220, 620, 500, 510, 705, 800, 810, 1000, and 920XT 
 
-Detailed instructions describing the process of moving the file from the watch to the PC for the numerous models Garmin manufactures is beyond the scope of this document but there are a number of descriptions of the process `available on the Internet <Instructions for your device_>`_.  Newer Garmin devices support the `USB <USB_>`_ option which tends to be less problematic than older Ant Agent transfers.
+Detailed instructions describing the process of moving the file from the watch to the PC for the numerous models Garmin manufactures is beyond the scope of this document but there are a number of descriptions of the process `available on the Internet <Instructions for your device_>`_.  Newer Garmin devices support the USB option which tends to be less problematic than older Ant Agent transfers.
 
 Once the files are transferred to the PC's hard drive or available via USB continue to `load files. <Load file(s)_>`_.
 
@@ -211,9 +209,6 @@ File locations
 	+ Windows 2000 and Windows XP: C:\\Documents and Settings\\<USERNAME>\\Application Data\\GARMIN\\Devices\\<DEVICE-ID>
 	+ Windows Vista, Windows 7 and Windows 8: C:\\Users\\<USERNAME>\\AppData\\Roaming\\GARMIN\\Devices\\<DEVICE-ID>
 	+ Mac OS X: Macintosh HD/Users/<USERNAME>/Library/Application Support/Garmin/Devices/<DEVICE-ID>
-
-.. _USB:
-﻿
 - USB
 	+ Connect your Garmin to the USB cable and ensure the cable is plugged into your computer and wait for your computer to recognize the device.  Files may be loaded directly from the watch in this configuration.
 	+ <DRIVE>\\Garmin\\Garmin\\Activity\\
