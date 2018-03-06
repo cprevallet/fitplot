@@ -18,8 +18,8 @@
 #      https://github.com/tpoechtrager/osxcross
  
 # Configure these to match your system
-SOURCE_DIR=/home/penguin/work/src/github.com/cprevallet/fitplot
-BUILD_DIR=/home/penguin/work/builds
+SOURCE_DIR=/home/craig/work/src/github.com/cprevallet/fitplot
+BUILD_DIR=/home/craig/work/builds
 MOUNT_DIR=/mnt/fitplot
 
 function build() {
