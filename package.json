@@ -1,5 +1,8 @@
 {
   "name": "fitplot",
-  "main": "main.js"
+  "main": "main.js",
+  "window": {
+     "icon": "icons/fitplot_color.png"
+  }
 }
 
