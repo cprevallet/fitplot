@@ -7,7 +7,7 @@ import (
 	//"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/cprevallet/fitplot/desktop"
+//	"github.com/cprevallet/fitplot/desktop"
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/strutil"
 	"github.com/cprevallet/fitplot/tcx"
@@ -581,7 +581,7 @@ func migrate() {
 
 func main() {
 	openLog()
-	desktop.Open("http://localhost:8080")
+	// desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
