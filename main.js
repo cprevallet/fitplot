@@ -1,6 +1,6 @@
 // initialize the server
 var exec = require('child_process').exec;
-exec('./fitplot &', function callback(error, stdout, stderr){
+exec('fitplot &', function callback(error, stdout, stderr){
     // result
 });
 

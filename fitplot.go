@@ -38,10 +38,9 @@ var tmpFname = ""
 var timeStamp time.Time
 
 // Compile templates on start for better performance.
-var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
-
 // Display the named template.
 func display(w http.ResponseWriter, tmpl string, data interface{}) {
+	var templates = template.Must(template.ParseFiles("tmpl/fitplot.html"))
 	templates.ExecuteTemplate(w, tmpl+".html", data)
 }
 
