@@ -500,7 +500,7 @@
 				message += '{row:' + item.row + ',column:' + item.column + '} = ' + str + '\n';
 				} else if (item.row != null) {
 				var dateStr = filedata.getFormattedValue(item.row, 3)
-				var timeStr = filedata.getFormattedValue(item.row, 4)
+				var timeStr = filedata.getFormattedValue(item.row, 4) 
 				var timeZone = filedata.getFormattedValue(item.row, 5)
 				var data = {"DateStr": dateStr, "TimeStr": timeStr, "TimeZoneStr": timeZone}
 				$.ajax({
