@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	// "fmt"
 	"time"
 )
@@ -53,7 +54,7 @@ func MigrateDatabase(db *sql.DB) (err error) {
 func ConnectDatabase(name string, dbpath string) (db *sql.DB, err error) {
 	dbname := name + ".db"
 	// need to set a busy timeout (e.g. retry) when uploading multiple files to avoid locked db messages
-	db, err = sql.Open("sqlite3", "file:" + dbpath + dbname + "?_busy_timeout=20000")
+	db, err = sql.Open("sqlite3", "file:" + filepath.Join(dbpath, dbname) + "?_busy_timeout=20000")
 	if err != nil {
 		// no such file or locked.
 		log.Printf("%q: %s\n", err, "Could not open database! Locked?")

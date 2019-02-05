@@ -12,6 +12,7 @@ import (
 	"github.com/cprevallet/fitplot/strutil"
 	"github.com/cprevallet/fitplot/tcx"
 	"github.com/jezard/fit"
+	"github.com/mitchellh/go-homedir"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -36,6 +37,7 @@ var Buildstamp = "No build timestamp provided"
 var Githash = "No git hash provided"
 var tmpFname = ""
 var timeStamp time.Time
+var workingDirPath = ""
 
 // Compile templates on start for better performance.
 // Display the named template.
@@ -88,7 +90,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// Persist the in-memory array of bytes to the database.
 	dbRecord := persist.Record{FName: fName, FType: fType, FContent: fBytes, TimeStamp: timeStamp}
-	db, err := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", workingDirPath)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -127,7 +129,7 @@ func dbGetRecs(w http.ResponseWriter, r *http.Request) (recs []persist.Record, e
 	}
 	// Connect to database and retrieve.  Be sure we bracket the entirety of
 	// the selected day.
-	db, err := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", workingDirPath)
 	if err != nil {
 		return nil, err
 	}
@@ -414,7 +416,7 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve the file from the database by timeStamp global
 	// variable.  Make the search criteria just outside the
 	// expected run start time.
-	db, err := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", workingDirPath)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -541,9 +543,33 @@ func plotHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-// openLog opens a log file.
-func openLog(){
-	f, err := os.OpenFile("fitplot.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+// Create directory if one doesn't exist, otherwise do nothing
+func CreateDirIfNotExist(dir string) {
+      if _, err := os.Stat(dir); os.IsNotExist(err) {
+              err = os.MkdirAll(dir, 0755)
+              if err != nil {
+                      panic(err)
+              }
+      }
+}
+// Find the writeable application documents directory
+func workingDir() {
+	_, err := homedir.Dir()
+    if err != nil {
+        panic(err)
+    }
+    docDir, err := homedir.Expand("~/Documents")
+    if err != nil {
+        panic(err)
+    }
+	workingDirPath = filepath.Join(docDir, "fitplot")
+	CreateDirIfNotExist(workingDirPath)
+	return
+}
+
+// Opens a log file.
+func openLog() {
+	f, err := os.OpenFile(filepath.Join(workingDirPath, "fitplot.log"), os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
 	if err != nil {
 		panic("Can't open log file. Aborting.")
 	}
@@ -563,13 +589,14 @@ func migrate() {
 	// directory in the event of problems.
 	// I don't know what the performance impact might be, this safeguard
 	// can be removed if performance becomes an issue (e.g. for large databases).
-	file, err := os.Open("fitplot.db")
+	dbName := filepath.Join(workingDirPath, "fitplot.db")
+	file, err := os.Open(dbName)
 	if err == nil {
 		fBytes,_ := ioutil.ReadAll(file)
 		persist.CreateTempFile(fBytes)
 		file.Close()
 	}
-	db, err := persist.ConnectDatabase("fitplot", "./")
+	db, err := persist.ConnectDatabase("fitplot", workingDirPath)
 	if err != nil {
 		panic("Can't locate database. Aborting.")
 	}
@@ -579,6 +606,7 @@ func migrate() {
 }
 
 func main() {
+	workingDir()
 	openLog()
 	// desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
