@@ -49,7 +49,9 @@ function build() {
 		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=x86_64-w64-mingw32-gcc go install -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
 	fi
 	if [ "$os" == "linux" ] ; then
-		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 go install -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
+                # env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 go install -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
+        # Use the musl C library to statically link in libc
+		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=/usr/bin/musl-gcc go install -ldflags "-linkmode external -extldflags "-static"  -X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
 	fi
 }
 
