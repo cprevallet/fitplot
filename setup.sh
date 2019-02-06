@@ -13,6 +13,8 @@
 
 echo "Fitplot has extracted itself."
 echo "Setting up desktop and icons files."
-cp ./nw.package/fitplot.desktop /usr/share/applications 
+cp ./nw.package/fitplot.desktop /usr/share/applications
+chmod 644 /usr/share/applications/fitplot.desktop
 cp ./nw.package/icons/fitplot_color.png /usr/share/pixmaps/fitplot.png
+chmod 644 /usr/share/pixmaps/fitplot.png
 echo "All done."
