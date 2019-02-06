@@ -6,6 +6,22 @@
 ;Written by Joost Verburg
 
 ;--------------------------------
+;Include LogicLib to check we
+; are admin
+
+!include LogicLib.nsh
+
+Function .onInit
+UserInfo::GetAccountType
+pop $0
+${If} $0 != "admin" ;Require admin rights on NT4+
+    MessageBox mb_iconstop "Administrator rights required!"
+    SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+    Quit
+${EndIf}
+FunctionEnd
+
+;--------------------------------
 ;Include Modern UI
 
   !include "MUI2.nsh"
@@ -18,13 +34,14 @@
   OutFile "Fitplot Windows x64 Setup.exe"
 
   ;Default installation folder
-  InstallDir "$LOCALAPPDATA\Fitplot"
+  ;InstallDir "$LOCALAPPDATA\Fitplot"
+  InstallDir "$PROGRAMFILES64\Fitplot"
 
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\Fitplot" ""
 
   ;Request application privileges for Windows Vista
-  RequestExecutionLevel user
+  RequestExecutionLevel admin
 ;--------------------------------
 ;Variables
 
@@ -38,7 +55,7 @@
 ;Pages
 
   !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE "fitplot\LICENSE.txt"
+  !insertmacro MUI_PAGE_LICENSE "fitplot\nw.package\LICENSE.txt"
   !insertmacro MUI_PAGE_DIRECTORY
 
   ;Start Menu Folder Page Configuration
@@ -66,10 +83,11 @@
 
 Section "Components" Components
 
+  CreateDirectory "$INSTDIR"
   SetOutPath "$INSTDIR"
 
   ;Install all files under fitplot directory  
-  File /r "fitplot\" 
+  File /r "fitplot\"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\Fitplot" "" $INSTDIR
@@ -81,8 +99,8 @@ Section "Components" Components
     
     ;Create shortcuts
     CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Fitplot.lnk" "$INSTDIR\fitplot.exe"
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\nw.exe" 1 SW_SHOWNORMAL
+    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Fitplot.lnk" "$INSTDIR\nw.exe" .\nw.package "$INSTDIR\nw.exe" 1 SW_SHOWNORMAL
   
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -92,14 +110,7 @@ SectionEnd
 
 Section "Uninstall"
 
-  RMDir /r "$INSTDIR\samples"
-  RMDir /r "$INSTDIR\static"
-  RMDir /r "$INSTDIR\tmpl"
-  RMDir /r "$INSTDIR\db"
-  Delete "$INSTDIR\LICENSE.txt"
-  Delete "$INSTDIR\fitplot.exe"
-  Delete "$INSTDIR\Uninstall.exe"
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
     

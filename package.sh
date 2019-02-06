@@ -7,7 +7,8 @@
 
 #
 # Useful packaging tools assumed available:
-# 
+#
+# rst2html, rst2odt, rst2man - apt-get install python-docutils
 # iconify2 gimp plugin http://registry.gimp.org/node/27989 png->.ico
 # github.com/akavel/rsrc/ - embed windows icons - go get github.com/akavel/rsrc
 # nsis - windows installer utility - apt-get install nsis
@@ -18,9 +19,11 @@
 #      https://github.com/tpoechtrager/osxcross
  
 # Configure these to match your system
-SOURCE_DIR=/home/craig/work/src/github.com/cprevallet/fitplot
-BUILD_DIR=/home/craig/work/builds
+BIN_DIR=/home/craig/go/bin
+SOURCE_DIR=/home/craig/go/src/github.com/cprevallet/fitplot
+PKG_DIR=/home/craig/go/packaging
 MOUNT_DIR=/mnt/fitplot
+NWJS_DIR=/home/craig/Downloads/
 
 function build() {
 	local os="$1"
@@ -43,93 +46,78 @@ function build() {
 	go clean
 	if [ "$os" == "windows" ] ; then
 		# env GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
-		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=x86_64-w64-mingw32-gcc go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
+		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=x86_64-w64-mingw32-gcc go install -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD` -H windowsgui" -v
 	fi
 	if [ "$os" == "linux" ] ; then
-		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
-	fi
-	if [ "$os" == "darwin" ] ; then
-		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 CC=o64-clang go build -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
+		env CGO_ENABLED=1 GOOS=$1 GOARCH=$2 go install -ldflags "-X main.Buildstamp=`date -u '+%Y-%m-%d_%I:%M:%S%p'` -X main.Githash=`git rev-parse HEAD`" -v
 	fi
 }
 
 function package_windows {
     echo -e 'Packaging for Windows'
-	cd $BUILD_DIR
+	cd $PKG_DIR
 	# make a backup of previous package
 	sudo cp -r windows_dist/ windows_dist_old
 	sudo rm -rf windows_dist
 	sudo mkdir windows_dist
-	sudo mkdir windows_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot.exe ./windows_dist/fitplot
-	sudo cp $SOURCE_DIR/LICENSE.txt ./windows_dist/fitplot
-	sudo cp -r $SOURCE_DIR/static/ ./windows_dist/fitplot
-	sudo cp -r $SOURCE_DIR/tmpl/ ./windows_dist/fitplot
-	sudo cp -r $SOURCE_DIR/samples/ ./windows_dist/fitplot
-	sudo cp -r $SOURCE_DIR/db/ ./windows_dist/fitplot
-	sudo cp -r $SOURCE_DIR/export/ ./windows_dist/fitplot
-	cd windows_dist
-	sudo cp ../Fitplot\ Windows\ x64\ Setup.nsi .
-	sudo makensis Fitplot\ Windows\ x64\ Setup.nsi
-	sudo sh -c "md5sum Fitplot\ Windows\ x64\ Setup.exe > md_windows.txt"
+        cd windows_dist
+        # Have replaced nw.exe icon using resource hacker.  Copy into the package.
+        # Could just unzip the official version if the default icon's okay.
+        # sudo unzip -q $NWJS_DIR/nwjs-v0.36.0-win-x64.zip
+        sudo cp -r $NWJS_DIR/nwjs-v0.36.0-win-x64/ fitplot
+	cd fitplot
+	sudo mkdir nw.package
+	sudo cp $BIN_DIR/windows_amd64/fitplot.exe ./nw.package/
+	sudo cp $SOURCE_DIR/package.json ./nw.package/
+	sudo cp $SOURCE_DIR/main.js ./nw.package/
+	sudo cp $SOURCE_DIR/LICENSE.txt ./nw.package/
+	sudo cp -r $SOURCE_DIR/static/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/tmpl/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/samples/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/db/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/export/ ./nw.package/
+        cd ..
+        sudo cp $SOURCE_DIR/'Fitplot Windows x64 Setup.nsi' . 
+        sudo makensis Fitplot\ Windows\ x64\ Setup.nsi
+        sudo rm Fitplot\ Windows\ x64\ Setup.nsi
+        sudo rm -rf ./fitplot
+        sudo sh -c "md5sum Fitplot\ Windows\ x64\ Setup.exe > md_windows.txt"
+	cd $PKG_DIR
 }
 
 function package_linux {
     echo -e 'Packaging for Linux'
-	cd $BUILD_DIR
+	cd $PKG_DIR
 	# make a backup of previous package
 	sudo cp -r linux_dist/ linux_dist_old
 	sudo rm -rf linux_dist
 	sudo mkdir linux_dist
-	sudo mkdir linux_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot ./linux_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot.desktop ./linux_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot.sh ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/static/ ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/tmpl/ ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/samples/ ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/db/ ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/icons/ ./linux_dist/fitplot
-	sudo cp -r $SOURCE_DIR/export/ ./linux_dist/fitplot
-	cd linux_dist
-	sudo chown root:root fitplot -R
-	sudo sh -c "tar -cvzf fitplot_linux64bit.tgz fitplot/"
-	sudo sh -c "md5sum fitplot_linux64bit.tgz > md_linux.txt"
+        cd linux_dist
+        sudo tar -oxzf $NWJS_DIR/nwjs-v0.36.0-linux-x64.tar.gz
+        sudo mv nwjs-v0.36.0-linux-x64 fitplot
+	cd fitplot
+        sudo cp $SOURCE_DIR/setup.sh .
+	sudo mkdir nw.package
+	sudo cp $BIN_DIR/fitplot ./nw.package/
+	sudo cp $SOURCE_DIR/package.json ./nw.package/
+	sudo cp $SOURCE_DIR/main.js ./nw.package/
+	sudo cp $SOURCE_DIR/fitplot.desktop ./nw.package/
+	sudo cp -r $SOURCE_DIR/static/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/tmpl/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/samples/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/db/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/icons/ ./nw.package/
+	sudo cp -r $SOURCE_DIR/export/ ./nw.package/
+        cd ..
+        sudo makeself fitplot fitplot.run "Fitplot by Craig Prevallet" ./setup.sh
+        sudo rm -r ./fitplot/
+	cd $PKG_DIR
+
+        #sudo chown root:root nw.package -R
+        #sudo sh -c "tar -cvzf fitplot_linux64bit.tgz fitplot/"
+        #sudo sh -c "md5sum fitplot_linux64bit.tgz > md_linux.txt"
 }
 
-function package_osx {
-	echo -e 'Packaging for OSX'
-	cd $BUILD_DIR
-	# make a backup of previous package
-	sudo cp -r osx_dist/ osx_dist_old
-	sudo rm -rf osx_dist
-	sudo mkdir osx_dist
-	sudo mkdir osx_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot ./osx_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot.desktop ./osx_dist/fitplot
-	sudo cp $SOURCE_DIR/fitplot.sh ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/static/ ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/tmpl/ ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/samples/ ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/db/ ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/icons/ ./osx_dist/fitplot
-	sudo cp -r $SOURCE_DIR/export/ ./osx_dist/fitplot
-	cd osx_dist
-	sudo chown root:root fitplot -R
-	sudo dd if=/dev/zero of=fitplot_osx64bit.dmg bs=1M count=40
-	sudo mkfs.hfsplus -v Fitplot fitplot_osx64bit.dmg
-	# Does mount directory exist?
-#	if [! -d  "$MOUNT_DIR"]; then
-#		sudo mkdir /mnt/fitplot
-#	fi
-	sudo mount -o loop fitplot_osx64bit.dmg $MOUNT_DIR
-	cd fitplot
-	sudo mv fitplot.sh fitplot.command
-	sudo cp -r .  /mnt/fitplot
-	sudo umount $MOUNT_DIR
-	cd ..
-	sudo sh -c "md5sum fitplot_osx64bit.dmg > md_osx.txt"
-}
 
 function build_and_package {
     echo -e "$1"
@@ -141,17 +129,11 @@ function build_and_package {
 		build "linux" "amd64"
         package_linux
     fi
-    if [ "$1" = 'osx' ]; then
-		build "darwin" "amd64"
-        package_osx
-    fi
     if [ "$1" = 'all' ]; then
 		build "windows" "amd64"
         package_windows
 		build "linux" "amd64"
         package_linux
-		build "darwin" "amd64"
-        package_osx
     fi
 }
 
@@ -160,7 +142,7 @@ function build_and_package {
 # Main entry point
 # First arg is help or no args passed.
 if [ "$1" = 'help' ] || [ $# -eq 0 ]; then
-    echo -e '\nUsage: package {help|windows|linux|osx|all}'
+    echo -e '\nUsage: package {help|windows|linux|all}'
 else
     date "+%nPackage started on date: %m-%d-%Y at %H:%M:%S" 
     until [ -z "$1" ]  # Until all parameters used up . . .
