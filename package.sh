@@ -111,11 +111,10 @@ function package_linux {
         cd ..
         sudo makeself fitplot fitplot.run "Fitplot by Craig Prevallet" ./setup.sh
         sudo rm -r ./fitplot/
+        sudo sh -c "md5sum fitplot.run > md_linux.txt"
 	cd $PKG_DIR
+        # Install using: sudo ./fitplot.run --target /opt/fitplot
 
-        #sudo chown root:root nw.package -R
-        #sudo sh -c "tar -cvzf fitplot_linux64bit.tgz fitplot/"
-        #sudo sh -c "md5sum fitplot_linux64bit.tgz > md_linux.txt"
 }
 
 
