@@ -86,6 +86,10 @@ Section "Components" Components
   CreateDirectory "$INSTDIR"
   SetOutPath "$INSTDIR"
 
+  ;Create an environmental variable for the static (help) file locations.
+  ;setx available Win Vista and later.
+  nsExec::Exec 'setx STATIC_FILES "$INSTDIR\nw.package\static"'
+
   ;Install all files under fitplot directory  
   File /r "fitplot\"
 
@@ -118,6 +122,8 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
   
+  nsExec::Exec 'set STATIC_FILES ""'
+
   DeleteRegKey /ifempty HKCU "Software\Fitplot"
 
 SectionEnd

@@ -1,10 +1,10 @@
 [Desktop Entry]
-Version=1.0
+Version=2.0
 Name=fitplot
 GenericName=Running Visualizer
 Comment=Visualize, summarize and analyzer your runs
-Exec=/opt/fitplot/nw /opt/fitplot/nw.package
-Path=/opt/fitplot/nw.package
+# environmental file vars + executable + executable arguments
+Exec=env STATIC_FILES=/opt/fitplot/nw.package/static/ /opt/fitplot/nw /opt/fitplot/nw.package
 Icon=/usr/share/pixmaps/fitplot.png
 Terminal=false
 Type=Application

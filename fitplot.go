@@ -608,11 +608,13 @@ func migrate() {
 func main() {
 	workingDir()
 	openLog()
-	// desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
-	// Next line assumes binary is being run in the file system parent directory of "static".
-	// go install won't default to this location.  (use go build -o instead)
-	fs := http.FileServer(http.Dir("./static"))
+	// The static file directory path must be specified as an environment variable.
+    var staticFileDir, ok = os.LookupEnv("STATIC_FILES")
+	if !ok {
+		panic("Could not find path for the help files. Set the environment variable STATIC_FILES=<path>.")
+	}
+	fs := http.FileServer(http.Dir(staticFileDir))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	migrate()
 	// Handle normal requests.

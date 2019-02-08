@@ -8,7 +8,7 @@
 #
 # Useful packaging tools assumed available:
 #
-# rst2html, rst2odt, rst2man - apt-get install python-docutils
+# asciidoctor - apt-get install asciidoctor
 # iconify2 gimp plugin http://registry.gimp.org/node/27989 png->.ico
 # github.com/akavel/rsrc/ - embed windows icons - go get github.com/akavel/rsrc
 # nsis - windows installer utility - apt-get install nsis
@@ -33,13 +33,6 @@ function build() {
         asciidoctor-pdf -a toc -a icons=font -a icon-set=fa help.asc
 	# The following must be done manually:
 	# In gimp open fitplot.xcf and use iconify plugin to create windows object file.
-	# rsrc -ico fitplot_color.ico -o fitplot.syso -arch amd64
-	# export fitplot.xcf to fitplot_color.png
-	# Create pdf file from help.rst
-	# Open help.odt in LibreOffice, right click on table of contents and update - generates page numbers
-	# export help.odt to pdf
-	#
-	
 	cd $SOURCE_DIR
     echo -e '\nbuilding:'$os, $arch
 	go clean
