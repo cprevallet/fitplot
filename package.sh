@@ -12,11 +12,10 @@
 # iconify2 gimp plugin http://registry.gimp.org/node/27989 png->.ico
 # github.com/akavel/rsrc/ - embed windows icons - go get github.com/akavel/rsrc
 # nsis - windows installer utility - apt-get install nsis
-# hfsplus + dependencies - osx file system - apt-get install hfsplus
 # cross-compilers for C language programs (e.g. sqlite3 dependency is cgo )
 # x86_64-w64-mingw32-gcc and o64-clang
+# musl - C-library apt-get install musl
 # see: https://www.limitlessfx.com/cross-compile-golang-app-for-windows-from-linux.html
-#      https://github.com/tpoechtrager/osxcross
  
 # Configure these to match your system
 BIN_DIR=/home/craig/go/bin
@@ -71,6 +70,7 @@ function package_windows {
 	sudo cp -r $SOURCE_DIR/db/ ./nw.package/
 	sudo cp -r $SOURCE_DIR/export/ ./nw.package/
         cd ..
+        sudo cp $SOURCE_DIR/static/help.pdf .
         sudo cp $SOURCE_DIR/'Fitplot Windows x64 Setup.nsi' . 
         sudo makensis Fitplot\ Windows\ x64\ Setup.nsi
         sudo rm Fitplot\ Windows\ x64\ Setup.nsi
@@ -103,6 +103,7 @@ function package_linux {
 	sudo cp -r $SOURCE_DIR/icons/ ./nw.package/
 	sudo cp -r $SOURCE_DIR/export/ ./nw.package/
         cd ..
+        sudo cp $SOURCE_DIR/static/help.pdf .
         sudo makeself fitplot fitplot.run "Fitplot by Craig Prevallet" ./setup.sh
         sudo rm -r ./fitplot/
         sudo sh -c "md5sum fitplot.run > md_linux.txt"
