@@ -29,9 +29,8 @@ function build() {
 	local os="$1"
 	local arch="$2"
 	cd $SOURCE_DIR/static
-	rst2html --stylesheet=help.css  help.rst > help.html
-	rst2odt help.rst > help.odt
-	rst2man help.rst > help.man
+        asciidoctor -a toc -a icons=font -a icon-set=fa help.asc
+        asciidoctor-pdf -a toc -a icons=font -a icon-set=fa help.asc
 	# The following must be done manually:
 	# In gimp open fitplot.xcf and use iconify plugin to create windows object file.
 	# rsrc -ico fitplot_color.ico -o fitplot.syso -arch amd64
