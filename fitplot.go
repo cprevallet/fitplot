@@ -257,11 +257,11 @@ func dbExportHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	slash := string(filepath.Separator)
-	path := "." + slash + "export" + slash
-	_ = "breakpoint"
+	//slash := string(filepath.Separator)
+	// path := "." + slash + "export" + slash
+	//_ = "breakpoint"
 	for _, rec := range recs {
-		ioutil.WriteFile(path + rec.FName, rec.FContent, 0644)
+		ioutil.WriteFile(filepath.Join(workingDirPath, rec.FName), rec.FContent, 0644)
 	}
 }
 
@@ -612,7 +612,7 @@ func main() {
 	// The static file directory path must be specified as an environment variable.
     var staticFileDir, ok = os.LookupEnv("STATIC_FILES")
 	if !ok {
-		panic("Could not find path for the help files. Set the environment variable STATIC_FILES=<path>.")
+		panic("Could not find path for the help files. Set environment variable.")
 	}
 	fs := http.FileServer(http.Dir(staticFileDir))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
