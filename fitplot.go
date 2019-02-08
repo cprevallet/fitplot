@@ -610,7 +610,9 @@ func main() {
 	openLog()
 	// desktop.Open("http://localhost:8080")
 	// Serve static files if the prefix is "static".
-	fs := http.FileServer(http.Dir("static"))
+	// Next line assumes binary is being run in the file system parent directory of "static".
+	// go install won't default to this location.  (use go build -o instead)
+	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	migrate()
 	// Handle normal requests.

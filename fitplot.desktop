@@ -4,6 +4,7 @@ Name=fitplot
 GenericName=Running Visualizer
 Comment=Visualize, summarize and analyzer your runs
 Exec=/opt/fitplot/nw /opt/fitplot/nw.package
+Path=/opt/fitplot/nw.package
 Icon=/usr/share/pixmaps/fitplot.png
 Terminal=false
 Type=Application
