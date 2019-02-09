@@ -31,7 +31,6 @@ be required in the build environment.
 		go get github.com/jezard/fit
 		go get github.com/cprevallet/fitplot
 	2. Build:
-		go get github.com/cprevallet/fitplot
 		go install fitplot
 	3. Package (optional):
 		Install dependencies for package.sh (see comments in package.sh for list)
