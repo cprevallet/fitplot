@@ -27,7 +27,7 @@ be required in the build environment.
 		Download Go from https://golang.org/dl/
                 go get github.com/mitchellh/go-homedir
                 go get github.com/mattn/go-sqlite3
--		go get bitbucket.org/liamstask/goose/cmd/goose
+		go get bitbucket.org/liamstask/goose/cmd/goose
 		go get github.com/jezard/fit
 		go get github.com/cprevallet/fitplot
 	2. Build:
