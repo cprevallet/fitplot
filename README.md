@@ -35,7 +35,7 @@ be required in the build environment.
 		go install fitplot
 	3. Package (optional):
 		Install dependencies for package.sh (see comments in package.sh for list)
-		/.package.sh {help|windows|linux|osx|all}
+		/.package.sh {help|windows|linux|all}
 
 Prebuilt Binaries
 -----------------
