@@ -6,35 +6,55 @@
 # 
 # run via: cat data.txt | gnuplot -persist plotdata.gnu
 
-set term wxt
+#set term wxt 
 #set term tkcanvas
 #set term x11 
 #reset
-set title "Test Plot"
+set multiplot layout 3,1
 set border linewidth 1.5
 # Set first two line styles to blue (#0060ad) and red (#dd181f)
 set style line 1 \
     linecolor rgb '#0060ad' \
-    linetype 1 linewidth 2 \
-    pointtype 7 pointsize 1.5
+    linetype 1 linewidth 0.5 \
+    pointtype 7 pointsize 0.5
 set style line 2 \
     linecolor rgb '#dd181f' \
-    linetype 1 linewidth 2 \
-    pointtype 5 pointsize 1.5
-
+    linetype 1 linewidth 0.5 \
+    pointtype 7 pointsize 0.5
+set style line 3 \
+    linecolor rgb '#5416b4' \
+    linetype 1 linewidth 0.5 \
+    pointtype 7 pointsize 0.5
+set grid
 unset key
-set ylabel "Pace m/km"
-set xlabel "Distance, m"
+set title "Pace"
+set ylabel "Pace min/km"
+#set xlabel "Distance, m"
+unset xlabel
 set ydata time
 set timefmt "%M:%S"
 set yrange [*:*] reverse
 set datafile separator ','
-plot 'test.dat' using 1:3  with linespoints
+plot 'test.dat' using 1:3  with linespoints linestyle 1
 
-#set ylabel "Speed m/s"
+unset key
+unset ydata
+unset timefmt
+unset yrange
+
+set title "Speed"
+set ylabel "Speed m/s"
+unset xlabel
 #set xlabel "Distance, m"
-#set datafile separator ','
-#plot 'test.dat' using 1:2  with linespoints
+set datafile separator ','
+plot 'test.dat' using 1:2  with linespoints linestyle 2
 
-pause 10
+set title "Altitude"
+set ylabel "Altitude m"
+set xlabel "Distance, m"
+set datafile separator ','
+plot 'test.dat' using 1:6  with linespoints linestyle 3 
+
+
+pause 1
 reread
