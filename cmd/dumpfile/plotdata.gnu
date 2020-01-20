@@ -7,7 +7,9 @@
 # run via: cat data.txt | gnuplot -persist plotdata.gnu
 
 set term wxt
-reset
+#set term tkcanvas
+#set term x11 
+#reset
 set title "Test Plot"
 set border linewidth 1.5
 # Set first two line styles to blue (#0060ad) and red (#dd181f)
@@ -28,3 +30,5 @@ set xlabel "Distance, m"
 # set yrange [*:*] reverse
 set datafile separator ','
 plot 'test.dat' using 1:2  with linespoints
+pause 10
+reread
