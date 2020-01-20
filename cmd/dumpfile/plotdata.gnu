@@ -23,12 +23,18 @@ set style line 2 \
     pointtype 5 pointsize 1.5
 
 unset key
-set ylabel "Speed m/s"
+set ylabel "Pace m/km"
 set xlabel "Distance, m"
-# set ydata time
-# set timefmt "%M:%S"
-# set yrange [*:*] reverse
+set ydata time
+set timefmt "%M:%S"
+set yrange [*:*] reverse
 set datafile separator ','
-plot 'test.dat' using 1:2  with linespoints
+plot 'test.dat' using 1:3  with linespoints
+
+#set ylabel "Speed m/s"
+#set xlabel "Distance, m"
+#set datafile separator ','
+#plot 'test.dat' using 1:2  with linespoints
+
 pause 10
 reread

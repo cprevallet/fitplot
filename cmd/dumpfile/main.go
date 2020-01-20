@@ -9,6 +9,7 @@ import (
 //	"fmt"
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/tcx"
+        "github.com/cprevallet/fitplot/strutil"
 	"github.com/jezard/fit"
 	"io/ioutil"
 	"net/http"
@@ -16,12 +17,26 @@ import (
         "strconv"
 )
 
+var minPace = 0.56
+var paceToMetric = 16.666667      // sec/meter -> min/km
+
+func makePace( speed float64) ( pace float64) {
+	// Speed -> pace
+	if speed > 1.8 { //m/s
+		pace = 1.0/speed
+	} else {
+		pace = minPace // s/m = 15 min/mi
+	}
+        return
+        }
 
 // Slice up a structure.
 func makeRecs(runRecs []fit.Record) ( dumprec[][]string ) {
+        // Calculate values from raw values.
 	for _, record := range runRecs {
                 newrec := []string{strconv.FormatFloat(record.Distance, 'G', -1, 64),
                                    strconv.FormatFloat(record.Speed, 'G', -1, 64),
+                                   strutil.DecimalTimetoMinSec(makePace(record.Speed) * paceToMetric),
                                    strconv.FormatFloat(record.Position_lat, 'G', -1, 64),
                                    strconv.FormatFloat(record.Position_long, 'G', -1, 64),
                                    strconv.FormatFloat(record.Altitude, 'G', -1, 64),
