@@ -6,11 +6,17 @@
 # 
 # run via: cat data.txt | gnuplot -persist plotdata.gnu
 
-#set term wxt 
+
+if (! exists("setsize")) set term wxt size 1024,800;
+setsize = 1
+#set term wxt size 1024,800
 #set term tkcanvas
 #set term x11 
 #reset
-set multiplot layout 3,1
+# ctrl-x = quit
+bind "ctrl-x" "exit gnuplot"
+
+set multiplot layout 3,1 
 set border linewidth 1.5
 # Set first two line styles to blue (#0060ad) and red (#dd181f)
 set style line 1 \
@@ -42,19 +48,18 @@ unset ydata
 unset timefmt
 unset yrange
 
-set title "Speed"
-set ylabel "Speed m/s"
+set title "Cadence"
+set ylabel "Strides/min"
 unset xlabel
 #set xlabel "Distance, m"
 set datafile separator ','
-plot 'test.dat' using 1:2  with linespoints linestyle 2
+plot 'test.dat' using 1:6  with linespoints linestyle 2
 
 set title "Altitude"
 set ylabel "Altitude m"
 set xlabel "Distance, m"
 set datafile separator ','
 plot 'test.dat' using 1:6  with linespoints linestyle 3 
-
-
+#unset multiplot
 pause 1
 reread
