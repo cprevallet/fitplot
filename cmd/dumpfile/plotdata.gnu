@@ -53,7 +53,7 @@ set ylabel "Strides/min"
 unset xlabel
 #set xlabel "Distance, m"
 set datafile separator ','
-plot 'test.dat' using 1:6  with linespoints linestyle 2
+plot 'test.dat' using 1:7  with linespoints linestyle 2
 
 set title "Altitude"
 set ylabel "Altitude m"
