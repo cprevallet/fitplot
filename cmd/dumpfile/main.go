@@ -1,12 +1,11 @@
 //
-// Fitplot provides a webserver used to process .fit and .tcx files.
+// Convert a provided .fit or .tcx file to a CSV and dump it to stdout.
 //
 package main
 
 import (
-	//"database/sql"
 	"encoding/csv"
-//	"fmt"
+	"fmt"
 	"github.com/cprevallet/fitplot/persist"
 	"github.com/cprevallet/fitplot/tcx"
         "github.com/cprevallet/fitplot/strutil"
@@ -101,15 +100,19 @@ func dumpCSV(fBytes []byte) {
 }
 
 func main() {
-	//openLog()
-        file, err := os.Open("INPUTDATA.FIT") // For read access.
+        if len(os.Args) != 2 {
+            fmt.Println("Usage:", os.Args[0], "filename")
+            return
+        }
+        filename := os.Args[1]
+        file, err := os.Open(filename) // For read access.
 	if err != nil {
-		panic("Can't open log file. Aborting.")
+		panic("Can't open input file. Aborting.")
 	}
 	// fBytes is an in-memory array of bytes read from the file.
 	fBytes, err := ioutil.ReadAll(file)
 	if err != nil {
-		panic("Can't open input file. Aborting.")
+		panic("Can't read input file. Aborting.")
 	}
         dumpCSV(fBytes)
         file.Close()
