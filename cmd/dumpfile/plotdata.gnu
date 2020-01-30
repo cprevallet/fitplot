@@ -61,5 +61,6 @@ set xlabel "Distance, m"
 set datafile separator ','
 plot 'test.dat' using 1:6  with linespoints linestyle 3 
 #unset multiplot
-pause 1
+pause 2
+replot
 reread

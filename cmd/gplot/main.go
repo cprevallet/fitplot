@@ -10,9 +10,21 @@ import (
         "github.com/sbinet/go-gnuplot"
        )
 
+// Wrapper function.
+// We want to return a failure if the user has closed the window and
+// we are trying to send another command.  (e.g. a broken pipe)
+func sendCmd(p *gnuplot.Plotter, format string, a...interface{}) bool {
+            err := p.Cmd(format, a...)
+            if err != nil {
+                return false
+            } else {
+                return true
+            }
+        }
+
 func displayMapPlot(filename string){
 	fname := ""
-	persist := true
+	persist := false
 	debug := false
 	p, err := gnuplot.NewPlotter(fname, persist, debug)
 	if err != nil {
@@ -21,19 +33,26 @@ func displayMapPlot(filename string){
 	}
 	defer p.Close()
 	p.CheckedCmd("set terminal wxt 2 size 1024,800")
-        p.CheckedCmd("unset xlabel")
-        p.CheckedCmd("unset ylabel")
-        p.CheckedCmd("unset xtics")
-        p.CheckedCmd("unset ytics")
-        //p2.CheckedCmd("set size ratio -1")
-        p.CheckedCmd("plot '%s' binary filetype=png with rgbimage", filename)
-        p.CheckedCmd("pause 1")
+        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")
+
+        for ok := true; ok; {
+            ok = ok && sendCmd(p, "unset xlabel")
+            ok = ok && sendCmd(p, "unset ylabel")
+            ok = ok && sendCmd(p, "unset xtics")
+            ok = ok && sendCmd(p, "unset ytics")
+            ok = ok && sendCmd(p, "plot '%s' binary filetype=png with rgbimage", filename)
+            ok = ok && sendCmd(p, "pause 1")
+        }
         return
         }
 
 func genTrendPlot(filename string){
+
+
+        fmt.Println("Checking keyboard input...")
+
 	fname := ""
-	persist := true
+	persist := false
 	debug := false
 	p, err := gnuplot.NewPlotter(fname, persist, debug)
 	if err != nil {
@@ -42,41 +61,42 @@ func genTrendPlot(filename string){
 	}
 	defer p.Close()
 
-
 	p.CheckedCmd("set terminal wxt size 1024,800")
-        p.CheckedCmd("set multiplot layout 3,1")
-        p.CheckedCmd("set border linewidth 1.5")
-	p.CheckedCmd("set datafile separator ','")
-        p.CheckedCmd("set style line 1 linecolor rgb '#0060ad' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
-        p.CheckedCmd("set style line 2 linecolor rgb '#dd181f' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
-        p.CheckedCmd("set style line 3 linecolor rgb '#5416b4' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
-        p.CheckedCmd("set grid")
-	p.CheckedCmd("unset key")
-        p.CheckedCmd("set title 'Pace'")
-        p.CheckedCmd("set ylabel 'Pace, min/km'")
-        p.CheckedCmd("set ydata time")
-        p.CheckedCmd("unset xlabel")
-        p.CheckedCmd("set timefmt %s", "'%M:%S'")
-        p.CheckedCmd("set yrange [*:*] reverse")
-        p.CheckedCmd("plot '%s' using 1:3  with linespoints linestyle 1", filename)
-        p.CheckedCmd("unset key")
-        p.CheckedCmd("unset ydata")
-        p.CheckedCmd("unset timefmt")
-        p.CheckedCmd("unset yrange")
-        p.CheckedCmd("set title 'Cadence'")
-        p.CheckedCmd("set ylabel 'Strides/min'")
-        p.CheckedCmd("unset xlabel")
-        p.CheckedCmd("plot '%s' using 1:7  with linespoints linestyle 2", filename)
-        p.CheckedCmd("set title 'Altitude'")
-        p.CheckedCmd("set ylabel 'Altitude, m'")
-        p.CheckedCmd("set xlabel 'Distance, m'")
-        p.CheckedCmd("plot '%s' using 1:6  with linespoints linestyle 3", filename)
-
-	//p.CheckedCmd("q")
-	//p.proc.Wait(0)
-
+        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")
+        for ok := true; ok; {
+            ok = ok && sendCmd(p, "set multiplot layout 3,1")
+            ok = ok && sendCmd(p, "set border linewidth 1.5")
+            ok = ok && sendCmd(p, "set datafile separator ','")
+            ok = ok && sendCmd(p, "set style line 1 linecolor rgb '#0060ad' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
+            ok = ok && sendCmd(p, "set style line 2 linecolor rgb '#dd181f' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
+            ok = ok && sendCmd(p, "set style line 3 linecolor rgb '#5416b4' linetype 1 linewidth 0.5 pointtype 7 pointsize 0.5")
+            ok = ok && sendCmd(p, "set grid")
+            ok = ok && sendCmd(p, "unset key")
+            ok = ok && sendCmd(p, "set title 'Pace'")
+            ok = ok && sendCmd(p, "set ylabel 'Pace, min/km'")
+            ok = ok && sendCmd(p, "set ydata time")
+            ok = ok && sendCmd(p, "unset xlabel")
+            ok = ok && sendCmd(p, "set timefmt %s", "'%M:%S'")
+            ok = ok && sendCmd(p, "set yrange [*:*] reverse")
+            ok = ok && sendCmd(p, "plot '%s' using 1:3  with linespoints linestyle 1", filename)
+            ok = ok && sendCmd(p, "unset key")
+            ok = ok && sendCmd(p, "unset ydata")
+            ok = ok && sendCmd(p, "unset timefmt")
+            ok = ok && sendCmd(p, "unset yrange")
+            ok = ok && sendCmd(p, "set title 'Cadence'")
+            ok = ok && sendCmd(p, "set ylabel 'Strides/min'")
+            ok = ok && sendCmd(p, "unset xlabel")
+            ok = ok && sendCmd(p, "plot '%s' using 1:7  with linespoints linestyle 2", filename)
+            ok = ok && sendCmd(p, "set title 'Altitude'")
+            ok = ok && sendCmd(p, "set ylabel 'Altitude, m'")
+            ok = ok && sendCmd(p, "set xlabel 'Distance, m'")
+            ok = ok && sendCmd(p, "plot '%s' using 1:6  with linespoints linestyle 3", filename)
+            ok = ok && sendCmd(p, "pause 2")
+            fmt.Println("ok=", ok)
+        }
 	return
         }
+
 func main() {
         if len(os.Args) != 2 {
             fmt.Println("Usage:", os.Args[0], "filename")
@@ -90,7 +110,7 @@ func main() {
         f, _ := os.Create("image.png")
         png.Encode(f, img)
         displayMapPlot("image.png")
-        os.Remove("image.png")
+        // os.Remove("image.png")
 
 }
 
