@@ -10,8 +10,19 @@ import (
         "github.com/sbinet/go-gnuplot"
        )
 
+// Wrapper
+func createPlotter(persist bool, debug bool) (p* gnuplot.Plotter) {
+	p, err := gnuplot.NewPlotter("", persist, debug)
+	if err != nil {
+		err_string := fmt.Sprintf("** err: %v\n", err)
+		panic(err_string)
+	}
+	//defer p.Close()
+        return p
+}
+
 // Wrapper function.
-// We want to return a failure if the user has closed the window and
+// We want to return a failure if the user has stopped gnuplot and
 // we are trying to send another command.  (e.g. a broken pipe)
 func sendCmd(p *gnuplot.Plotter, format string, a...interface{}) bool {
             err := p.Cmd(format, a...)
@@ -21,20 +32,9 @@ func sendCmd(p *gnuplot.Plotter, format string, a...interface{}) bool {
                 return true
             }
         }
-
-func displayMapPlot(filename string){
-	fname := ""
-	persist := false
-	debug := false
-	p, err := gnuplot.NewPlotter(fname, persist, debug)
-	if err != nil {
-		err_string := fmt.Sprintf("** err: %v\n", err)
-		panic(err_string)
-	}
-	defer p.Close()
+func displayMapPlot(p *gnuplot.Plotter, filename string){
 	p.CheckedCmd("set terminal wxt 2 size 1024,800")
         p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")
-
         for ok := true; ok; {
             ok = ok && sendCmd(p, "unset xlabel")
             ok = ok && sendCmd(p, "unset ylabel")
@@ -42,27 +42,18 @@ func displayMapPlot(filename string){
             ok = ok && sendCmd(p, "unset ytics")
             ok = ok && sendCmd(p, "plot '%s' binary filetype=png with rgbimage", filename)
             ok = ok && sendCmd(p, "pause 1")
+            fmt.Println("running map", ok)
         }
+        p.Close()
         return
         }
 
-func genTrendPlot(filename string){
-
-
-        fmt.Println("Checking keyboard input...")
-
-	fname := ""
-	persist := false
-	debug := false
-	p, err := gnuplot.NewPlotter(fname, persist, debug)
-	if err != nil {
-		err_string := fmt.Sprintf("** err: %v\n", err)
-		panic(err_string)
-	}
-	defer p.Close()
-
-	p.CheckedCmd("set terminal wxt size 1024,800")
-        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")
+func genTrendPlot(p *gnuplot.Plotter, filename string){
+	p.CheckedCmd("set terminal wxt 1 size 1024,800")
+        // When the user hits the "s" key, sending further commands
+        // will fail.  Use a bool to exit the loop and continue.
+        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")  //stop
+        p.CheckedCmd("bind 't' 'pause mouse any'")  //toggle update
         for ok := true; ok; {
             ok = ok && sendCmd(p, "set multiplot layout 3,1")
             ok = ok && sendCmd(p, "set border linewidth 1.5")
@@ -92,8 +83,9 @@ func genTrendPlot(filename string){
             ok = ok && sendCmd(p, "set xlabel 'Distance, m'")
             ok = ok && sendCmd(p, "plot '%s' using 1:6  with linespoints linestyle 3", filename)
             ok = ok && sendCmd(p, "pause 2")
-            fmt.Println("ok=", ok)
-        }
+            fmt.Println("running trend", ok)
+            }
+        p.Close()
 	return
         }
 
@@ -103,13 +95,17 @@ func main() {
             return
         }
         filename := os.Args[1]
+        // Create the plotters
         // Create the trend plot
-        genTrendPlot(filename)
+        go genTrendPlot(createPlotter(false,false), filename)
         // Create and display the map.
         img := mapimg(filename)
         f, _ := os.Create("image.png")
         png.Encode(f, img)
-        displayMapPlot("image.png")
+        go displayMapPlot(createPlotter(false,false), "image.png")
+        //loop forever
+        for ok:= true; ok; {
+        }
         // os.Remove("image.png")
 
 }
