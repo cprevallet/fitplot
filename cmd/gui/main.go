@@ -1,11 +1,10 @@
 package main
 
 import (
-//    "fmt"
+    "fmt"
     "image/png"
     "os"
     "github.com/gotk3/gotk3/gtk"
-//    "github.com/gotk3/gotk3/glib"
     "log"
 )
 
@@ -38,6 +37,10 @@ func main() {
         log.Fatal("unable to create button.", err)
     }
 
+
+    trndBtn.Connect("clicked", startTrend)
+    mapBtn.Connect("clicked", startMap)
+
     // create a layout grid
     grid, err := gtk.GridNew()
     if err != nil {
@@ -46,9 +49,6 @@ func main() {
     grid.Attach(trndBtn, 0, 0, 100, 100)
     grid.Attach(mapBtn, 0, 101, 100, 100)
 
-
-    trndBtn.Connect("clicked", startTrend)
-    mapBtn.Connect("clicked", startMap)
 
     // Add the button to the window.
     win.Add(grid)
@@ -65,6 +65,7 @@ func main() {
 }
 
 func startTrend() {
+    InfoMessage("\nPress t to toggle scan on/off\nPress s to close window")
     go genTrendPlot(createPlotter(false,false), filename )
 }
 func startMap() {
@@ -73,4 +74,15 @@ func startMap() {
         f, _ := os.Create("image.png")
         png.Encode(f, img)
         go displayMapPlot(createPlotter(false,false), "image.png")
+}
+
+func InfoMessage(format string, args ...interface{}) error {
+	dummy, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	if err != nil {
+		return err
+	}
+	dialog := gtk.MessageDialogNew(dummy, gtk.DIALOG_MODAL, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, fmt.Sprint("INFO: ", format), args...)
+	dialog.Run()
+	dialog.Destroy()
+	return nil
 }
