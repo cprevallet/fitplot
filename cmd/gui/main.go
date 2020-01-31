@@ -8,7 +8,7 @@ import (
     "log"
 )
 
-var filename string = "test.dat"
+var filename string = ""
 
 func main() {
     // Initialize GTK without parsing any command line arguments.
@@ -25,18 +25,33 @@ func main() {
         gtk.MainQuit()
     })
 
-    // create a new label widget to show in the window.
-    trndBtn, err := gtk.ButtonNewWithLabel("start trend")
+    // create a new button widget to show in the window.
+    trndBtn, err := gtk.ButtonNewWithLabel("Trend")
     if err != nil {
         log.Fatal("unable to create button.", err)
     }
+    trndBtn.SetSensitive(false)
 
-    // create a new label widget to show in the window.
-    mapBtn, err := gtk.ButtonNewWithLabel("start map")
+    // create a new button widget to show in the window.
+    mapBtn, err := gtk.ButtonNewWithLabel("Map")
     if err != nil {
         log.Fatal("unable to create button.", err)
     }
+    mapBtn.SetSensitive(false)
 
+    // create a new button widget to show in the window.
+    openBtn, err := gtk.ButtonNewWithLabel("File open...")
+    if err != nil {
+        log.Fatal("unable to create button.", err)
+    }
+    openBtn.Connect("clicked", func() {
+                        //TODO user hits cancel
+                        filename = openFile()
+                        if filename != "" {
+                                trndBtn.SetSensitive(true)
+                                mapBtn.SetSensitive(true)
+                                }
+            })
 
     trndBtn.Connect("clicked", startTrend)
     mapBtn.Connect("clicked", startMap)
@@ -46,8 +61,9 @@ func main() {
     if err != nil {
         log.Fatal("unable to grid.", err)
     }
-    grid.Attach(trndBtn, 0, 0, 100, 100)
+    grid.Attach(openBtn, 0, 0, 100, 100)
     grid.Attach(mapBtn, 0, 101, 100, 100)
+    grid.Attach(trndBtn, 0, 201, 100, 100)
 
 
     // Add the button to the window.
@@ -65,6 +81,7 @@ func main() {
 }
 
 func startTrend() {
+    //filename = openFile()
     InfoMessage("\nPress t to toggle scan on/off\nPress s to close window")
     go genTrendPlot(createPlotter(false,false), filename )
 }
@@ -85,4 +102,23 @@ func InfoMessage(format string, args ...interface{}) error {
 	dialog.Run()
 	dialog.Destroy()
 	return nil
+}
+
+func openFile() (filename string) {
+    win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+    openDialog, err := gtk.FileChooserDialogNewWith2Buttons("Select csv file", win, gtk.FILE_CHOOSER_ACTION_OPEN,
+		"Cancel", gtk.RESPONSE_CANCEL, "OK", gtk.RESPONSE_OK)
+    if err != nil {
+        log.Fatal("Dialog creation failed")
+    }
+
+    response := openDialog.Run()
+    if response != gtk.RESPONSE_OK {
+        openDialog.Destroy()
+        return ""
+        //log.Fatal("Error getting filename")
+    }
+    file := openDialog.GetFilename()
+    openDialog.Destroy()
+    return file
 }
