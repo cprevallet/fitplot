@@ -45,7 +45,7 @@ func main() {
         log.Fatal("unable to create button.", err)
     }
     openBtn.Connect("clicked", func() {
-                        //TODO user hits cancel
+                        //TODO checks on csv...
                         filename = openFile()
                         if filename != "" {
                                 trndBtn.SetSensitive(true)
@@ -82,7 +82,7 @@ func main() {
 
 func startTrend() {
     //filename = openFile()
-    InfoMessage("\nPress t to toggle scan on/off\nPress s to close window")
+    InfoMessage("\nHold s to toggle scan on/off\nPress x to exit window")
     go genTrendPlot(createPlotter(false,false), filename )
 }
 func startMap() {

@@ -34,7 +34,7 @@ func sendCmd(p *gnuplot.Plotter, format string, a...interface{}) bool {
         }
 func displayMapPlot(p *gnuplot.Plotter, filename string){
 	p.CheckedCmd("set terminal wxt 2 size 1024,800")
-        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")
+        p.CheckedCmd("bind 'x' 'unset terminal; exit gnuplot'")
         for ok := true; ok; {
             ok = ok && sendCmd(p, "unset xlabel")
             ok = ok && sendCmd(p, "unset ylabel")
@@ -50,10 +50,10 @@ func displayMapPlot(p *gnuplot.Plotter, filename string){
 
 func genTrendPlot(p *gnuplot.Plotter, filename string){
 	p.CheckedCmd("set terminal wxt 1 size 1024,800")
-        // When the user hits the "s" key, sending further commands
+        // When the user hits the "x" key, sending further commands
         // will fail.  Use a bool to exit the loop and continue.
-        p.CheckedCmd("bind 's' 'unset terminal; exit gnuplot'")  //stop
-        p.CheckedCmd("bind 't' 'pause mouse any'")  //toggle update
+        p.CheckedCmd("bind 'x' 'unset terminal; exit gnuplot'")  //stop
+        p.CheckedCmd("bind 's' 'mycond=0'")
         for ok := true; ok; {
             ok = ok && sendCmd(p, "set multiplot layout 3,1")
             ok = ok && sendCmd(p, "set border linewidth 1.5")
@@ -82,7 +82,10 @@ func genTrendPlot(p *gnuplot.Plotter, filename string){
             ok = ok && sendCmd(p, "set ylabel 'Altitude, m'")
             ok = ok && sendCmd(p, "set xlabel 'Distance, m'")
             ok = ok && sendCmd(p, "plot '%s' using 1:6  with linespoints linestyle 3", filename)
-            ok = ok && sendCmd(p, "pause 2")
+            ok = ok && sendCmd(p, "mycond = 1")
+            ok = ok && sendCmd(p, "while (mycond == 1) {}")
+            //ok = ok && sendCmd(p, "pause 2")
+            ok = ok && sendCmd(p, "reread")
             //fmt.Println("running trend", ok)
             }
         p.Close()

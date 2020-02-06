@@ -15,6 +15,7 @@ setsize = 1
 #reset
 # ctrl-x = quit
 bind "ctrl-x" "exit gnuplot"
+bind "s" "mycond = 0"
 
 set multiplot layout 3,1 
 set border linewidth 1.5
@@ -35,8 +36,6 @@ set grid
 unset key
 set title "Pace"
 set ylabel "Pace min/km"
-#set xlabel "Distance, m"
-unset xlabel
 set ydata time
 set timefmt "%M:%S"
 set yrange [*:*] reverse
@@ -61,6 +60,11 @@ set xlabel "Distance, m"
 set datafile separator ','
 plot 'test.dat' using 1:6  with linespoints linestyle 3 
 #unset multiplot
+
+mycond = 1
+
+while (mycond == 1) {
+}
 pause 2
-replot
 reread
+
