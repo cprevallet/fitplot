@@ -89,6 +89,7 @@ func genTrendPlot(p *gnuplot.Plotter, filename string){
             //fmt.Println("running trend", ok)
             }
         p.Close()
+        fmt.Println("closing plotter")
 	return
         }
 /*

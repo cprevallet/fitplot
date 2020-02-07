@@ -14,7 +14,7 @@ setsize = 1
 #set term x11 
 #reset
 # ctrl-x = quit
-bind "ctrl-x" "exit gnuplot"
+bind "x" "exit gnuplot"
 bind "s" "mycond = 0"
 
 set multiplot layout 3,1 
@@ -65,6 +65,7 @@ mycond = 1
 
 while (mycond == 1) {
 }
-pause 2
+print MOUSE_X2
+print MOUSE_Y2
 reread
 
